@@ -13,12 +13,13 @@ using kha.graphics2.GraphicsExtension;
 
 class Creature
 {
-    public var NewBranchProbability = 0.15;  // per second
-    public var NumOfNewBrenches :Int = 2;
-    public var NumOfNewBrenchesVariation :Int = 0;
+    public var NewBranchProbability = 0.25;  // per second
+    public var NumOfNewBrenches :Int = 1;
+    public var NumOfNewBrenchesVariation :Int = 4;
     public var NewBranchAngle :Float = Math.PI * 0.3;
     public var NewBranchAngleVariation :Float = Math.PI * 0.3;
 
+//    public var growthRate = 0.1;  // Percent per second
     
 
     public var pos: Vec2;
@@ -29,8 +30,8 @@ class Creature
 
     // constants
     public static inline var THICKNESS = 0.1;
-    public static inline var GROWTH_RATE = 0.1;  // Percent per second
     public static inline var NEW_BRANCH_CREATION_INTERVAL = 0.2;  // sec
+    public static inline var MAX_GENERATIONS = 12;
 
  
 
@@ -48,7 +49,7 @@ class Creature
         var  firstBranch : Branch = new Branch();
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.lenght = 60;
+        firstBranch.lenght = 40;
 
         this.branches = [];
         this.branches.push(firstBranch);
@@ -57,10 +58,17 @@ class Creature
     }
 
     public function TrunkDivision(ParentBranchIndex: Int) {
+       
         var n: Int = NumOfNewBrenches + Std.random(NumOfNewBrenchesVariation);
         var DivisionAngle: Float = NewBranchAngle + Math.random()*NewBranchAngleVariation;
         var angle: Float = - DivisionAngle / 2; 
-        var angleStep: Float = DivisionAngle / (n-1);
+        var angleStep: Float =0;
+
+        if (n==1) {
+            angle=0;
+        }
+        else angleStep = DivisionAngle / (n-1);
+
         var i:Int =0;
 
         do 
@@ -78,6 +86,8 @@ class Creature
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.dir = parent.dir.rotate(angle);
         newBranch.parentIndex = ParentBranchIndex;
+        newBranch.GenerationIndex = parent.GenerationIndex + 1;
+        newBranch.maxGenerations = MAX_GENERATIONS;
         branches.push(newBranch);
     }
 
@@ -92,9 +102,10 @@ class Creature
                 b.startPos.setFrom(branches[b.parentIndex].endPos);
             }
 
-            b.lenght += b.lenght*dt*GROWTH_RATE;
+            b.lenght *= (1 + dt*b.growthRate);
             b.Calculate(dt);
 
+            if (b.GenerationIndex< MAX_GENERATIONS)
             if (b.timeToNewBranch >= 0)
             {
                  b.timeToNewBranch += dt;
@@ -106,6 +117,7 @@ class Creature
                     {
                         TrunkDivision(BranchIndex);
                         b.timeToNewBranch = -1;
+                        b.growthRate*=0.5;
                     }
                 }
             }

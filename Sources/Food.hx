@@ -12,29 +12,39 @@ using kha.graphics2.GraphicsExtension;
 //-------------------------------------------------------
 class Food {
 
+        // constants
+    public static inline var SPEED = 400;  // pixel / sec
+    public static inline var BEAM_LENGTH = 10.0; 
+
     public var pos: Vec2;
+    public var dir: Vec2;
 
     public function new() 
     {  
-        this.pos = new Vec2(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
+        pos = new Vec2(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
+        dir = new Vec2(1, 2);
+        dir.normalize();
+        dir=dir.mult(Math.random() +1);
     }
 
-    public function Calculate(): Void {
-        
+    public function Calculate(dt:Float): Void {
+        pos= pos.add(dir.mult(dt*SPEED));
+        if (pos.y>System.windowHeight() || pos.x>System.windowWidth()) Renew();
     }
 
-    public function Eat(): Void {
-
-        this.pos.set(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
+    public function Renew(): Void {
+        if (Math.random()<0.4)  this.pos.set(0, System.windowHeight() * Math.random());
+        else this.pos.set(System.windowWidth() * Math.random(), 0);
     }
 
 
 	public function Draw(framebuffer: Framebuffer): Void {
 		var g2 = framebuffer.g2;
+
+		g2.color = kha.Color.fromFloats(0.2,0.2,0.9, 0.7 );
 		
-		g2.color = kha.Color.Red;
-		
-		g2.fillCircle( pos.x, pos.y, 1);
+        g2.drawLine (pos.x, pos.y , pos.x + dir.x*BEAM_LENGTH, pos.y + dir.y*BEAM_LENGTH, 2);
+		//g2.fillCircle( pos.x, pos.y, 2);
 
 	}
 

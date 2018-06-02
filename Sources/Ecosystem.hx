@@ -38,6 +38,9 @@ class Ecosystem
         for (creature in this.creatures) {
             creature.Calculate(dt);
         }
+        for (f in food) {
+            f.Calculate(dt);
+        }
 
     }
 
