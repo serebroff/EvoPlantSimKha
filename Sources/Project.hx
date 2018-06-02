@@ -74,7 +74,7 @@ class Project {
 
         previousRealTime = realTime;
         realTime = Scheduler.time();
-		tickperframe = (realTime - previousRealTime) * 1000;
+		tickperframe = (realTime - previousRealTime) ;
 
 		Ecosystem.instance.Calculate(tickperframe);
 
@@ -91,7 +91,7 @@ class Project {
         g2.color = kha.Color.Black;
 		g2.drawString( "FPS " + Std.string(fps.getFPS()), 20, 20);
 
-		g2.drawString( "NUM " + Std.string(Ecosystem.instance.creatures.length), 20, 40);
+		g2.drawString( "NUM " + Std.string(Ecosystem.instance.creatures[0].branches.length), 20, 40);
 		Ecosystem.instance.Render(framebuffer);
 		
 		g2.end();		

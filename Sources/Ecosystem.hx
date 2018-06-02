@@ -3,9 +3,9 @@
 //-------------------------------------------------------
 class Ecosystem 
 {
-    public static inline var MAX_CREATURES: Int = 1000;
+    public static inline var MAX_CREATURES: Int = 1;
 
-    public static inline var MAX_FOOD: Int = 1000;
+    public static inline var MAX_FOOD: Int = 500;
 
     public static var instance(get, null):Ecosystem;
 
@@ -38,25 +38,6 @@ class Ecosystem
         for (creature in this.creatures) {
             creature.Calculate(dt);
         }
-        
-       // var i = creatures.length - 1;
-
-        var i:Int=0, j:Int=0;
-        while (j < creatures.length) {
-            while (this.creatures[j].IsDead && j < creatures.length) j++;
-            if (j>i) this.creatures[i] = this.creatures[j];
-             i++;
-             j++;
-        }
-        creatures.splice(i, j-i);
-
-/*        while (i >= 0) {
-            if (this.creatures[i].IsDead) {
-                this.creatures.splice(i, 1);
-            }
-            i--;
-        }
-        */
 
     }
 

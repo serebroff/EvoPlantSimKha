@@ -20,9 +20,11 @@ class Food {
     }
 
     public function Calculate(): Void {
+        
     }
 
     public function Eat(): Void {
+
         this.pos.set(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
     }
 
