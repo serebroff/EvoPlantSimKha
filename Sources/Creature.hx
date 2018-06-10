@@ -14,9 +14,10 @@ using kha.graphics2.GraphicsExtension;
 class Creature
 {
     public var NewBranchProbability = 0.25;  // per second
-    public var NumOfNewBrenches :Int = 1;
-    public var NumOfNewBrenchesVariation :Int = 4;
-    public var NewBranchAngle :Float = Math.PI * 0.3;
+
+    public var NumOfNewBrenches :Int = 2;
+    public var NumOfNewBrenchesVariation :Int = 1;
+    public var NewBranchAngle :Float = Math.PI * 0.2;
     public var NewBranchAngleVariation :Float = Math.PI * 0.3;
 
 //    public var growthRate = 0.1;  // Percent per second
@@ -31,7 +32,7 @@ class Creature
     // constants
     public static inline var THICKNESS = 0.1;
     public static inline var NEW_BRANCH_CREATION_INTERVAL = 0.2;  // sec
-    public static inline var MAX_GENERATIONS = 12;
+    public static inline var MAX_GENERATIONS = 8;
 
  
 
@@ -83,12 +84,15 @@ class Creature
     public function CreateNewBranch(ParentBranchIndex: Int, angle: Float) {
         var  newBranch : Branch = new Branch();
         var parent=branches[ParentBranchIndex];
+        
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.dir = parent.dir.rotate(angle);
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
         newBranch.maxGenerations = MAX_GENERATIONS;
         branches.push(newBranch);
+
+        parent.ChildrenIndices.push(branches.length-1);
     }
 
     public function Calculate(dt:Float) {
@@ -102,8 +106,10 @@ class Creature
                 b.startPos.setFrom(branches[b.parentIndex].endPos);
             }
 
-            b.lenght *= (1 + dt*b.growthRate);
-            b.Calculate(dt);
+            b.lenght += dt*b.growthRate*100;
+            //b.growthPotential -= dt*10;
+
+            b.Calculate(this,dt);
 
             if (b.GenerationIndex< MAX_GENERATIONS)
             if (b.timeToNewBranch >= 0)
@@ -130,13 +136,15 @@ class Creature
     }
 
     public function Draw (framebuffer:Framebuffer): Void {
-        var p = this.pos;
 
         for( b in branches)
         {
             b.Draw(framebuffer);
         }
-
+        for( b in branches)
+        {
+            b.DrawSkeleton(framebuffer);
+        }
  
     }
 

@@ -5,6 +5,7 @@ import kha.System;
 
 using Utils;
 using kha.graphics2.GraphicsExtension;
+using Creature;
 
 
 //------------------------------------- ------------------
@@ -37,11 +38,23 @@ class Food {
         else this.pos.set(System.windowWidth() * Math.random(), 0);
     }
 
+    public function CheckCollision(plant: Creature)
+    {
+        var b: Branch;
+        for (b in plant.branches)
+        {
+            if (pos.PointInTriangle(b.v1,b.v2,b.v3) || pos.PointInTriangle(b.v2,b.v4,b.v3))
+            {
+                Renew();
+            }
+        }
+    }
+
 
 	public function Draw(framebuffer: Framebuffer): Void {
 		var g2 = framebuffer.g2;
 
-		g2.color = kha.Color.fromFloats(0.2,0.2,0.9, 0.7 );
+		g2.color = kha.Color.Orange; //fromFloats(0.2,0.2,0.9, 0.7 );
 		
         g2.drawLine (pos.x, pos.y , pos.x + dir.x*BEAM_LENGTH, pos.y + dir.y*BEAM_LENGTH, 2);
 		//g2.fillCircle( pos.x, pos.y, 2);

@@ -11,6 +11,7 @@ import kha.System;
 
 using Utils;
 using kha.graphics2.GraphicsExtension;
+using Creature;
 
 class Branch
 {
@@ -20,11 +21,21 @@ class Branch
 	public var timeToNewBranch: Float;
 	public var dir: Vec2;
 	public var lenght: Float;
+	public var widthStart: Float;
+	public var widthEnd: Float;
 	public var growthRate: Float;
+	public var growthPotential: Float;
 
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
+
+	public var ChildrenIndices : Array<Int>;
+
+	public var v1: Vec2;
+	public var v2: Vec2;
+	public var v3: Vec2;
+	public var v4 :Vec2;
 
 
 	public function new() 
@@ -34,41 +45,81 @@ class Branch
 		maxGenerations = 1;
 		timeToNewBranch = 0;
 		dir = new Vec2(0,-1);
-		lenght = 10;
+		lenght = 0;
+		widthStart = 0;
+		widthEnd = 0;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
 		Thikness= 0.2;
 		growthRate = 0.1;
+		growthPotential = 50;
+		ChildrenIndices = [];
+
+		v1= new Vec2(0,0);
+		v2= new Vec2(0,0);
+		v3= new Vec2(0,0);
+		v4= new Vec2(0,0);
 	}
 
-	public function Calculate (dt: Float): Void {
+
+	public function CalcEnd()
+	{
+		var sideVec: Vec2 = new Vec2(0,0);
+		sideVec = dir.skew().mult(widthEnd);
+		//v2 = v2.sub(sideVec);
+		//v3 = v3.add(sideVec)	;
+		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
+		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
+	}
+
+
+	public function Calculate (plant:Creature, dt: Float): Void {
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(lenght));
-	
+
+		widthStart= lenght*Thikness;
+		widthEnd=0;
+
+		var sideVec: Vec2 = new Vec2(0,0);
+		sideVec = dir.skew().mult(widthStart);
+
+		if (parentIndex>=0)
+		{
+			var ParentBanch= plant.branches[parentIndex];
+			if (ParentBanch.widthEnd<widthStart)  {
+				ParentBanch.widthEnd= widthStart;
+				ParentBanch.CalcEnd();
+			}
+		}
+
+
+		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
+		v2.set( endPos.x , endPos.y ); 
+		v3.set(endPos.x , endPos.y  );
+		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+		
 	}
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
 		var g2 = framebuffer.g2;
-		var sideVec: Vec2 = new Vec2();
-		sideVec = dir.skew().mult(lenght*Thikness*0.5);
-		
-		
-		if (timeToNewBranch <0 ) 
-		{ 
-			g2.color = kha.Color.fromString("#FFAA5500");
-        	g2.fillTriangle( startPos.x - sideVec.x, startPos.y - sideVec.y, 
-				endPos.x, endPos.y, 
-				startPos.x + sideVec.x, startPos.y + sideVec.y );
-		}
-		else 
-		{
-			g2.color = kha.Color.fromFloats(GenerationIndex/maxGenerations,0.7,GenerationIndex/maxGenerations,1);
-			sideVec.mult(2);
-        	g2.fillTriangle( endPos.x - sideVec.x, endPos.y - sideVec.y, 
-				startPos.x, startPos.y, 
-				endPos.x + sideVec.x, endPos.y + sideVec.y );
-		}
+	
+		g2.color = kha.Color.fromFloats(GenerationIndex/maxGenerations,0.7,GenerationIndex/maxGenerations,1);
+
+		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
+		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
+
+	}
+	
+	public function DrawSkeleton (framebuffer:Framebuffer): Void
+	{
+		var g2 = framebuffer.g2;
+		g2.color = kha.Color.Black;
+		g2.drawLine(startPos.x,startPos.y,endPos.x,endPos.y,2);
+		g2.drawLine(v1.x,v1.y,v4.x,v4.y,2);
+		g2.color = kha.Color.Red;
+		g2.drawLine(v2.x,v2.y,v3.x,v3.y,2);
 	}
 
 }
+

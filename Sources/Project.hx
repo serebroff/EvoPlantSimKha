@@ -83,7 +83,8 @@ class Project {
 		g2.begin(true, kha.Color.Cyan);
 		
 
-       //var fps = 1.0 / ( realTime - previousRealTime );
+    	Ecosystem.instance.Render(framebuffer);
+
 	   fps.update();
 
         g2.font = font;
@@ -92,7 +93,7 @@ class Project {
 		g2.drawString( "FPS " + Std.string(fps.getFPS()), 20, 20);
 
 		g2.drawString( "NUM " + Std.string(Ecosystem.instance.creatures[0].branches.length), 20, 40);
-		Ecosystem.instance.Render(framebuffer);
+
 		
 		g2.end();		
 	}

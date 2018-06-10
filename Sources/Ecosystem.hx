@@ -42,6 +42,14 @@ class Ecosystem
             f.Calculate(dt);
         }
 
+         for (f in food) {
+            for (creature in this.creatures)
+            {
+                f.CheckCollision(creature);
+            }
+        }
+
+
     }
 
     public function Render(framebuffer:kha.Framebuffer) {
@@ -49,12 +57,12 @@ class Ecosystem
 //        ctx.setTransform(1, 0, 0, 1, 0, 0);
         for (f in food)
         {
-                f.Draw(framebuffer);
+            f.Draw(framebuffer);
         }
 
         for (creature in creatures)
         {
-                creature.Draw(framebuffer);
+            creature.Draw(framebuffer);
         }
         
     }
