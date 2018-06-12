@@ -19,18 +19,22 @@ class Branch
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
 	public var timeToNewBranch: Float;
+
+
+	public var growthRate: Float;
+	public var energy: Float;
+
+
+	public var weight : Float;
+	public var ChildrenIndices : Array<Int>;
+
 	public var dir: Vec2;
-	public var lenght: Float;
+	public var length: Float;
 	public var widthStart: Float;
 	public var widthEnd: Float;
-	public var growthRate: Float;
-	public var growthPotential: Float;
-
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
-
-	public var ChildrenIndices : Array<Int>;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -44,16 +48,19 @@ class Branch
 		GenerationIndex = 0;
 		maxGenerations = 1;
 		timeToNewBranch = 0;
+
+		growthRate = 10;
+		energy = 1;
+		weight =1;
+		ChildrenIndices = [];
+
 		dir = new Vec2(0,-1);
-		lenght = 0;
+		length = 0;
 		widthStart = 0;
 		widthEnd = 0;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.2;
-		growthRate = 0.1;
-		growthPotential = 50;
-		ChildrenIndices = [];
+		Thikness= 0.1;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
@@ -74,10 +81,11 @@ class Branch
 
 
 	public function Calculate (plant:Creature, dt: Float): Void {
-		endPos.setFrom(dir);
-		endPos =startPos.add( endPos.mult(lenght));
 
-		widthStart= lenght*Thikness;
+		endPos.setFrom(dir);
+		endPos =startPos.add( endPos.mult(length));
+
+		widthStart= length*Thikness;
 		widthEnd=0;
 
 		var sideVec: Vec2 = new Vec2(0,0);

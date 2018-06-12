@@ -23,7 +23,7 @@ class Food {
     public function new() 
     {  
         pos = new Vec2(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
-        dir = new Vec2(1, 2);
+        dir = new Vec2(2, 1);
         dir.normalize();
         dir=dir.mult(Math.random() +1);
     }
@@ -43,8 +43,9 @@ class Food {
         var b: Branch;
         for (b in plant.branches)
         {
-            if (pos.PointInTriangle(b.v1,b.v2,b.v3) || pos.PointInTriangle(b.v2,b.v4,b.v3))
+            if (pos.PointInTriangle(b.v1,b.v2,b.v4) || pos.PointInTriangle(b.v2,b.v3,b.v4))
             {
+                b.energy+=3;
                 Renew();
             }
         }

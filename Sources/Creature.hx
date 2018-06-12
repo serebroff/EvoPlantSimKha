@@ -11,27 +11,47 @@ import kha.System;
 using Utils;
 using kha.graphics2.GraphicsExtension;
 
+class Gene {
+    var angle: Float;
+    var weight: Float;
+    var length: Float;
+
+    public function set( a: Float, w: Float, l: Float)
+    {
+
+        angle = a;
+        weight = w;
+        length = l;
+    }
+}
+typedef GeneGroup = Array<Gene>;
+
+/*class GeneGropup
+{
+    var GeneGroup: Array<Gene>;
+    var number;
+}*/
+
+
+
 class Creature
 {
-    public var NewBranchProbability = 0.25;  // per second
+    public var NewBranchProbability = 0.9;  // per second
 
-    public var NumOfNewBrenches :Int = 2;
-    public var NumOfNewBrenchesVariation :Int = 1;
-    public var NewBranchAngle :Float = Math.PI * 0.2;
-    public var NewBranchAngleVariation :Float = Math.PI * 0.3;
+    var DNA: Array<GeneGroup>;
 
-//    public var growthRate = 0.1;  // Percent per second
-    
+    public var NewBranchLength = 40;  // in pixels
+    public var NewBranchLengthVariation = 0;
+
+    public var NewBrachWeights :Array<Float> = [20,100,100,20];
+    public var NewBranchAngles :Array<Float> = [-70,-20,20,70];
 
     public var pos: Vec2;
-
-    public static var TrunckThickness: Float = 0.1;
 
     public var branches: Array<Branch>;
 
     // constants
     public static inline var THICKNESS = 0.1;
-    public static inline var NEW_BRANCH_CREATION_INTERVAL = 0.2;  // sec
     public static inline var MAX_GENERATIONS = 8;
 
  
@@ -45,47 +65,56 @@ class Creature
 
     public function new() 
     {
+    
         this.pos = new Vec2(System.windowWidth() * 0.5, System.windowHeight());
 
         var  firstBranch : Branch = new Branch();
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.lenght = 40;
+        firstBranch.length = 40;
+        firstBranch.energy = 40;
 
         this.branches = [];
         this.branches.push(firstBranch);
 
+        var TotalWeight: Float =0;
+        var w: Float=0;
+        for (w in NewBrachWeights) 
+        {
+            TotalWeight += w;
+        }
+
+        var i: Int =0; 
+        while (i < NewBrachWeights.length) 
+        {
+            NewBrachWeights[i++]/=TotalWeight;
+            
+        }
+
+        i =0;
+        while (i < NewBranchAngles.length) NewBranchAngles[i++] *= Math.PI / 180;
    
     }
 
     public function TrunkDivision(ParentBranchIndex: Int) {
-       
-        var n: Int = NumOfNewBrenches + Std.random(NumOfNewBrenchesVariation);
-        var DivisionAngle: Float = NewBranchAngle + Math.random()*NewBranchAngleVariation;
-        var angle: Float = - DivisionAngle / 2; 
-        var angleStep: Float =0;
 
-        if (n==1) {
-            angle=0;
-        }
-        else angleStep = DivisionAngle / (n-1);
-
+        var w:Float;
         var i:Int =0;
-
-        do 
+        for (w in NewBrachWeights)
         {
-            CreateNewBranch(ParentBranchIndex, angle);  
-            angle += angleStep;
+            if (w==0) { i++; continue; }
+            CreateNewBranch(ParentBranchIndex, NewBranchAngles[i], w); 
             i++;
         }
-        while (i<n);
+
     }
 
-    public function CreateNewBranch(ParentBranchIndex: Int, angle: Float) {
+    public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float) {
         var  newBranch : Branch = new Branch();
         var parent=branches[ParentBranchIndex];
         
         newBranch.startPos.setFrom(parent.endPos);
+        newBranch.weight = weight;
         newBranch.dir = parent.dir.rotate(angle);
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
@@ -106,33 +135,42 @@ class Creature
                 b.startPos.setFrom(branches[b.parentIndex].endPos);
             }
 
-            b.lenght += dt*b.growthRate*100;
-            //b.growthPotential -= dt*10;
+            
+            if (b.energy>0) {
+      
+            
+                if (b.ChildrenIndices.length>0)
+                {
+                    var i=0;
+                    var delta: Float  =  b.energy *dt;
+                    for (i in b.ChildrenIndices)
+                    {
+                        branches[i].energy += branches[i].weight * delta;
+                    }
+                    b.energy -= delta;   
+
+                    if (b.energy>0)
+                    {                   
+                        b.length += dt*b.growthRate*0.5;// *b.weight;
+                        b.energy -= dt*b.growthRate*0.5;
+                    }
+                } 
+                else   {
+                    b.length += dt*b.growthRate;// *b.weight;
+                    b.energy -= dt*b.growthRate;
+                }
+            }
 
             b.Calculate(this,dt);
-
-            if (b.GenerationIndex< MAX_GENERATIONS)
-            if (b.timeToNewBranch >= 0)
+            
+            if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
+            if (b.length > NewBranchLength)// * b.weight)
             {
-                 b.timeToNewBranch += dt;
-
-                if (b.timeToNewBranch> NEW_BRANCH_CREATION_INTERVAL)
-                 {
-                    b.timeToNewBranch-=NEW_BRANCH_CREATION_INTERVAL;
-                    if (Math.random()<= (NewBranchProbability* NEW_BRANCH_CREATION_INTERVAL) ) 
-                    {
-                        TrunkDivision(BranchIndex);
-                        b.timeToNewBranch = -1;
-                        b.growthRate*=0.5;
-                    }
-                }
+                TrunkDivision(BranchIndex);
             }
             
             BranchIndex++;
         }
-
- 
-
     }
 
     public function Draw (framebuffer:Framebuffer): Void {
