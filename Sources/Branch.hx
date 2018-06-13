@@ -35,6 +35,7 @@ class Branch
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
+	public var NewBranchLength: Float;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -61,6 +62,8 @@ class Branch
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
 		Thikness= 0.1;
+
+		NewBranchLength = 40;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);

@@ -11,10 +11,18 @@ import kha.System;
 using Utils;
 using kha.graphics2.GraphicsExtension;
 
-class Gene {
-    var angle: Float;
-    var weight: Float;
-    var length: Float;
+class Exon {
+    public var angle: Float;
+    public var weight: Float;
+    public var length: Float;
+
+    public function new( a: Float, w: Float, l: Float)
+    {
+
+        angle = a;
+        weight = w;
+        length = l;
+    }
 
     public function set( a: Float, w: Float, l: Float)
     {
@@ -24,13 +32,19 @@ class Gene {
         length = l;
     }
 }
-typedef GeneGroup = Array<Gene>;
 
-/*class GeneGropup
-{
-    var GeneGroup: Array<Gene>;
-    var number;
-}*/
+class Gene {
+    public var exons: Array<Exon>;
+    public function new( e0 : Exon, ?e1: Exon, ?e2: Exon, ?e3: Exon, ?e4: Exon   )
+    {
+        exons =[];
+        exons.push(e0);
+        if (e1 != null) exons.push(e1);
+        if (e2 != null) exons.push(e2);
+        if (e3 != null) exons.push(e3);
+        if (e4 != null) exons.push(e4);
+    }
+}
 
 
 
@@ -38,13 +52,11 @@ class Creature
 {
     public var NewBranchProbability = 0.9;  // per second
 
-    var DNA: Array<GeneGroup>;
+    var DNA: Array<Gene>;
 
     public var NewBranchLength = 40;  // in pixels
     public var NewBranchLengthVariation = 0;
 
-    public var NewBrachWeights :Array<Float> = [20,100,100,20];
-    public var NewBranchAngles :Array<Float> = [-70,-20,20,70];
 
     public var pos: Vec2;
 
@@ -63,9 +75,26 @@ class Creature
         else return -1;
     }
 
+
+
     public function new() 
     {
+
+        DNA = [];
+        var gene:Gene;
+        DNA.push( new Gene(
+            new Exon(-60,  30,  20), 
+            new Exon( 5,  100, 50),
+            new Exon( 60,  30,  20)
+            ) );
+        DNA.push( new Gene(
+            new Exon(-5,  50,  60)
+            //new Exon( 30,  0,  40)
+            ) );
+      
+        NormalizeDNA();
     
+
         this.pos = new Vec2(System.windowWidth() * 0.5, System.windowHeight());
 
         var  firstBranch : Branch = new Branch();
@@ -76,45 +105,49 @@ class Creature
 
         this.branches = [];
         this.branches.push(firstBranch);
-
-        var TotalWeight: Float =0;
-        var w: Float=0;
-        for (w in NewBrachWeights) 
-        {
-            TotalWeight += w;
-        }
-
-        var i: Int =0; 
-        while (i < NewBrachWeights.length) 
-        {
-            NewBrachWeights[i++]/=TotalWeight;
-            
-        }
-
-        i =0;
-        while (i < NewBranchAngles.length) NewBranchAngles[i++] *= Math.PI / 180;
    
+    }
+
+    public function NormalizeDNA() 
+    {
+        var gene : Gene;
+        var exon : Exon;
+        var totalWeight : Float;
+        var angle : Float;
+        for( gene in DNA)
+        {
+            totalWeight = 0;
+            for(exon in gene.exons)
+            {
+                totalWeight += exon.weight;
+                exon.angle *= Math.PI / 180;
+            }
+            totalWeight /= gene.exons.length;
+        }
     }
 
     public function TrunkDivision(ParentBranchIndex: Int) {
 
-        var w:Float;
         var i:Int =0;
-        for (w in NewBrachWeights)
+        var exon:Exon;
+        var geneIndex: Int = (branches[ParentBranchIndex].GenerationIndex % DNA.length);
+
+        for (exon in DNA[geneIndex].exons)
         {
-            if (w==0) { i++; continue; }
-            CreateNewBranch(ParentBranchIndex, NewBranchAngles[i], w); 
+            if (exon.weight ==0 ) { i++; continue; }
+            CreateNewBranch(ParentBranchIndex, exon.angle, exon.weight, exon.length); 
             i++;
         }
-
     }
 
-    public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float) {
+
+    public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float, length: Float) {
         var  newBranch : Branch = new Branch();
         var parent=branches[ParentBranchIndex];
         
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.weight = weight;
+        newBranch.NewBranchLength =  length;
         newBranch.dir = parent.dir.rotate(angle);
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
@@ -164,7 +197,7 @@ class Creature
             b.Calculate(this,dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
-            if (b.length > NewBranchLength)// * b.weight)
+            if (b.length > b.NewBranchLength)// * b.weight)
             {
                 TrunkDivision(BranchIndex);
             }
