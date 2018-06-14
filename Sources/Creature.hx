@@ -5,57 +5,19 @@
 package;
 
 import Branch;
+import DNA;
 import kha.Framebuffer;
 import kha.System;
 
 using Utils;
 using kha.graphics2.GraphicsExtension;
 
-class Exon {
-    public var angle: Float;
-    public var weight: Float;
-    public var length: Float;
-
-    public function new( a: Float, w: Float, l: Float)
-    {
-
-        angle = a;
-        weight = w;
-        length = l;
-    }
-
-    public function set( a: Float, w: Float, l: Float)
-    {
-
-        angle = a;
-        weight = w;
-        length = l;
-    }
-}
-
-class Gene {
-    public var exons: Array<Exon>;
-    public function new( e0 : Exon, ?e1: Exon, ?e2: Exon, ?e3: Exon, ?e4: Exon   )
-    {
-        exons =[];
-        exons.push(e0);
-        if (e1 != null) exons.push(e1);
-        if (e2 != null) exons.push(e2);
-        if (e3 != null) exons.push(e3);
-        if (e4 != null) exons.push(e4);
-    }
-}
-
-
 
 class Creature
 {
     public var NewBranchProbability = 0.9;  // per second
 
-    var DNA: Array<Gene>;
-
-    public var NewBranchLength = 40;  // in pixels
-    public var NewBranchLengthVariation = 0;
+    var dna: DNA;
 
 
     public var pos: Vec2;
@@ -79,21 +41,26 @@ class Creature
 
     public function new() 
     {
-
-        DNA = [];
-        var gene:Gene;
-        DNA.push( new Gene(
+        dna = new DNA(
+            new Gene(
             //         a,   w,   l 
-            new Exon(-60,  40,  10), 
-            new Exon( 5,  100, 20)
+            new Exon(-50,  50,  2), 
+            new Exon( 10,  100, 1)
 //            new Exon( 60,  10,  50)
-            ) );
-        DNA.push( new Gene(
+            ) ,
+        new Gene(
   //          new Exon(-60,  10,  50), 
-            new Exon( -5,  100, 20),
-            new Exon( 60,  40,  10)
+            new Exon( -10,  100, 2),
+            new Exon( 50,  50,  1)
+            ),
+        new Gene(
+            //         a,   w,   l 
+            new Exon(-70,  60,  2), 
+            new Exon( 0,  100, 1),
+            new Exon( 70,  60,  2)
             ) );      
-        NormalizeDNA();
+        
+        dna.NormalizeDNA();
     
 
         this.pos = new Vec2(System.windowWidth() * 0.5, System.windowHeight());
@@ -109,37 +76,14 @@ class Creature
    
     }
 
-    public function NormalizeDNA() 
-    {
-        var gene : Gene;
-        var exon : Exon;
-        var totalWeight : Float;
-        var angle : Float;
-        var i:Int;
-
-        for( gene in DNA)
-        {
-            totalWeight = 0;
-            for(exon in gene.exons)
-            {
-                totalWeight += exon.weight;
-            }
-            
-            for(exon in gene.exons)
-            {
-                exon.weight/= totalWeight;
-                exon.angle *= Math.PI / 180;
-            }
-        }
-    }
 
     public function TrunkDivision(ParentBranchIndex: Int) {
 
         var i:Int =0;
         var exon:Exon;
-        var geneIndex: Int = (branches[ParentBranchIndex].GenerationIndex % DNA.length);
+        var geneIndex: Int = (branches[ParentBranchIndex].GenerationIndex % dna.genes.length);
 
-        for (exon in DNA[geneIndex].exons)
+        for (exon in dna.genes[geneIndex].exons)
         {
             if (exon.weight ==0 ) { i++; continue; }
             CreateNewBranch(ParentBranchIndex, exon.angle, exon.weight, exon.length); 
@@ -182,7 +126,7 @@ class Creature
                 if (b.ChildrenIndices.length>0)
                 {
                     var i=0;
-                    var delta: Float  =  b.energy *dt;
+                    var delta: Float  =  b.energy *dt*3;
                     for (i in b.ChildrenIndices)
                     {
                         branches[i].energy += branches[i].weight * delta;
@@ -204,7 +148,7 @@ class Creature
             b.Calculate(this,dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
-            if (b.length > b.NewBranchLength)// * b.weight)
+            if (b.length > b.NewBranchLength)
             {
                 TrunkDivision(BranchIndex);
             }

@@ -61,7 +61,7 @@ class Branch
 		widthEnd = 0;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.1;
+		Thikness= 0.05;
 
 		NewBranchLength = 40;
 
@@ -114,8 +114,8 @@ class Branch
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
 		var g2 = framebuffer.g2;
-	
-		g2.color = kha.Color.fromFloats(GenerationIndex/maxGenerations,0.7,GenerationIndex/maxGenerations,1);
+		var f: Float =  (1 - GenerationIndex / maxGenerations) *0.7 ;
+		g2.color = kha.Color.fromFloats(f, 0.7, 0,1);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
