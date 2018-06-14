@@ -83,15 +83,16 @@ class Creature
         DNA = [];
         var gene:Gene;
         DNA.push( new Gene(
-            new Exon(-60,  30,  20), 
-            new Exon( 5,  100, 50),
-            new Exon( 60,  30,  20)
+            //         a,   w,   l 
+            new Exon(-60,  40,  10), 
+            new Exon( 5,  100, 20)
+//            new Exon( 60,  10,  50)
             ) );
         DNA.push( new Gene(
-            new Exon(-5,  50,  60)
-            //new Exon( 30,  0,  40)
-            ) );
-      
+  //          new Exon(-60,  10,  50), 
+            new Exon( -5,  100, 20),
+            new Exon( 60,  40,  10)
+            ) );      
         NormalizeDNA();
     
 
@@ -114,15 +115,21 @@ class Creature
         var exon : Exon;
         var totalWeight : Float;
         var angle : Float;
+        var i:Int;
+
         for( gene in DNA)
         {
             totalWeight = 0;
             for(exon in gene.exons)
             {
                 totalWeight += exon.weight;
+            }
+            
+            for(exon in gene.exons)
+            {
+                exon.weight/= totalWeight;
                 exon.angle *= Math.PI / 180;
             }
-            totalWeight /= gene.exons.length;
         }
     }
 
