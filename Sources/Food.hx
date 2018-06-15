@@ -5,7 +5,7 @@ import kha.System;
 
 using Utils;
 using kha.graphics2.GraphicsExtension;
-using Creature;
+using Plant;
 
 
 //------------------------------------- ------------------
@@ -19,6 +19,8 @@ class Food {
 
     public var pos: Vec2;
     public var dir: Vec2;
+
+//    public satatic var angle: Float;
 
     public function new() 
     {  
@@ -38,11 +40,12 @@ class Food {
         else this.pos.set(System.windowWidth() * Math.random(), 0);
     }
 
-    public function CheckCollision(plant: Creature)
+    public function CheckCollision(plant: Plant)
     {
         var b: Branch;
         for (b in plant.branches)
         {
+            //if (b.ChildrenIndices.length ==0)
             if (pos.PointInTriangle(b.v1,b.v2,b.v4) || pos.PointInTriangle(b.v2,b.v3,b.v4))
             {
                 b.energy+=3;

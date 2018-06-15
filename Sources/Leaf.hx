@@ -1,6 +1,7 @@
 
+
 //-------------------------------------------------------
-// class of branch
+// class of Leaf
 //-------------------------------------------------------
 
 
@@ -13,21 +14,13 @@ using Utils;
 using kha.graphics2.GraphicsExtension;
 using Plant;
 
-class Branch
+class Leaf
 {
 	public var parentIndex: Int;
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
-	public var timeToNewBranch: Float;
 
-
-	public var growthRate: Float;
 	public var energy: Float;
-
-
-	public var weight : Float;
-	public var ChildrenIndices : Array<Int>;
-	public var LeavesIndices : Array<Int>;
 
 	public var dir: Vec2;
 	public var length: Float;
@@ -49,18 +42,13 @@ class Branch
 		parentIndex = -1;
 		GenerationIndex = 0;
 		maxGenerations = 1;
-		timeToNewBranch = 0;
 
-		growthRate = 10;
 		energy = 1;
-		weight =1;
-		ChildrenIndices = [];
-		LeavesIndices = [];
 
 		dir = new Vec2(0,-1);
-		length = 0;
-		widthStart = 0;
-		widthEnd = 0;
+		length = 10;
+		widthStart = 5;
+		widthEnd = 20;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
 		Thikness= 0.07;
@@ -90,8 +78,8 @@ class Branch
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
-		widthStart= length*Thikness;
-		widthEnd=0;
+		widthStart= 20; //length*Thikness;
+		widthEnd=20;
 
 		var sideVec: Vec2 = new Vec2(0,0);
 		sideVec = dir.skew().mult(widthStart);
@@ -117,7 +105,7 @@ class Branch
 	{
 		var g2 = framebuffer.g2;
 		var f: Float =  (1 - GenerationIndex / maxGenerations) *0.7 ;
-		g2.color = kha.Color.fromFloats(f, 0.7, 0,1);
+		g2.color = kha.Color.Red;
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);

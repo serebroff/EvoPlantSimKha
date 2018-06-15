@@ -1,5 +1,5 @@
 //-------------------------------------------------------
-// Base class of living space for creatures
+// Base class of living space for plants
 //-------------------------------------------------------
 class Ecosystem 
 {
@@ -23,10 +23,10 @@ class Ecosystem
 
     public var food: Array<Food>;
 
-    public var creatures(default, null): Array<Creature>;
+    public var plants(default, null): Array<Plant>;
 
     private function new() {
-         this.creatures = [for (i in 0...MAX_CREATURES) new Creature()];
+         this.plants = [for (i in 0...MAX_CREATURES) new Plant()];
         this.food = [for (i in 0...MAX_FOOD) new Food()];
 
 
@@ -35,17 +35,17 @@ class Ecosystem
 
    public function Calculate(dt: Float): Void {
         
-        for (creature in this.creatures) {
-            creature.Calculate(dt);
+        for (plant in this.plants) {
+            plant.Calculate(dt);
         }
         for (f in food) {
             f.Calculate(dt);
         }
 
          for (f in food) {
-            for (creature in this.creatures)
+            for (plant in this.plants)
             {
-                f.CheckCollision(creature);
+                f.CheckCollision(plant);
             }
         }
 
@@ -60,9 +60,9 @@ class Ecosystem
             f.Draw(framebuffer);
         }
 
-        for (creature in creatures)
+        for (plant in plants)
         {
-            creature.Draw(framebuffer);
+            plant.Draw(framebuffer);
         }
         
     }

@@ -4,8 +4,7 @@ import kha.Framebuffer;
 import kha.Scheduler;
 import kha.System;
 import kha.Assets;
-import LevelData;
-//import FPS;
+
 
 using kha.graphics2.GraphicsExtension;
 
@@ -92,7 +91,7 @@ class Project {
         g2.color = kha.Color.Black;
 		g2.drawString( "FPS " + Std.string(fps.getFPS()), 20, 20);
 
-		g2.drawString( "NUM " + Std.string(Ecosystem.instance.creatures[0].branches.length), 20, 40);
+		g2.drawString( "NUM " + Std.string(Ecosystem.instance.plants[0].branches.length), 20, 40);
 
 		
 		g2.end();		
