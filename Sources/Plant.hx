@@ -27,7 +27,7 @@ class Plant
 
     // constants
     public static inline var THICKNESS = 0.1;
-    public static inline var MAX_GENERATIONS = 8;
+    public static inline var MAX_GENERATIONS = 20;
 
  
 
@@ -69,7 +69,7 @@ class Plant
 
         firstBranch.startPos.set(pos.x, pos.y);
         firstBranch.length = 40;
-        firstBranch.energy = 40;
+        firstBranch.energy = 140;
 
         this.branches = [];
         this.branches.push(firstBranch);
@@ -126,72 +126,15 @@ class Plant
         parent.LeavesIndices.push(leaves.length-1);
     }
 
-
-    public function Calculate(dt:Float) {
-
+    public function CalculateBranches(dt:Float) {
         var b: Branch;
-        var l: Leaf;
         var BranchIndex: Int = 0;
         var delta: Float =0;
 
         for (b in branches)
         {
-            if (b.parentIndex>=0)
-            {
-                b.startPos.setFrom(branches[b.parentIndex].endPos);
-            }
-
-            
-            if (b.energy>0) {
-      
-                if (b.parentIndex >=0)
-                {
-                    delta  =  b.energy * dt;
-                    branches[b.parentIndex].energy += delta;
-                    b.energy-=delta;
-                }
-
-                if (b.ChildrenIndices.length>0)
-                {
-                    var i=0;
-                    
-                    delta  =  b.energy * dt *10;
-
-                    for (i in b.ChildrenIndices)
-                    {
-                        branches[i].energy += branches[i].weight * delta;
-                    }
-                    b.energy -= delta;   
-                    
-                    delta  =  b.energy  *dt;
-                    if (b.energy>0)
-                    {                   
-                        b.length += delta; //dt*b.growthRate*0.5;// *b.weight;
-                        b.energy -= delta; //dt*b.growthRate*0.5;
-                    }
-                } 
-                else   {
-                    delta  =  b.energy *dt;
-                    b.length +=  delta; //dt*b.growthRate;// *b.weight;
-                    b.energy -=  delta; //dt*b.growthRate;
-                }
-           
-                 if (b.LeavesIndices.length>0)
-                {
-                    var i=0;
-                    
-                    delta  =  b.energy * dt ;
-
-                    for (i in b.LeavesIndices)
-                    {
-                        leaves[i].energy +=  delta;
-                        b.energy -= delta; 
-                    }
-
-                } 
-
-            }           
-
+            b.CalculateEnergy(this, dt);
+            b.CalculateGrowth(dt);
             b.Calculate(this,dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
@@ -203,6 +146,14 @@ class Plant
             BranchIndex++;
         }
 
+    }
+
+
+
+    public function CalculateLeaves(dt:Float) {
+
+        var l: Leaf;
+        var delta: Float;
         for (l in leaves)
         {
             delta = l.energy * dt;
@@ -220,6 +171,11 @@ class Plant
             l.Calculate(this,dt);
         }
 
+    }
+
+    public function Calculate(dt:Float) {
+        CalculateBranches(dt);
+        CalculateLeaves(dt);
     }
 
     public function Draw (framebuffer:Framebuffer): Void {

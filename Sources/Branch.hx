@@ -84,9 +84,63 @@ class Branch
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 	}
 
+	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
+	{
+		var delta: Float = energyPiece;
+		if (energy < energyPiece) delta=energy; 
+		b.energy += delta;
+		energy -= delta;
+	}
+
+	public function CalculateGrowth(dt: Float)
+	{
+		if (energy<0) return;
+        var delta: Float  =  energy *dt;
+        length +=  delta; //dt*b.growthRate;// *b.weight;
+        energy -=  delta; //dt*b.growthRate;
+	}
+
+	public function CalculateEnergy(plant:Plant, dt: Float)
+	{
+		if (energy<=0) return;
+		var delta: Float;
+		delta  =  energy * dt;
+
+        if (parentIndex >=0)
+        {
+            GiveEnergyToBranch(plant.branches[parentIndex], delta);
+        }
+
+        if (ChildrenIndices.length>0)
+        {
+            var i=0;
+                    
+            for (i in ChildrenIndices)
+            {
+                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta * 10);
+			}
+		}
+
+	    if (LeavesIndices.length>0)
+        {
+            var i=0;
+
+            for (i in LeavesIndices)
+            {
+                plant.leaves[i].energy +=  delta;
+                energy -= delta; 
+                
+
+            } 
+		}   
+	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
-
+		if (parentIndex>=0)
+		{
+			startPos.setFrom(plant.branches[parentIndex].endPos);
+		}
+		
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
