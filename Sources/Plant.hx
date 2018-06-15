@@ -75,6 +75,7 @@ class Plant
         this.branches.push(firstBranch);
 
         this.leaves = [];
+       // CreateNewLeaf(0,0);
    
     }
 
@@ -143,7 +144,13 @@ class Plant
             
             if (b.energy>0) {
       
-            
+                if (b.parentIndex >=0)
+                {
+                    delta  =  b.energy * dt;
+                    branches[b.parentIndex].energy += delta;
+                    b.energy-=delta;
+                }
+
                 if (b.ChildrenIndices.length>0)
                 {
                     var i=0;
@@ -168,7 +175,22 @@ class Plant
                     b.length +=  delta; //dt*b.growthRate;// *b.weight;
                     b.energy -=  delta; //dt*b.growthRate;
                 }
-            }
+           
+                 if (b.LeavesIndices.length>0)
+                {
+                    var i=0;
+                    
+                    delta  =  b.energy * dt ;
+
+                    for (i in b.LeavesIndices)
+                    {
+                        leaves[i].energy +=  delta;
+                        b.energy -= delta; 
+                    }
+
+                } 
+
+            }           
 
             b.Calculate(this,dt);
             
@@ -183,6 +205,18 @@ class Plant
 
         for (l in leaves)
         {
+            delta = l.energy * dt;
+            if (l.length < l.maxLength)
+            {
+                l.length +=  delta; 
+                l.energy -=  delta;
+            }
+            if (l.energy>0)
+            {
+                delta = l.energy * dt;
+                branches[l.parentIndex].energy += delta;
+                l.energy -= delta;
+            }
             l.Calculate(this,dt);
         }
 

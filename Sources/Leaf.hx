@@ -18,7 +18,7 @@ class Leaf
 {
 	public var parentIndex: Int;
 	public var GenerationIndex: Int;
-	public var maxGenerations: Int;
+	public var maxLength: Float;
 
 	public var energy: Float;
 
@@ -41,17 +41,17 @@ class Leaf
     {
 		parentIndex = -1;
 		GenerationIndex = 0;
-		maxGenerations = 1;
+		maxLength = 20;
 
 		energy = 1;
 
 		dir = new Vec2(0,-1);
-		length = 10;
-		widthStart = 5;
-		widthEnd = 20;
+		length = 1;
+		widthStart = 1;
+		widthEnd = 1;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.07;
+		Thikness= 0.5;
 
 		NewBranchLength = 40;
 
@@ -62,49 +62,32 @@ class Leaf
 	}
 
 
-	public function CalcEnd()
-	{
-		var sideVec: Vec2 = new Vec2(0,0);
-		sideVec = dir.skew().mult(widthEnd);
-		//v2 = v2.sub(sideVec);
-		//v3 = v3.add(sideVec)	;
-		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
-		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
-	}
-
 
 	public function Calculate (plant:Plant, dt: Float): Void {
 
+		startPos = plant.branches[parentIndex].endPos;
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
-		widthStart= 20; //length*Thikness;
-		widthEnd=20;
+		widthStart= 0;
+		widthEnd= length*Thikness;
 
 		var sideVec: Vec2 = new Vec2(0,0);
 		sideVec = dir.skew().mult(widthStart);
 
-		if (parentIndex>=0)
-		{
-			var ParentBanch= plant.branches[parentIndex];
-			if (ParentBanch.widthEnd<widthStart)  {
-				ParentBanch.widthEnd= widthStart;
-				ParentBanch.CalcEnd();
-			}
-		}
-
-
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
-		v2.set( endPos.x , endPos.y ); 
-		v3.set(endPos.x , endPos.y  );
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+
+		sideVec = dir.skew().mult(widthEnd);
+		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
+		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
+
 		
 	}
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
 		var g2 = framebuffer.g2;
-		var f: Float =  (1 - GenerationIndex / maxGenerations) *0.7 ;
 		g2.color = kha.Color.Red;
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
@@ -115,7 +98,7 @@ class Leaf
 	public function DrawSkeleton (framebuffer:Framebuffer): Void
 	{
 		var g2 = framebuffer.g2;
-		g2.color = kha.Color.Black;
+		g2.color = kha.Color.Green;
 		g2.drawLine(startPos.x,startPos.y,endPos.x,endPos.y,2);
 		g2.drawLine(v1.x,v1.y,v4.x,v4.y,2);
 		g2.color = kha.Color.Red;
