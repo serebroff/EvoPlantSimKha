@@ -47,21 +47,22 @@ class Food {
         var l: Leaf;
         for (l in plant.leaves)
         {
-            if (pos.PointInTriangle(l.v1,l.v2,l.v4) || pos.PointInTriangle(l.v2,l.v3,l.v4))
+            //if (pos.PointInTriangle(l.v1,l.v2,l.v4) || pos.PointInTriangle(l.v2,l.v3,l.v4))
+            if (pos.PointInTriangle(l.v2,l.v3,l.v4))
             {
                 l.energy+=6;
                 Renew();
             }
         }
 
-        for (b in plant.branches)
+/*        for (b in plant.branches)
         {
             if (pos.PointInTriangle(b.v1,b.v2,b.v4) || pos.PointInTriangle(b.v2,b.v3,b.v4))
             {
                 b.energy+=1;
                 Renew();
             }
-        }
+        }*/
     }
 
 

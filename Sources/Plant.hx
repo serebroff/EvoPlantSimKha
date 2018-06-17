@@ -80,16 +80,21 @@ class Plant
     }
 
 
-    public function TrunkDivision(ParentBranchIndex: Int) {
+    public function TrunkDivision(BranchIndexToDivide: Int) {
 
         var i:Int =0;
         var exon:Exon;
-        var geneIndex: Int = (branches[ParentBranchIndex].GenerationIndex % dna.genes.length);
+        var geneIndex: Int = (branches[BranchIndexToDivide].GenerationIndex % dna.genes.length);
+
+/*        if (BranchIndexToDivide>0)
+        {
+            leaves[branches[BranchIndexToDivide].LeavesIndices[0]].dead = true;
+        }*/
 
         for (exon in dna.genes[geneIndex].exons)
         {
             if (exon.weight ==0 ) { i++; continue; }
-            CreateNewBranch(ParentBranchIndex, exon.angle, exon.weight, exon.length); 
+            CreateNewBranch(BranchIndexToDivide, exon.angle, exon.weight, exon.length); 
             i++;
         }
     }
@@ -156,18 +161,15 @@ class Plant
         var delta: Float;
         for (l in leaves)
         {
+            if (l.dead) continue;
+
             delta = l.energy * dt;
             if (l.length < l.maxLength)
             {
-                l.length +=  delta; 
-                l.energy -=  delta;
+                l.CalculateGrowth(dt);
             }
-            if (l.energy>0)
-            {
-                delta = l.energy * dt;
-                branches[l.parentIndex].energy += delta;
-                l.energy -= delta;
-            }
+
+            l.GiveEnergyToBranch(branches[l.parentIndex], delta);
             l.Calculate(this,dt);
         }
 

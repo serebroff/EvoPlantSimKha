@@ -74,15 +74,7 @@ class Branch
 	}
 
 
-	public function CalcEnd()
-	{
-		var sideVec: Vec2 = new Vec2(0,0);
-		sideVec = dir.skew().mult(widthEnd);
-		//v2 = v2.sub(sideVec);
-		//v3 = v3.add(sideVec)	;
-		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
-		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
-	}
+
 
 	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
 	{
@@ -92,17 +84,27 @@ class Branch
 		energy -= delta;
 	}
 
+	public function GiveEnergyToLeaf(l: Leaf, energyPiece:Float)
+	{
+		var delta: Float = energyPiece;
+		if (energy < energyPiece) delta=energy; 
+		l.energy += delta;
+		energy -= delta;
+	}
+
 	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
         var delta: Float  =  energy *dt;
-        length +=  delta; //dt*b.growthRate;// *b.weight;
-        energy -=  delta; //dt*b.growthRate;
+		if (delta>energy) delta = energy;
+        length +=  delta; 
+        energy -=  delta; 
 	}
 
 	public function CalculateEnergy(plant:Plant, dt: Float)
 	{
 		if (energy<=0) return;
+
 		var delta: Float;
 		delta  =  energy * dt;
 
@@ -117,7 +119,7 @@ class Branch
                     
             for (i in ChildrenIndices)
             {
-                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta * 10);
+                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta *3 );
 			}
 		}
 
@@ -127,12 +129,19 @@ class Branch
 
             for (i in LeavesIndices)
             {
-                plant.leaves[i].energy +=  delta;
-                energy -= delta; 
-                
-
+                GiveEnergyToLeaf(plant.leaves[i],  delta*3);
             } 
 		}   
+	}
+
+	public function CalcEnd()
+	{
+		var sideVec: Vec2 = new Vec2(0,0);
+		sideVec = dir.skew().mult(widthEnd);
+		//v2 = v2.sub(sideVec);
+		//v3 = v3.add(sideVec)	;
+		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
+		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
@@ -140,7 +149,7 @@ class Branch
 		{
 			startPos.setFrom(plant.branches[parentIndex].endPos);
 		}
-		
+
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 

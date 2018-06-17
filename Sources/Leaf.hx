@@ -30,6 +30,7 @@ class Leaf
 	public var endPos : Vec2;
 	public var Thikness : Float;
 	public var NewBranchLength: Float;
+	public var dead: Bool;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -54,6 +55,7 @@ class Leaf
 		Thikness= 0.5;
 
 		NewBranchLength = 40;
+		dead = false;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
@@ -61,7 +63,22 @@ class Leaf
 		v4= new Vec2(0,0);
 	}
 
+	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
+	{
+		var delta: Float = energyPiece;
+		if (energy < energyPiece) delta=energy; 
+		b.energy += delta;
+		energy -= delta;
+	}
 
+	public function CalculateGrowth(dt: Float)
+	{
+		if (energy<0) return;
+        var delta: Float  =  energy *dt;
+		if (delta>energy) delta = energy;
+        length +=  delta; 
+        energy -=  delta; 
+	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
 
@@ -87,6 +104,8 @@ class Leaf
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
+		if (dead) return;
+
 		var g2 = framebuffer.g2;
 		g2.color = kha.Color.Red;
 
