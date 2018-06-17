@@ -10,9 +10,9 @@ using Leaf;
 
 
 //------------------------------------- ------------------
-// food class 
+// foton class 
 //-------------------------------------------------------
-class Food {
+class Foton {
 
         // constants
     public static inline var SPEED = 400;  // pixel / sec

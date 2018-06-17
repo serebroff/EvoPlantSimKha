@@ -21,13 +21,13 @@ class Ecosystem
         return _instance;
     }
 
-    public var food: Array<Food>;
+    public var foton: Array<Foton>;
 
     public var plants(default, null): Array<Plant>;
 
     private function new() {
          this.plants = [for (i in 0...MAX_CREATURES) new Plant()];
-        this.food = [for (i in 0...MAX_FOOD) new Food()];
+        this.foton = [for (i in 0...MAX_FOOD) new Foton()];
 
 
     }
@@ -38,11 +38,11 @@ class Ecosystem
         for (plant in this.plants) {
             plant.Calculate(dt);
         }
-        for (f in food) {
+        for (f in foton) {
             f.Calculate(dt);
         }
 
-         for (f in food) {
+         for (f in foton) {
             for (plant in this.plants)
             {
                 f.CheckCollision(plant);
@@ -55,7 +55,7 @@ class Ecosystem
     public function Render(framebuffer:kha.Framebuffer) {
 
 //        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        for (f in food)
+        for (f in foton)
         {
             f.Draw(framebuffer);
         }
