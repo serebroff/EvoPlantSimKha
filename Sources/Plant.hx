@@ -44,20 +44,20 @@ class Plant
         dna = new DNA(
             new Gene(
             //         a,   w,   l 
-            new Exon(-50,  50,  20), 
-            new Exon( 10,  100, 10)
+            new Exon(-50,  50,  80), 
+            new Exon( 10,  150, 130)
 //            new Exon( 60,  10,  50)
             ) ,
         new Gene(
-  //          new Exon(-60,  10,  50), 
-            new Exon( -10,  100, 20),
-            new Exon( 50,  50,  10)
-            ),
+//          new Exon(-60,  10,  50), 
+            new Exon( -10,  100, 140),
+            new Exon( 55,  50,  80)
+        ),
         new Gene(
             //         a,   w,   l 
-            new Exon(-70,  60,  20), 
-            new Exon( 0,  100, 10),
-            new Exon( 70,  60,  20)
+            new Exon(-70,  40,  90), 
+            new Exon( 0,  100, 150),
+            new Exon( 70,  40,  90)
             ) );      
         
         dna.NormalizeDNA();
@@ -106,7 +106,7 @@ class Plant
         
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.weight = weight;
-        newBranch.NewBranchLength =  length;
+        newBranch.NewBranchLength =  length;// * weight;
         newBranch.dir = parent.dir.rotate(angle);
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
@@ -138,8 +138,8 @@ class Plant
 
         for (b in branches)
         {
-            b.CalculateEnergy(this, dt);
             b.CalculateGrowth(dt);
+            b.CalculateEnergy(this, dt);
             b.Calculate(this,dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)

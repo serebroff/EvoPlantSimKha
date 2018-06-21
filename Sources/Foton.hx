@@ -26,7 +26,7 @@ class Foton {
     public function new() 
     {  
         pos = new Vec2(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
-        dir = new Vec2(2, 1);
+        dir = new Vec2(0, 1);
         dir.normalize();
         dir=dir.mult(Math.random() +1);
     }

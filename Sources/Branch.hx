@@ -58,14 +58,14 @@ class Branch
 		LeavesIndices = [];
 
 		dir = new Vec2(0,-1);
-		length = 0;
-		widthStart = 0;
-		widthEnd = 0;
+		length = 1;
+		widthStart = 1;
+		widthEnd = 1;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.07;
+		Thikness= 0.03;
 
-		NewBranchLength = 40;
+		NewBranchLength = 140;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
@@ -95,10 +95,16 @@ class Branch
 	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
+		if (length > NewBranchLength) return;
+
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
-        length +=  delta; 
-        energy -=  delta; 
+
+		length +=  delta ; 
+		widthStart= length*Thikness;
+		widthEnd=0;
+
+		energy -=  delta; 
 	}
 
 	public function CalculateEnergy(plant:Plant, dt: Float)
@@ -119,7 +125,7 @@ class Branch
                     
             for (i in ChildrenIndices)
             {
-                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta *3 );
+                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta*2 );
 			}
 		}
 
@@ -134,15 +140,6 @@ class Branch
 		}   
 	}
 
-	public function CalcEnd()
-	{
-		var sideVec: Vec2 = new Vec2(0,0);
-		sideVec = dir.skew().mult(widthEnd);
-		//v2 = v2.sub(sideVec);
-		//v3 = v3.add(sideVec)	;
-		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
-		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
-	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
 		if (parentIndex>=0)
@@ -153,26 +150,38 @@ class Branch
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
-		widthStart= length*Thikness;
-		widthEnd=0;
+		
+		if (ChildrenIndices.length >0)
+		{
+			var wMax: Float=0;
+			var w: Float =0;
+			var c: Int = 0;
+			while (c <ChildrenIndices.length)
+			{
+				w = plant.branches[ChildrenIndices[c]].widthStart;
+				if (wMax < w) 
+				{
+					wMax =  w;
+				}
+				c++;
+			}
+			widthEnd = wMax;
+			widthStart = length* Thikness + widthEnd;
+		}
 
 		var sideVec: Vec2 = new Vec2(0,0);
 		sideVec = dir.skew().mult(widthStart);
 
-		if (parentIndex>=0)
-		{
-			var ParentBanch= plant.branches[parentIndex];
-			if (ParentBanch.widthEnd<widthStart)  {
-				ParentBanch.widthEnd= widthStart;
-				ParentBanch.CalcEnd();
-			}
-		}
-
-
+		// start points
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
-		v2.set( endPos.x , endPos.y ); 
-		v3.set(endPos.x , endPos.y  );
+//		v2.set( endPos.x , endPos.y ); 
+//		v3.set(endPos.x , endPos.y  );
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+
+		// end points
+		sideVec = dir.skew().mult(widthEnd);
+		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
+		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 		
 	}
 	
