@@ -96,14 +96,15 @@ class Leaf
 	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
+
+		startPos = plant.branches[parentIndex].endPos;
+
 		if (dead)
 		{
 			deathtime += dt;
+			startPos.y += deathtime *100;
+			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
-
-		startPos = plant.branches[parentIndex].endPos;
-		startPos.y += deathtime *100;
-		if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));

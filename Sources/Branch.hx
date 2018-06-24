@@ -37,6 +37,8 @@ class Branch
 	public var endPos : Vec2;
 	public var Thikness : Float;
 	public var NewBranchLength: Float;
+	public var dead: Bool;
+	public var deathtime: Float;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -66,6 +68,8 @@ class Branch
 		Thikness= 0.03;
 
 		NewBranchLength = 140;
+		dead = false;
+		deathtime =0;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
@@ -116,8 +120,11 @@ class Branch
 		if (length < NewBranchLength) return;
 		if (energy<0 ) return;
 		
-		energy -= 0.001* (widthStart + widthEnd) * length * dt;
-//		if (energy <0) energy =0;
+		energy -= 0.002* (widthStart + widthEnd) * length * dt;
+		if (energy < 0) 
+		{
+			dead = true;
+		}
 	}
 
 	public function CalculateEnergy(plant:Plant, dt: Float)
@@ -142,7 +149,7 @@ class Branch
 				if (b.length < b.NewBranchLength)
 				{
                 	GiveEnergyToBranch(b, b.weight * delta *2 );
-				} else  GiveEnergyToBranch(b, b.weight * delta * 1.5 );
+				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );
 			}
 		}
 
@@ -166,6 +173,16 @@ class Branch
 		{
 			startPos.setFrom(plant.branches[parentIndex].endPos);
 		}
+		
+		if (dead)
+		{
+			deathtime += dt;
+			startPos.y += deathtime *100;
+			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
+		}
+		
+		
+
 
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
@@ -212,6 +229,7 @@ class Branch
 		if (c<0) c= 0;
 		if (c>1) c =1;
 		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
+		if (dead) g2.color = kha.Color.fromFloats(0, 0, 1, 1);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);

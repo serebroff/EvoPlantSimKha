@@ -26,7 +26,7 @@ class Foton {
     public function new() 
     {  
         pos = new Vec2(System.windowWidth() * Math.random(), System.windowHeight() * Math.random());
-        dir = new Vec2(0, 1);
+        dir = new Vec2(1, 1);
         dir.normalize();
         dir=dir.mult(Math.random() +1);
     }
@@ -48,6 +48,7 @@ class Foton {
         for (l in plant.leaves)
         {
             //if (pos.PointInTriangle(l.v1,l.v2,l.v4) || pos.PointInTriangle(l.v2,l.v3,l.v4))
+            if (l.dead) continue;
             if (pos.PointInTriangle(l.v2,l.v3,l.v4))
             {
                 l.energy+=6;

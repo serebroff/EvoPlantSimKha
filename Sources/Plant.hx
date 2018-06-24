@@ -133,14 +133,19 @@ class Plant
 
     public function CalculateBranches(dt:Float) {
         var b: Branch;
-        var BranchIndex: Int = 0;
+        var BranchIndex: Int = -1;
         var delta: Float =0;
 
         for (b in branches)
         {
+            BranchIndex++;
+
+            b.Calculate(this,dt);
+
+            if (b.dead) continue;
+
             b.CalculateGrowth(dt);
             b.CalculateEnergy(this, dt);
-            b.Calculate(this,dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
             if (b.length > b.NewBranchLength)
@@ -148,7 +153,6 @@ class Plant
                 TrunkDivision(BranchIndex);
             }
             
-            BranchIndex++;
         }
 
     }
@@ -161,14 +165,14 @@ class Plant
         var delta: Float;
         for (l in leaves)
         {
-            if (!l.dead) 
-            {
-                delta = l.energy * dt;
-                l.CalculateGrowth(dt);
-                l.ConsumeEnergy(dt);
-                l.GiveEnergyToBranch(branches[l.parentIndex], delta);
-            }
             l.Calculate(this,dt);
+            if (l.dead) continue;
+            
+            delta = l.energy * dt;
+            l.CalculateGrowth(dt);
+            l.ConsumeEnergy(dt);
+            l.GiveEnergyToBranch(branches[l.parentIndex], delta);        
+
         }
 
     }
