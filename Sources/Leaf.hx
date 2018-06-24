@@ -31,6 +31,7 @@ class Leaf
 	public var Thikness : Float;
 	public var NewBranchLength: Float;
 	public var dead: Bool;
+	public var deathtime: Float;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -56,11 +57,24 @@ class Leaf
 
 		NewBranchLength = 40;
 		dead = false;
+		deathtime =0;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
 		v3= new Vec2(0,0);
 		v4= new Vec2(0,0);
+	}
+
+	public function ConsumeEnergy( dt: Float)
+	{
+		if (length < maxLength) return;
+		//if (energy<0 ) return;
+		
+		energy -= 0.001* (widthStart + widthEnd) * length * dt;
+		if (energy < 0) 
+		{
+			dead = true;
+		}
 	}
 
 	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
@@ -74,6 +88,7 @@ class Leaf
 	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
+		if (length >= maxLength) return;
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
         length +=  delta; 
@@ -81,8 +96,15 @@ class Leaf
 	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
+		if (dead)
+		{
+			deathtime += dt;
+		}
 
 		startPos = plant.branches[parentIndex].endPos;
+		startPos.y += deathtime *100;
+		if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
+
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
@@ -104,12 +126,13 @@ class Leaf
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
-		if (dead) return;
-
 		var g2 = framebuffer.g2;
-		g2.color = kha.Color.Red;
-
-		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
+		var c: Float = energy /36;
+		if (c<0) c= 0;
+		if (c>1) c =1;
+		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
+		if (dead) g2.color = kha.Color.fromFloats(0, 0, 1, 1);
+	//	g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
 
 	}

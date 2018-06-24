@@ -161,15 +161,13 @@ class Plant
         var delta: Float;
         for (l in leaves)
         {
-            if (l.dead) continue;
-
-            delta = l.energy * dt;
-            if (l.length < l.maxLength)
+            if (!l.dead) 
             {
+                delta = l.energy * dt;
                 l.CalculateGrowth(dt);
+                l.ConsumeEnergy(dt);
+                l.GiveEnergyToBranch(branches[l.parentIndex], delta);
             }
-
-            l.GiveEnergyToBranch(branches[l.parentIndex], delta);
             l.Calculate(this,dt);
         }
 
@@ -186,14 +184,15 @@ class Plant
         {
             b.Draw(framebuffer);
         }
-        for( b in branches)
+   /*     for( b in branches)
         {
             b.DrawSkeleton(framebuffer);
-        }
+        }*/
         
         for( l in leaves)
         {
             l.Draw(framebuffer);
+           // l.DrawSkeleton(framebuffer);
         }
 
     }

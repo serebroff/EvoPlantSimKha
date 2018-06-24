@@ -78,6 +78,7 @@ class Branch
 
 	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
 	{
+		if (energy<0) return;
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		b.energy += delta;
@@ -86,6 +87,8 @@ class Branch
 
 	public function GiveEnergyToLeaf(l: Leaf, energyPiece:Float)
 	{
+		if (energy<0) return;
+		if (l.length >= l.maxLength) return;
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		l.energy += delta;
@@ -107,6 +110,16 @@ class Branch
 		energy -=  delta; 
 	}
 
+
+	public function ConsumeEnergy( dt: Float)
+	{
+		if (length < NewBranchLength) return;
+		if (energy<0 ) return;
+		
+		energy -= 0.001* (widthStart + widthEnd) * length * dt;
+//		if (energy <0) energy =0;
+	}
+
 	public function CalculateEnergy(plant:Plant, dt: Float)
 	{
 		if (energy<=0) return;
@@ -125,7 +138,11 @@ class Branch
                     
             for (i in ChildrenIndices)
             {
-                GiveEnergyToBranch(plant.branches[i], plant.branches[i].weight * delta*2 );
+				var b:Branch = plant.branches[i];
+				if (b.length < b.NewBranchLength)
+				{
+                	GiveEnergyToBranch(b, b.weight * delta *2 );
+				} else  GiveEnergyToBranch(b, b.weight * delta * 1.5 );
 			}
 		}
 
@@ -137,7 +154,10 @@ class Branch
             {
                 GiveEnergyToLeaf(plant.leaves[i],  delta*3);
             } 
-		}   
+		}  
+
+	    ConsumeEnergy(dt);
+		
 	}
 
 
@@ -188,8 +208,10 @@ class Branch
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
 		var g2 = framebuffer.g2;
-		var f: Float =  (1 - GenerationIndex / maxGenerations) *0.7 ;
-		g2.color = kha.Color.fromFloats(f, 0.7, 0,1);
+		var c: Float = energy /36;
+		if (c<0) c= 0;
+		if (c>1) c =1;
+		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
