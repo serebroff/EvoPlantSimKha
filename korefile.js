@@ -1,6 +1,6 @@
 let fs = require('fs');
 let path = require('path');
-let project = new Project('New Project');
+let project = new Project('EvoPlantSim');
 project.targetOptions = {"html5":{},"flash":{},"android":{},"ios":{}};
 project.setDebugDir('build/windows');
 await project.addProject('build/windows-build');
