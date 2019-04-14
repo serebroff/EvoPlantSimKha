@@ -21,11 +21,16 @@ class Ecosystem
         return _instance;
     }
 
+    public var ecosystem_time: Float;
+    public var sun_angle: Float;
+
     public var foton: Array<Foton>;
 
     public var plants(default, null): Array<Plant>;
 
     private function new() {
+        ecosystem_time =0;
+        sun_angle = 0;
          this.plants = [for (i in 0...MAX_CREATURES) new Plant()];
         this.foton = [for (i in 0...MAX_FOOD) new Foton()];
 
@@ -38,17 +43,21 @@ class Ecosystem
         for (plant in this.plants) {
             plant.Calculate(dt);
         }
+
         for (f in foton) {
             f.Calculate(dt);
         }
 
-         for (f in foton) {
-            for (plant in this.plants)
+         
+         for (plant in this.plants)
+         {
+            for (f in foton)
             {
-                f.CheckCollision(plant);
+                if (f.CheckCollision(plant)) break;
             }
         }
-
+        ecosystem_time += dt;
+        sun_angle = Math.sin(ecosystem_time * 0.1); 
 
     }
 

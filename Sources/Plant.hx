@@ -44,21 +44,23 @@ class Plant
         dna = new DNA(
             new Gene(
             //         a,   w,   l 
-            new Exon(-50,  50,  80), 
-            new Exon( 10,  150, 130)
-//            new Exon( 60,  10,  50)
-            ) ,
+            new Exon(-30,  10,  50)//, 
+            //new Exon( 0,  30, 30) ,
+           // new Exon( 30,  1,  5)
+            ) 
+            ,
         new Gene(
 //          new Exon(-60,  10,  50), 
-            new Exon( -10,  100, 140),
-            new Exon( 55,  50,  80)
-        ),
+//            new Exon( -30,  50, 80),
+            new Exon( 30,  10,  50)
+        )
+/*        ,
         new Gene(
             //         a,   w,   l 
             new Exon(-70,  40,  90), 
-            new Exon( 0,  100, 150),
+            new Exon( 0,  50, 150),
             new Exon( 70,  40,  90)
-            ) );      
+            ) */);      
         
         dna.NormalizeDNA();
     
@@ -80,16 +82,12 @@ class Plant
     }
 
 
+
     public function TrunkDivision(BranchIndexToDivide: Int) {
 
         var i:Int =0;
         var exon:Exon;
         var geneIndex: Int = (branches[BranchIndexToDivide].GenerationIndex % dna.genes.length);
-
-/*        if (BranchIndexToDivide>0)
-        {
-            leaves[branches[BranchIndexToDivide].LeavesIndices[0]].dead = true;
-        }*/
 
         for (exon in dna.genes[geneIndex].exons)
         {

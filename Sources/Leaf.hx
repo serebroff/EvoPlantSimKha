@@ -96,7 +96,8 @@ class Leaf
 	}
 
 	public function Calculate (plant:Plant, dt: Float): Void {
-
+		
+		//energy+= dt*13.5;
 		startPos = plant.branches[parentIndex].endPos;
 
 		if (dead)

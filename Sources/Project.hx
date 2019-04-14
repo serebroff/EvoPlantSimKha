@@ -13,7 +13,6 @@ class Project {
     public var realTime:Float;
 	public var tickperframe:Float;
 
-	public static var ecosystem:Ecosystem;
 	public static var fps:FPS;
 
 	var font: kha.Font;
@@ -79,7 +78,8 @@ class Project {
 
 
 		var g2 = framebuffer.g2;
-		g2.begin(true, kha.Color.Cyan);
+		var r:Float =  0.2 * Math.abs(Ecosystem.instance.sun_angle ) ;
+		g2.begin(true, kha.Color.fromFloats( 0.5+r, 0.6, 1, 1));
 		
 
     	Ecosystem.instance.Render(framebuffer);
