@@ -17,6 +17,12 @@ class Utils {
 		return clone;
 	}
 
+	public static function crossProduct(vec2:kha.math.Vector2, p:kha.math.Vector2) : Float
+	{
+		return vec2.x * p.y - vec2.y * p.x;
+		//return (vec1.x * vec2.y - vec1.y * vec2.x); //vec1.x*vec2.y –  vec1.y*vec2.x;
+	}
+
 	public static function lengthSquared(vec2:kha.math.Vector2):Float
 	{
 		return vec2.x*vec2.x + vec2.y*vec2.y;
@@ -60,5 +66,35 @@ class Utils {
 	    return ((b1 == b2) && (b2 == b3));
 	}
 
+	public static function GetRayToLineSegmentIntersection(rayOrigin:Vec2, rayDirection:Vec2, point1: Vec2,  point2: Vec2): Float
+    {
+        var v1 : Vec2 = rayOrigin.sub( point1 );
+        var v2 : Vec2 = point2.sub( point1);
+        var v3: Vec2 = new Vec2(-rayDirection.y, rayDirection.x);
+
+
+        var dot: Float = v2.dot( v3);
+        if (Math.abs(dot) < 0.000001)
+            return 0;
+
+        var t1: Float = crossProduct( v2, v1) / dot;
+        var t2: Float = v1.dot( v3) / dot;
+
+        if (t1 >= 0.0 && (t2 >= 0.0 && t2 <= 1.0))
+            return t1;
+
+        return 0;
+    }
+
+    public static function rndsign() : Int
+    {
+        if (Math.random() <= 0.5) return 1;
+        else return -1;
+    }
+
 }
+
+
+
+
 

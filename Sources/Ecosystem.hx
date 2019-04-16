@@ -25,12 +25,16 @@ class Ecosystem
     public var sun_angle: Float;
 
     public var foton: Array<Foton>;
+    public var sunlight : Sunlight;
 
     public var plants(default, null): Array<Plant>;
 
     private function new() {
         ecosystem_time =0;
         sun_angle = 0;
+        
+        sunlight = new Sunlight();
+
          this.plants = [for (i in 0...MAX_CREATURES) new Plant()];
         this.foton = [for (i in 0...MAX_FOOD) new Foton()];
 
@@ -40,6 +44,8 @@ class Ecosystem
 
    public function Calculate(dt: Float): Void {
         
+        sunlight.Calculate(dt);
+
         for (plant in this.plants) {
             plant.Calculate(dt);
         }
@@ -48,14 +54,19 @@ class Ecosystem
             f.Calculate(dt);
         }
 
-         
+
          for (plant in this.plants)
+         {
+            if (sunlight.CheckCollision(plant)) break;
+         }
+
+/*         for (plant in this.plants)
          {
             for (f in foton)
             {
                 if (f.CheckCollision(plant)) break;
             }
-        }
+         }*/
         ecosystem_time += dt;
         sun_angle = Math.sin(ecosystem_time * 0.1); 
 
@@ -63,16 +74,17 @@ class Ecosystem
 
     public function Render(framebuffer:kha.Framebuffer) {
 
-//        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        for (f in foton)
+/*        for (f in foton)
         {
             f.Draw(framebuffer);
-        }
+        }*/
 
         for (plant in plants)
         {
             plant.Draw(framebuffer);
         }
+
+        sunlight.Draw(framebuffer);
         
     }
 }

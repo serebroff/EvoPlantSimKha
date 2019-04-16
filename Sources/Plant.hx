@@ -10,6 +10,7 @@ import DNA;
 import kha.Framebuffer;
 import kha.System;
 
+using Project;
 using Utils;
 using kha.graphics2.GraphicsExtension;
 
@@ -31,28 +32,21 @@ class Plant
 
  
 
-    function rndsign() : Int
-    {
-        if (Math.random() <= 0.5) return 1;
-        else return -1;
-    }
-
-
-
     public function new() 
     {
+
         dna = new DNA(
             new Gene(
             //         a,   w,   l 
-            new Exon(-30,  10,  50)//, 
-            //new Exon( 0,  30, 30) ,
-           // new Exon( 30,  1,  5)
+            new Exon(-30,  10,  30), //, 
+            new Exon( 0,  30, 50) ,
+            new Exon( 30,  10,  30)
             ) 
             ,
         new Gene(
 //          new Exon(-60,  10,  50), 
 //            new Exon( -30,  50, 80),
-            new Exon( 30,  10,  50)
+            new Exon( 0,  10,  20)
         )
 /*        ,
         new Gene(
@@ -130,6 +124,7 @@ class Plant
     }
 
     public function CalculateBranches(dt:Float) {
+        
         var b: Branch;
         var BranchIndex: Int = -1;
         var delta: Float =0;
