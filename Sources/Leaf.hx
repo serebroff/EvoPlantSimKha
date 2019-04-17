@@ -99,15 +99,16 @@ class Leaf
 
 	public function Calculate (plant:Plant, dt: Float): Void {
 		
-		startPos = plant.branches[parentIndex].endPos;
-
 		if (dead)
 		{
 			deathtime += dt;
 			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
-			startPos.y += deathtime *100;
+			startPos.y += deathtime *5;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
+		else startPos.setFrom( plant.branches[parentIndex].endPos);
+
+
 
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
@@ -134,10 +135,14 @@ class Leaf
 
 		var g2 = framebuffer.g2;
 		var c: Float = energy /36;
+		var r: Float = 0;
 		if (c<0) c= 0;
 		if (c>1) c =1;
-		g2.color = kha.Color.fromFloats(0, c, 0, 1);
-		if (dead) g2.color = kha.Color.fromFloats(0, 0, 1, 1);
+		r = 0.5 - 0.5*c;
+		if (length<maxLength) r=0;
+
+		g2.color = kha.Color.fromFloats(r, c, 0, 1);
+		if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
 	//	g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
 

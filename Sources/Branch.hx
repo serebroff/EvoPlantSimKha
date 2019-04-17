@@ -179,19 +179,16 @@ class Branch
 
 
 	public function Calculate (plant:Plant, dt: Float): Void {
-		if (parentIndex>=0)
-		{
-			startPos.setFrom(plant.branches[parentIndex].endPos);
-		}
-		
 		if (dead)
 		{
 			deathtime += dt;
-			startPos.y += deathtime *100;
+			startPos.y += deathtime *10;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
-		
-		
+		else if (parentIndex>=0)
+		{
+			startPos.setFrom(plant.branches[parentIndex].endPos);
+		}
 
 
 		endPos.setFrom(dir);
@@ -249,7 +246,7 @@ class Branch
 		if (c<0) c= 0;
 		if (c>1) c =1;
 		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
-		if (dead) g2.color = kha.Color.fromFloats(0, 0, 1, 1);
+		if (dead) g2.color = kha.Color.fromFloats(0, 0, 0, 1);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
