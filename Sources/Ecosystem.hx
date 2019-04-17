@@ -50,23 +50,13 @@ class Ecosystem
             plant.Calculate(dt);
         }
 
-        for (f in foton) {
-            f.Calculate(dt);
-        }
 
+        sunlight.CheckCollision();
 
-         for (plant in this.plants)
-         {
-            if (sunlight.CheckCollision(plant)) break;
-         }
+/*        for (plant in this.plants) {
+            plant.RemoveDead();
+        }*/
 
-/*         for (plant in this.plants)
-         {
-            for (f in foton)
-            {
-                if (f.CheckCollision(plant)) break;
-            }
-         }*/
         ecosystem_time += dt;
         sun_angle = Math.sin(ecosystem_time * 0.1); 
 

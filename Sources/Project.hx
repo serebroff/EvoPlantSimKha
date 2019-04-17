@@ -11,7 +11,7 @@ using kha.graphics2.GraphicsExtension;
 class Project {
     public var previousRealTime:Float;
     public var realTime:Float;
-	public var tickperframe:Float;
+	static public var tickperframe:Float;
 
 	public static var fps:FPS;
 

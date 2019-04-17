@@ -67,10 +67,12 @@ class Leaf
 
 	public function ConsumeEnergy( dt: Float)
 	{
-		if (length < maxLength) return;
-		//if (energy<0 ) return;
+		if (length < maxLength)
+		{
+			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
+		}
+		else 	energy -= 0.001* (widthStart + widthEnd) * length * dt;
 		
-		energy -= 0.001* (widthStart + widthEnd) * length * dt;
 		if (energy < 0) 
 		{
 			dead = true;
@@ -97,12 +99,12 @@ class Leaf
 
 	public function Calculate (plant:Plant, dt: Float): Void {
 		
-		//energy+= dt*13.5;
 		startPos = plant.branches[parentIndex].endPos;
 
 		if (dead)
 		{
 			deathtime += dt;
+			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
 			startPos.y += deathtime *100;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
@@ -128,11 +130,13 @@ class Leaf
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
+		if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
+
 		var g2 = framebuffer.g2;
 		var c: Float = energy /36;
 		if (c<0) c= 0;
 		if (c>1) c =1;
-		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
+		g2.color = kha.Color.fromFloats(0, c, 0, 1);
 		if (dead) g2.color = kha.Color.fromFloats(0, 0, 1, 1);
 	//	g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);

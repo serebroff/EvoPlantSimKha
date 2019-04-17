@@ -15,6 +15,7 @@ using Plant;
 
 class Branch
 {
+	public static inline var DEATH_TIME_TO_DISAPPEAR = 3;
 	public var parentIndex: Int;
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
@@ -39,6 +40,8 @@ class Branch
 	public var NewBranchLength: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
+
+	var sideVec: Vec2 ;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -75,6 +78,8 @@ class Branch
 		v2= new Vec2(0,0);
 		v3= new Vec2(0,0);
 		v4= new Vec2(0,0);
+
+		sideVec = new Vec2(0,0);
 	}
 
 
@@ -117,10 +122,15 @@ class Branch
 
 	public function ConsumeEnergy( dt: Float)
 	{
-		if (length < NewBranchLength) return;
+
 		if (energy<0 ) return;
 		
-		energy -= 0.002* (widthStart + widthEnd) * length * dt;
+		if (length < NewBranchLength)
+		{
+			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
+		}
+		else 	energy -= 0.002* (widthStart + widthEnd) * length * dt;
+
 		if (energy < 0) 
 		{
 			dead = true;
@@ -148,7 +158,7 @@ class Branch
 				var b:Branch = plant.branches[i];
 				if (b.length < b.NewBranchLength)
 				{
-                	GiveEnergyToBranch(b, b.weight * delta *2 );
+                	GiveEnergyToBranch(b, b.weight * delta *0.5 );
 				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );
 			}
 		}
@@ -159,7 +169,7 @@ class Branch
 
             for (i in LeavesIndices)
             {
-                GiveEnergyToLeaf(plant.leaves[i],  delta*3);
+                GiveEnergyToLeaf(plant.leaves[i],  delta);
             } 
 		}  
 
@@ -206,24 +216,34 @@ class Branch
 			widthStart = length* Thikness + widthEnd;
 		}
 
-		var sideVec: Vec2 = new Vec2(0,0);
-		sideVec = dir.skew().mult(widthStart);
+		
+		
 
 		// start points
+		if (parentIndex>=0 && !dead)
+		{
+			sideVec.setFrom( plant.branches[parentIndex].dir.skew().mult(widthStart));
+		} 
+		else sideVec.setFrom( dir.skew().mult(widthStart));
+
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
-//		v2.set( endPos.x , endPos.y ); 
-//		v3.set(endPos.x , endPos.y  );
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+
 
 		// end points
 		sideVec = dir.skew().mult(widthEnd);
+
+
 		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
+
 		
 	}
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
+		if (deathtime> DEATH_TIME_TO_DISAPPEAR) return;
+
 		var g2 = framebuffer.g2;
 		var c: Float = energy /36;
 		if (c<0) c= 0;

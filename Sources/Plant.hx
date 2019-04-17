@@ -38,23 +38,23 @@ class Plant
         dna = new DNA(
             new Gene(
             //         a,   w,   l 
-            new Exon(-30,  10,  30), //, 
-            new Exon( 0,  30, 50) ,
-            new Exon( 30,  10,  30)
+            new Exon(-40,  50,  50), //, 
+            new Exon( 0,  50, 50) //,
+         //   new Exon( 30,  20,  10)
             ) 
             ,
         new Gene(
-//          new Exon(-60,  10,  50), 
+          new Exon(40,  50,  50), 
 //            new Exon( -30,  50, 80),
-            new Exon( 0,  10,  20)
+            new Exon( 0,  50, 50)
         )
-/*        ,
+       ,
         new Gene(
             //         a,   w,   l 
-            new Exon(-70,  40,  90), 
-            new Exon( 0,  50, 150),
-            new Exon( 70,  40,  90)
-            ) */);      
+            new Exon(-40,  50,  50), 
+            new Exon( 0,  50, 50),
+            new Exon( 40,  50,  50)
+            ) );      
         
         dna.NormalizeDNA();
     
@@ -64,7 +64,7 @@ class Plant
         var  firstBranch : Branch = new Branch();
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.length = 40;
+        firstBranch.length = 20;
         firstBranch.energy = 140;
 
         this.branches = [];
@@ -168,6 +168,26 @@ class Plant
 
         }
 
+    }
+
+    public function RemoveDead()
+    {
+        leaves.sort(function (a,b){
+            if (a.dead) return 1;
+            if (a.dead && b.dead) return 0;
+            return -1;
+        });
+       
+        var i: Int =0;
+        while (i < leaves.length)
+        {
+            if (leaves[i].dead) break;
+            i++;
+        }
+        if (i < leaves.length)
+        {
+            leaves.splice(i,leaves.length -i );
+        }
     }
 
     public function Calculate(dt:Float) {
