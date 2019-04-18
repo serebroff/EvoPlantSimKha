@@ -93,34 +93,76 @@ class Plant
 
 
     public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float, length: Float) {
-        var  newBranch : Branch = new Branch();
+        var  newBranch : Branch = null; // new Branch();
         var parent=branches[ParentBranchIndex];
+
+         var deadReplace:Bool = false;
+        var newIndex: Int =0;
+
+        for (b in branches)
+        {
+            if (b.totalDeath) {
+                newBranch = b;
+                newBranch.Init();
+                deadReplace = true;
+                break;
+            }
+            newIndex++;
+        }  
+
+        if (!deadReplace)
+        {
+            newBranch = new Branch();
+            branches.push(newBranch);
+        }
+
+        parent.ChildrenIndices.push(newIndex);
+       
         
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.weight = weight;
         newBranch.NewBranchLength =  length;// * weight;
-        newBranch.dir = parent.dir.rotate(angle);
+        newBranch.dir.setFrom( parent.dir.rotate(angle) );
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
         newBranch.maxGenerations = MAX_GENERATIONS;
-        branches.push(newBranch);
+        
 
-        parent.ChildrenIndices.push(branches.length-1);
-        CreateNewLeaf(branches.length-1, angle);
+        CreateNewLeaf(newIndex, angle);
     }
 
     public function CreateNewLeaf(ParentBranchIndex: Int, angle: Float) {
-        var  newLeaf : Leaf = new Leaf();
+        var  newLeaf : Leaf = null; // = new Leaf();
         var parent=branches[ParentBranchIndex];
+      
+        var deadReplace:Bool = false;
+        var newIndex: Int =0;
+
+        for (l in leaves)
+        {
+            if (l.totalDeath) {
+                newLeaf = l;
+                newLeaf.Init();
+                deadReplace = true;
+                break;
+            }
+            newIndex++;
+        }  
+
+        if (!deadReplace)
+        {
+            newLeaf = new Leaf();
+            leaves.push(newLeaf);
+        }
+
+        parent.LeavesIndices.push(newIndex);
         
         newLeaf.startPos.setFrom(parent.endPos);
-        newLeaf.dir = parent.dir.rotate(angle);
+        newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.parentIndex = ParentBranchIndex;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
+       
 
-        leaves.push(newLeaf);
-
-        parent.LeavesIndices.push(leaves.length-1);
     }
 
     public function CalculateBranches(dt:Float) {
@@ -163,7 +205,7 @@ class Plant
             
             delta = l.energy * dt;
             l.CalculateGrowth(dt);
-            l.ConsumeEnergy(dt);
+            l.ConsumeEnergy(this,dt);
             l.GiveEnergyToBranch(branches[l.parentIndex], delta);        
 
         }

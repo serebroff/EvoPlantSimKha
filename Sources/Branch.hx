@@ -19,7 +19,6 @@ class Branch
 	public var parentIndex: Int;
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
-	public var timeToNewBranch: Float;
 
 
 	public var growthRate: Float;
@@ -40,6 +39,7 @@ class Branch
 	public var NewBranchLength: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
+	public var totalDeath: Bool;
 
 	var sideVec: Vec2 ;
 
@@ -51,28 +51,13 @@ class Branch
 
 	public function new() 
     {
-		parentIndex = -1;
-		GenerationIndex = 0;
-		maxGenerations = 1;
-		timeToNewBranch = 0;
-
-		growthRate = 10;
-		energy = 1;
-		weight =1;
 		ChildrenIndices = [];
 		LeavesIndices = [];
 
 		dir = new Vec2(0,-1);
-		length = 1;
-		widthStart = 1;
-		widthEnd = 1;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.03;
 
-		NewBranchLength = 140;
-		dead = false;
-		deathtime =0;
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
@@ -80,9 +65,34 @@ class Branch
 		v4= new Vec2(0,0);
 
 		sideVec = new Vec2(0,0);
+
+		Init();
 	}
 
+	public function Init()
+	{
+		parentIndex = -1;
+		GenerationIndex = 0;
+		maxGenerations = 1;
 
+		growthRate = 10;
+		energy = 1;
+		weight =1;
+		ChildrenIndices.splice(0, ChildrenIndices.length);
+		LeavesIndices.splice(0, LeavesIndices.length);
+
+		dir = new Vec2(0,-1);
+		length = 1;
+		widthStart = 1;
+		widthEnd = 1;
+		Thikness= 0.03;
+
+		NewBranchLength = 140;
+		dead = false;
+		deathtime =0;
+		totalDeath = false;
+
+	}
 
 
 	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
@@ -120,10 +130,18 @@ class Branch
 	}
 
 
-	public function ConsumeEnergy( dt: Float)
+	public function ConsumeEnergy(plant:Plant, dt: Float)
 	{
 
 		if (energy<0 ) return;
+
+		 if (parentIndex >=0)
+        {
+            if (plant.branches[parentIndex].dead) 
+			{
+				energy -= (widthStart + widthEnd) * length * dt;
+			}
+        }
 		
 		if (length < NewBranchLength)
 		{
@@ -173,7 +191,7 @@ class Branch
             } 
 		}  
 
-	    ConsumeEnergy(dt);
+	    ConsumeEnergy(plant,dt);
 		
 	}
 
@@ -182,6 +200,10 @@ class Branch
 		if (dead)
 		{
 			deathtime += dt;
+			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) {
+				totalDeath = true;
+				return;
+			}
 			startPos.y += deathtime *10;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
@@ -191,8 +213,8 @@ class Branch
 		}
 
 
-		endPos.setFrom(dir);
-		endPos =startPos.add( endPos.mult(length));
+		//endPos.setFrom(dir);
+		endPos.setFrom( startPos.add( dir.mult(length)) );
 
 		
 		if (ChildrenIndices.length >0)

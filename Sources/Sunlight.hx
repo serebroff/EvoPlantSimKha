@@ -2,6 +2,7 @@ package;
 
 import kha.Framebuffer;
 import kha.System;
+import haxe.ds.Vector;
 
 using Utils;
 using kha.graphics2.GraphicsExtension;
@@ -24,9 +25,8 @@ class Sunlight {
     public static var dir: Vec2;
     public var pos: Vec2;
     public var ar_beams: Array<Beam>;
-    public var ar_beam_pos1: haxe.ds.Vector<Vec2>;
-    public var ar_beam_pos2: haxe.ds.Vector<Vec2>;
-    public var ar_beam_dist: haxe.ds.Vector<Float>;
+//    public var ar_beams: Vector<Beam>;
+
     public var center: Vec2;
     public var angle : Float;
     public var radius : Float;
@@ -44,6 +44,11 @@ class Sunlight {
         beam_delta =0;
         
         ar_beams =  [for (i in 0...NUM_BEAMS) new Beam()];
+  //      ar_beams = new Vector<Beam>(NUM_BEAMS);
+/*        for (b in ar_beams)
+        {
+            b.Init();
+        }  */
       
         center = new Vec2(System.windowWidth() * 0.5 , System.windowHeight());
     }
@@ -67,11 +72,11 @@ class Sunlight {
 
         while (i < NUM_BEAMS)
         {
-            v = pos.add(perpendicular.mult(beam_delta + BEAM_DISTANCE*( i - Math.floor(NUM_BEAMS/2))));
+            v.setFrom( pos.add(perpendicular.mult(beam_delta + BEAM_DISTANCE*( i - Math.floor(NUM_BEAMS/2)))) );
 
 
-            ar_beams[i].pos1 = v;
-            ar_beams[i].pos2 = v.add(dir.mult(BEAM_LENGTH));
+            ar_beams[i].pos1.setFrom( v);
+            ar_beams[i].pos2.setFrom( v.add(dir.mult(BEAM_LENGTH)));
             ar_beams[i].dist = BEAM_LENGTH;
 
             i++;
@@ -81,11 +86,11 @@ class Sunlight {
     }
 
 
-    public function CheckCollision()
+    public function CheckCollision(dt:Float)
     {
         for (b in ar_beams)
         {
-            b.CheckCollision();
+            b.CheckCollision(dt);
         }
 
 

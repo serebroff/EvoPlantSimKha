@@ -51,11 +51,9 @@ class Ecosystem
         }
 
 
-        sunlight.CheckCollision();
+        sunlight.CheckCollision(dt);
 
-/*        for (plant in this.plants) {
-            plant.RemoveDead();
-        }*/
+
 
         ecosystem_time += dt;
         sun_angle = Math.sin(ecosystem_time * 0.1); 
@@ -64,10 +62,6 @@ class Ecosystem
 
     public function Render(framebuffer:kha.Framebuffer) {
 
-/*        for (f in foton)
-        {
-            f.Draw(framebuffer);
-        }*/
 
         for (plant in plants)
         {

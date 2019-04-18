@@ -29,9 +29,9 @@ class Leaf
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
-	public var NewBranchLength: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
+	public var totalDeath: Bool;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -41,32 +41,49 @@ class Leaf
 
 	public function new() 
     {
-		parentIndex = -1;
-		GenerationIndex = 0;
-		maxLength = 20;
 
-		energy = 1;
 
 		dir = new Vec2(0,-1);
-		length = 1;
-		widthStart = 1;
-		widthEnd = 1;
 		startPos = new Vec2(0,0);
 		endPos = new Vec2(0,100);
-		Thikness= 0.5;
 
-		NewBranchLength = 40;
-		dead = false;
-		deathtime =0;
+
 
 		v1= new Vec2(0,0);
 		v2= new Vec2(0,0);
 		v3= new Vec2(0,0);
 		v4= new Vec2(0,0);
+
+		Init();
+		
 	}
 
-	public function ConsumeEnergy( dt: Float)
+	public function Init()
 	{
+		energy = 1;
+		parentIndex = -1;
+		GenerationIndex = 0;
+		maxLength = 20;
+
+		Thikness= 0.5;
+
+		length = 1;
+		widthStart = 1;
+		widthEnd = 1;
+		dead = false;
+		deathtime =0;
+		totalDeath= false;
+	}
+
+	public function ConsumeEnergy(plant: Plant, dt: Float)
+	{
+		if (parentIndex >=0)
+        {
+            if (plant.branches[parentIndex].dead) 
+			{
+				energy -= (widthStart + widthEnd) * length * dt;
+			}
+        }
 		if (length < maxLength)
 		{
 			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
@@ -78,6 +95,7 @@ class Leaf
 			dead = true;
 		}
 	}
+
 
 	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
 	{
@@ -102,7 +120,10 @@ class Leaf
 		if (dead)
 		{
 			deathtime += dt;
-			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
+			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) {
+				totalDeath = true;
+				return;
+			}
 			startPos.y += deathtime *5;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}

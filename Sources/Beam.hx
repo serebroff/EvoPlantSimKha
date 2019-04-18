@@ -25,13 +25,16 @@ class Beam  {
 
     public function new() 
     {  
+        Init();
+    }
+    public function Init() 
+    {
         pos1 = new Vec2();
 		pos2 = new Vec2();
 		dist = 1000;
-
     }
 
-    public function CheckCollision()
+    public function CheckCollision(dt:Float)
     {
         var l: Leaf;
         var p: Plant;

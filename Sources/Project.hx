@@ -25,23 +25,31 @@ class Project {
         previousRealTime = 0.0;
         realTime         = 0.0;
 
-		Assets.loadEverything(loadAll);
-
-
-
-		System.notifyOnRender(render);
-
 		fps = new FPS();
+
+		//Assets.loadEverything(loadAll);
+
+		//loadAll();
+
+
+
+		//System.notifyOnRender(render);
+
+
 		
 		//Scheduler.addTimeTask(update, 0, 1 / 60);
 	
 
-		kha.input.Mouse.get().notify(onMouseDown, null, onMouseMove, null);
+		//kha.input.Mouse.get().notify(onMouseDown, null, onMouseMove, null);
 
 	}
 
-	function loadAll()
+	public function loadAll()
 	{
+
+		//Scheduler.addTimeTask(function () { update(); }, 0, 1 / 10);
+		System.notifyOnFrames(function (frames) { render(frames); });
+
 	    font             = Assets.fonts.arial_black;
 	    initLevel();
 		
@@ -63,12 +71,14 @@ class Project {
 	}
 
 	function update(): Void {
+		//Ecosystem.instance.Calculate(1/10);
 	}
 
-
-	function render(framebuffer: Framebuffer): Void {
-		
+	function render( frames: Array<Framebuffer>)
+	{		
 		if (!allLoaded) return;
+		var framebuffer: Framebuffer;
+		framebuffer = frames[0];
 
         previousRealTime = realTime;
         realTime = Scheduler.time();
