@@ -18,7 +18,7 @@ using Beam;
 class Sunlight {
 
     public static inline var RADIUS = 1700;
-    public static inline var NUM_BEAMS = 50;
+    public static inline var NUM_BEAMS = 70;
     public static var BEAM_DISTANCE = 30;
     public static var BEAM_LENGTH = 2700; 
 
@@ -98,9 +98,9 @@ class Sunlight {
 
       public function Draw (framebuffer:Framebuffer): Void 
       {
-        var g2 = framebuffer.g2;
+        /*var g2 = framebuffer.g2;
 		g2.color = kha.Color.fromFloats(0,0,0,0.5);
-		g2.drawLine(center.x,center.y,pos.x,pos.y,2);
+		g2.drawLine(center.x,center.y,pos.x,pos.y,2); */
 
 
          for (b in ar_beams)

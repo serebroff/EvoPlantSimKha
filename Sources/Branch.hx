@@ -20,8 +20,6 @@ class Branch
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
 
-
-	public var growthRate: Float;
 	public var energy: Float;
 
 
@@ -75,7 +73,6 @@ class Branch
 		GenerationIndex = 0;
 		maxGenerations = 1;
 
-		growthRate = 10;
 		energy = 1;
 		weight =1;
 		ChildrenIndices.splice(0, ChildrenIndices.length);
@@ -267,7 +264,7 @@ class Branch
 		var c: Float = energy /36;
 		if (c<0) c= 0;
 		if (c>1) c =1;
-		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
+		g2.color = kha.Color.fromFloats(0.8*c, 0.4*c, 0, 1);
 		if (dead) g2.color = kha.Color.fromFloats(0, 0, 0, 1);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);

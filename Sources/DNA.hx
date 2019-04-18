@@ -81,3 +81,28 @@ class DNA {
     	
 }
 
+
+
+
+class DNA2 {
+    public var genes: Array<Float>;
+
+    public function new()
+    {
+        genes =[
+            0.3,   // angle of new branches and leaves 0..PI/2
+            0.5,  // branch length
+            0.01,  // branch tickness  w / l
+            0.5,  // leaf lenght
+            0.4,  // leaf thickness
+            0.1  // leaf frequency
+        ];
+	}
+
+	
+    public function NormalizeDNA() 
+    {
+      }
+    	
+}
+

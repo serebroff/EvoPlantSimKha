@@ -91,9 +91,9 @@ class Beam  {
 
 	public function Draw(framebuffer: Framebuffer): Void {
         var g2 = framebuffer.g2;
-        var r:Float =  0.8 * Math.abs(Ecosystem.instance.sun_angle ) ;
+        var r:Float =  0.1 * Math.abs(Ecosystem.instance.sun_angle ) ;
 		g2.color = kha.Color.fromFloats( 1, 1-r, 0, 0.4);
-        g2.drawLine(pos1.x,pos1.y,pos2.x,pos2.y,2);
+        g2.drawLine(pos1.x,pos1.y,pos2.x,pos2.y,1);
 
 	}
 

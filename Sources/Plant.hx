@@ -28,7 +28,7 @@ class Plant
 
     // constants
     public static inline var THICKNESS = 0.1;
-    public static inline var MAX_GENERATIONS = 20;
+    public static inline var MAX_GENERATIONS = 15;
 
  
 
@@ -38,22 +38,22 @@ class Plant
         dna = new DNA(
             new Gene(
             //         a,   w,   l 
-            new Exon(-40,  50,  50), //, 
-            new Exon( 0,  50, 50) //,
+            new Exon(-40,  50,  40), //, 
+            new Exon( 0,  50, 40) //,
          //   new Exon( 30,  20,  10)
             ) 
             ,
         new Gene(
-          new Exon(40,  50,  50), 
+          new Exon(40,  50,  40), 
 //            new Exon( -30,  50, 80),
-            new Exon( 0,  50, 50)
+            new Exon( 0,  50, 40)
         )
        ,
         new Gene(
             //         a,   w,   l 
-            new Exon(-40,  50,  50), 
-            new Exon( 0,  50, 50),
-            new Exon( 40,  50,  50)
+            new Exon(-40,  50,  40), 
+            new Exon( 0,  50, 40),
+            new Exon( 40,  50,  40)
             ) );      
         
         dna.NormalizeDNA();
@@ -175,6 +175,8 @@ class Plant
         {
             BranchIndex++;
 
+            if (b.totalDeath) continue;
+
             b.Calculate(this,dt);
 
             if (b.dead) continue;
@@ -200,6 +202,8 @@ class Plant
         var delta: Float;
         for (l in leaves)
         {
+            if (l.totalDeath) continue;
+
             l.Calculate(this,dt);
             if (l.dead) continue;
             
@@ -214,21 +218,8 @@ class Plant
 
     public function RemoveDead()
     {
-        leaves.sort(function (a,b){
-            if (a.dead) return 1;
-            if (a.dead && b.dead) return 0;
-            return -1;
-        });
-       
-        var i: Int =0;
-        while (i < leaves.length)
-        {
-            if (leaves[i].dead) break;
-            i++;
-        }
-        if (i < leaves.length)
-        {
-            leaves.splice(i,leaves.length -i );
+        if (leaves.length!=0 && leaves[leaves.length-1].totalDeath) {
+            leaves.splice(leaves.length-1,1 );
         }
     }
 
