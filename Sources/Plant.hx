@@ -137,7 +137,7 @@ class Plant
         //newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
         newBranch.dir.setFrom( leafParent.dir );
         newBranch.parentIndex = leafParent.parentIndex;
-        newBranch.energy = 0;
+        newBranch.energy = 10;
         newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
 
         leafParent.parentIndex = newIndex;
@@ -248,7 +248,7 @@ class Plant
             l.ConsumeEnergy(this,dt);
             delta = l.energy * dt;
             l.GiveEnergyToBranch(branches[l.parentIndex], delta);  
-            if (l.energy>50)// &&  parentBranch.length >= parentBranch.maxLength)      
+            if (l.energy>30)// &&  parentBranch.length >= parentBranch.maxLength)      
             {
                 CreateNewBranch(leafIndex);
                 l.energy -= 10;
