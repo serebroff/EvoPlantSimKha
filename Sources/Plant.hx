@@ -27,7 +27,6 @@ class Plant
 
 
     // constants
-    public static inline var THICKNESS = 0.1;
     public static inline var MAX_GENERATIONS = 15;
 
  
@@ -35,7 +34,7 @@ class Plant
     public function new() 
     {
 
-        dna = new DNA(
+/*        dna = new DNA(
             new Gene(
             //         a,   w,   l 
             new Exon(-40,  50,  40), //, 
@@ -58,14 +57,18 @@ class Plant
         
         dna.NormalizeDNA();
     
+*/
+        dna = new DNA();
 
         this.pos = new Vec2(System.windowWidth() * 0.5, System.windowHeight());
+        
 
         var  firstBranch : Branch = new Branch();
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.length = 20;
-        firstBranch.energy = 140;
+        firstBranch.length = 10;
+        firstBranch.energy = 240;
+        firstBranch.maxLength = dna.branch_length;
 
         this.branches = [];
         this.branches.push(firstBranch);
@@ -79,7 +82,7 @@ class Plant
 
     public function TrunkDivision(BranchIndexToDivide: Int) {
 
-        var i:Int =0;
+  /*    var i:Int =0;
         var exon:Exon;
         var geneIndex: Int = (branches[BranchIndexToDivide].GenerationIndex % dna.genes.length);
 
@@ -89,12 +92,18 @@ class Plant
             CreateNewBranch(BranchIndexToDivide, exon.angle, exon.weight, exon.length); 
             i++;
         }
+*/
+     //   CreateNewBranch(BranchIndexToDivide, dna.angle, 1, dna.branch_length);
     }
 
 
-    public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float, length: Float) {
+  //  public function CreateNewBranch(ParentBranchIndex: Int, angle: Float, weight: Float, length: Float) {
+    public function CreateNewBranch(ParentLeafIndex: Int) 
+    {
         var  newBranch : Branch = null; // new Branch();
-        var parent=branches[ParentBranchIndex];
+        
+        var leafParent = leaves[ParentLeafIndex];
+        var branchParent = branches[leafParent.parentIndex];
 
          var deadReplace:Bool = false;
         var newIndex: Int =0;
@@ -116,22 +125,30 @@ class Plant
             branches.push(newBranch);
         }
 
-        parent.ChildrenIndices.push(newIndex);
+        branchParent.ChildrenIndices.push(newIndex);
        
         
-        newBranch.startPos.setFrom(parent.endPos);
-        newBranch.weight = weight;
-        newBranch.NewBranchLength =  length;// * weight;
-        newBranch.dir.setFrom( parent.dir.rotate(angle) );
-        newBranch.parentIndex = ParentBranchIndex;
-        newBranch.GenerationIndex = parent.GenerationIndex + 1;
-        newBranch.maxGenerations = MAX_GENERATIONS;
-        
+        //newBranch.startPos.setFrom(branchParent.endPos);
+        newBranch.startPos.setFrom(leafParent.startPos);
+       // newBranch.weight = weight;
+        newBranch.maxLength =  dna.branch_length;// * weight;
+        newBranch.length = 0;
+        newBranch.posOnParentBranch = leafParent.posOnParentBranch;
+        //newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
+        newBranch.dir.setFrom( leafParent.dir );
+        newBranch.parentIndex = leafParent.parentIndex;
+        newBranch.energy = 0;
+        newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
 
-        CreateNewLeaf(newIndex, angle);
+        leafParent.parentIndex = newIndex;
+        leafParent.posOnParentBranch = 0;
+
+
+       // CreateNewLeaf(newIndex, angle);
     }
 
-    public function CreateNewLeaf(ParentBranchIndex: Int, angle: Float) {
+    //public function CreateNewLeaf(ParentBranchIndex: Int, angle: Float) {
+    public function CreateNewLeaf(ParentBranchIndex: Int, leafPos: Float) {
         var  newLeaf : Leaf = null; // = new Leaf();
         var parent=branches[ParentBranchIndex];
       
@@ -158,7 +175,8 @@ class Plant
         parent.LeavesIndices.push(newIndex);
         
         newLeaf.startPos.setFrom(parent.endPos);
-        newLeaf.dir.setFrom( parent.dir.rotate(angle));
+        newLeaf.dir.setFrom( parent.dir.rotate((newIndex%2 == 0)? dna.angle: - dna.angle));
+        newLeaf.posOnParentBranch = leafPos;
         newLeaf.parentIndex = ParentBranchIndex;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        
@@ -170,6 +188,9 @@ class Plant
         var b: Branch;
         var BranchIndex: Int = -1;
         var delta: Float =0;
+        var nLeaf: Int =0;
+        var nLeaf1: Int =0;
+        var leafStepOnBranch: Float = 0; 
 
         for (b in branches)
         {
@@ -181,14 +202,26 @@ class Plant
 
             if (b.dead) continue;
 
+           leafStepOnBranch = b.maxLength * dna.leaf_frequency;
+            nLeaf = Math.floor( b.length / leafStepOnBranch);  
             b.CalculateGrowth(dt);
+            nLeaf1 = Math.floor( b.length / leafStepOnBranch);
+            if (nLeaf1>nLeaf)
+            {
+                if (b.GenerationIndex< MAX_GENERATIONS)
+                {
+                    CreateNewLeaf(BranchIndex, dna.leaf_frequency * nLeaf1);
+                    CreateNewLeaf(BranchIndex, dna.leaf_frequency * nLeaf1);
+                }    
+            }
+
             b.CalculateEnergy(this, dt);
             
-            if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
-            if (b.length > b.NewBranchLength)
+            /*if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
+            if (b.length > b.maxLength)
             {
                 TrunkDivision(BranchIndex);
-            }
+            }*/
             
         }
 
@@ -200,17 +233,26 @@ class Plant
 
         var l: Leaf;
         var delta: Float;
+        var leafIndex: Int =-1;
         for (l in leaves)
         {
+            leafIndex++;
             if (l.totalDeath) continue;
 
             l.Calculate(this,dt);
             if (l.dead) continue;
             
-            delta = l.energy * dt;
+            var parentBranch: Branch = branches[l.parentIndex];
+            
             l.CalculateGrowth(dt);
             l.ConsumeEnergy(this,dt);
-            l.GiveEnergyToBranch(branches[l.parentIndex], delta);        
+            delta = l.energy * dt;
+            l.GiveEnergyToBranch(branches[l.parentIndex], delta);  
+            if (l.energy>50)// &&  parentBranch.length >= parentBranch.maxLength)      
+            {
+                CreateNewBranch(leafIndex);
+                l.energy -= 10;
+            }
 
         }
 

@@ -84,7 +84,7 @@ class Project {
         realTime = Scheduler.time();
 		tickperframe = (realTime - previousRealTime) ;
 
-		Ecosystem.instance.Calculate(tickperframe);
+		Ecosystem.instance.Calculate(1/20);//tickperframe);
 
 
 		var g2 = framebuffer.g2;

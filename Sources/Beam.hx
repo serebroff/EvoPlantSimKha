@@ -83,7 +83,7 @@ class Beam  {
 
         if (collision)
         {
-            Ecosystem.instance.plants[collisionPlantIndex].leaves[collisionLeafIndex].energy+=250*Project.tickperframe;
+            Ecosystem.instance.plants[collisionPlantIndex].leaves[collisionLeafIndex].energy+=250*dt;
         }
 
     }

@@ -17,6 +17,8 @@ using Plant;
 class Leaf
 {
 	public var parentIndex: Int;
+	public var posOnParentBranch: Float;
+
 	public var GenerationIndex: Int;
 	public var maxLength: Float;
 
@@ -64,6 +66,7 @@ class Leaf
 		parentIndex = -1;
 		GenerationIndex = 0;
 		maxLength = 20;
+		posOnParentBranch =1;
 
 		Thikness= 0.5;
 
@@ -127,7 +130,10 @@ class Leaf
 			startPos.y += deathtime *5;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
-		else startPos.setFrom( plant.branches[parentIndex].endPos);
+		else {
+			var b:Branch =  plant.branches[parentIndex];
+			startPos.setFrom( b.startPos.add(b.dir.mult(b.maxLength * posOnParentBranch)));
+		}
 
 
 
@@ -137,7 +143,7 @@ class Leaf
 		widthStart= 0;
 		widthEnd= length*Thikness;
 
-		var sideVec: Vec2 = new Vec2(0,0);
+		var sideVec: Vec2;
 		sideVec = dir.skew().mult(widthStart);
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);

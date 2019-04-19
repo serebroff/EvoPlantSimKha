@@ -16,9 +16,10 @@ using Plant;
 class Branch
 {
 	public static inline var DEATH_TIME_TO_DISAPPEAR = 3;
+
 	public var parentIndex: Int;
+	public var posOnParentBranch: Float;
 	public var GenerationIndex: Int;
-	public var maxGenerations: Int;
 
 	public var energy: Float;
 
@@ -34,7 +35,7 @@ class Branch
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
-	public var NewBranchLength: Float;
+	public var maxLength: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
 	public var totalDeath: Bool;
@@ -71,7 +72,6 @@ class Branch
 	{
 		parentIndex = -1;
 		GenerationIndex = 0;
-		maxGenerations = 1;
 
 		energy = 1;
 		weight =1;
@@ -84,7 +84,7 @@ class Branch
 		widthEnd = 1;
 		Thikness= 0.03;
 
-		NewBranchLength = 140;
+		maxLength = 140;
 		dead = false;
 		deathtime =0;
 		totalDeath = false;
@@ -114,7 +114,7 @@ class Branch
 	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
-		if (length > NewBranchLength) return;
+		if (length > maxLength) return;
 
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
@@ -140,11 +140,11 @@ class Branch
 			}
         }
 		
-		if (length < NewBranchLength)
+		if (length < maxLength)
 		{
 			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
 		}
-		else 	energy -= 0.002* (widthStart + widthEnd) * length * dt;
+		else 	energy -= 0.0005* (widthStart + widthEnd) * length * dt;
 
 		if (energy < 0) 
 		{
@@ -171,9 +171,10 @@ class Branch
             for (i in ChildrenIndices)
             {
 				var b:Branch = plant.branches[i];
-				if (b.length < b.NewBranchLength)
+				if (b.length < b.maxLength)
 				{
-                	GiveEnergyToBranch(b, b.weight * delta *0.5 );
+                	//GiveEnergyToBranch(b, b.weight * delta *2 );
+					GiveEnergyToBranch(b,  delta *  2  );
 				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );
 			}
 		}
@@ -206,7 +207,9 @@ class Branch
 		}
 		else if (parentIndex>=0)
 		{
-			startPos.setFrom(plant.branches[parentIndex].endPos);
+			//startPos.setFrom(plant.branches[parentIndex].endPos);
+			var b:Branch =  plant.branches[parentIndex];
+			startPos.setFrom( b.startPos.add(b.dir.mult(b.maxLength * posOnParentBranch)));
 		}
 
 
