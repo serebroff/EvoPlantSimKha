@@ -1,6 +1,68 @@
 
 
+//-------------------------------------------------------
+// class of DNA
+//-------------------------------------------------------
 
+class DNA {
+    public var genes: Array<Float>;
+    
+    
+    public var angle(get, never):Float;
+    public var branch_length(get, never):Float;
+    public var branch_tickness(get, never):Float;
+    public var leaf_length(get, never):Float;
+    public var leaf_tickness(get, never):Float;
+    public var leaf_frequency(get, never):Float;
+
+
+    public function new()
+    {
+        genes =[
+            Math.PI*0.3,   // angle of new branches and leaves 0..PI/2
+            80,  // branch length
+            0.03,  // branch tickness  w / l
+            20,  // leaf lenght
+            1,  // leaf thickness
+            0.2  // leaf frequency
+        ];
+	}
+
+    private  function get_angle():Float
+    {
+        return genes[0];
+    }
+    private  function get_branch_length():Float
+    {
+        return genes[1];
+    }
+
+    private  function get_branch_tickness():Float
+    {
+        return genes[2];
+    }
+
+    private  function get_leaf_length():Float
+    {
+        return genes[3];
+    }
+    
+    private  function get_leaf_tickness():Float
+    {
+        return genes[4];
+    }
+    
+    private  function get_leaf_frequency():Float
+    {
+        return genes[5];
+    }
+	
+    public  function dupblicateDNA() 
+    {
+
+    }
+    	
+}
 
 //-------------------------------------------------------
 // class of DNA
@@ -42,7 +104,7 @@ class Gene {
 }
 
 
-class DNA {
+class DNA2 {
     public var genes: Array<Gene>;
 
     public function new( g0 : Gene, ?g1: Gene, ?g2: Gene, ?g3: Gene, ?g4: Gene   )
@@ -84,25 +146,4 @@ class DNA {
 
 
 
-class DNA2 {
-    public var genes: Array<Float>;
-
-    public function new()
-    {
-        genes =[
-            0.3,   // angle of new branches and leaves 0..PI/2
-            0.5,  // branch length
-            0.01,  // branch tickness  w / l
-            0.5,  // leaf lenght
-            0.4,  // leaf thickness
-            0.1  // leaf frequency
-        ];
-	}
-
-	
-    public function NormalizeDNA() 
-    {
-      }
-    	
-}
 

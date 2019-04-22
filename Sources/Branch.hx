@@ -173,7 +173,7 @@ class Branch
 				var b:Branch = plant.branches[i];
 				if (b.length < b.maxLength)
 				{
-                	GiveEnergyToBranch(b, b.weight * delta *0.5 );
+                	GiveEnergyToBranch(b, 0.33 * delta *0.5 );
 				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );
 			}
 		}
