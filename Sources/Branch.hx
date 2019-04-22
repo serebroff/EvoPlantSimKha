@@ -34,7 +34,7 @@ class Branch
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
-	public var NewBranchLength: Float;
+	public var maxLength: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
 	public var totalDeath: Bool;
@@ -84,7 +84,7 @@ class Branch
 		widthEnd = 1;
 		Thikness= 0.03;
 
-		NewBranchLength = 140;
+		maxLength = 140;
 		dead = false;
 		deathtime =0;
 		totalDeath = false;
@@ -114,7 +114,7 @@ class Branch
 	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
-		if (length > NewBranchLength) return;
+		if (length > maxLength) return;
 
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
@@ -140,7 +140,7 @@ class Branch
 			}
         }
 		
-		if (length < NewBranchLength)
+		if (length < maxLength)
 		{
 			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
 		}
@@ -171,7 +171,7 @@ class Branch
             for (i in ChildrenIndices)
             {
 				var b:Branch = plant.branches[i];
-				if (b.length < b.NewBranchLength)
+				if (b.length < b.maxLength)
 				{
                 	GiveEnergyToBranch(b, b.weight * delta *0.5 );
 				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );

@@ -121,7 +121,7 @@ class Plant
         
         newBranch.startPos.setFrom(parent.endPos);
         newBranch.weight = weight;
-        newBranch.NewBranchLength =  length;// * weight;
+        newBranch.maxLength =  length;// * weight;
         newBranch.dir.setFrom( parent.dir.rotate(angle) );
         newBranch.parentIndex = ParentBranchIndex;
         newBranch.GenerationIndex = parent.GenerationIndex + 1;
@@ -185,7 +185,7 @@ class Plant
             b.CalculateEnergy(this, dt);
             
             if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
-            if (b.length > b.NewBranchLength)
+            if (b.length > b.maxLength)
             {
                 TrunkDivision(BranchIndex);
             }
