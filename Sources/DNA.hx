@@ -22,8 +22,8 @@ class DNA {
             Math.PI*0.3,   // angle of new branches and leaves 0..PI/2
             80,  // branch length
             0.03,  // branch tickness  w / l
-            20,  // leaf lenght
-            1,  // leaf thickness
+            30,  // leaf lenght
+            0.5,  // leaf thickness
             0.2  // leaf frequency
         ];
 	}

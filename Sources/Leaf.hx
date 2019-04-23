@@ -26,12 +26,14 @@ class Leaf
 	public var length: Float;
 	public var widthStart: Float;
 	public var widthEnd: Float;
+	public var square: Float;
 	public var startPos : Vec2;
 	public var endPos : Vec2;
 	public var Thikness : Float;
 	public var dead: Bool;
 	public var deathtime: Float;
 	public var totalDeath: Bool;
+	public var hasProducedBranch: Bool;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
@@ -61,6 +63,7 @@ class Leaf
 	public function Init()
 	{
 		energy = 1;
+		square = 1;
 		parentIndex = -1;
 		GenerationIndex = 0;
 		maxLength = 20;
@@ -73,6 +76,7 @@ class Leaf
 		dead = false;
 		deathtime =0;
 		totalDeath= false;
+		hasProducedBranch = false;
 	}
 
 	public function ConsumeEnergy(plant: Plant, dt: Float)
@@ -81,14 +85,11 @@ class Leaf
         {
             if (plant.branches[parentIndex].dead) 
 			{
-				energy -= (widthStart + widthEnd) * length * dt;
+				energy -= square * dt;
 			}
         }
-		if (length < maxLength)
-		{
-			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
-		}
-		else 	energy -= 0.001* (widthStart + widthEnd) * length * dt;
+
+		energy -= Plant.LEAF_ENERGY_CONSUME * square * dt;
 		
 		if (energy < 0) 
 		{
@@ -111,7 +112,7 @@ class Leaf
 		if (length >= maxLength) return;
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
-        length +=  delta; 
+        length +=  Math.sqrt(delta); 
         energy -=  delta; 
 	}
 
@@ -130,12 +131,11 @@ class Leaf
 		else startPos.setFrom( plant.branches[parentIndex].endPos);
 
 
-
 		endPos.setFrom(dir);
 		endPos =startPos.add( endPos.mult(length));
 
 		widthStart= 0;
-		widthEnd= length*Thikness;
+		widthEnd= length*Thikness *0.5;
 
 		var sideVec: Vec2 = new Vec2(0,0);
 		sideVec = dir.skew().mult(widthStart);
@@ -147,6 +147,7 @@ class Leaf
 		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
+		square = (widthEnd + widthStart) *0.5 * length;
 		
 	}
 	
@@ -155,7 +156,8 @@ class Leaf
 		if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
 
 		var g2 = framebuffer.g2;
-		var c: Float = energy /36;
+		var energyDensity:Float = energy / square;
+		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_LEAF;
 		var r: Float = 0;
 		if (c<0) c= 0;
 		if (c>1) c =1;

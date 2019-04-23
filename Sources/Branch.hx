@@ -29,6 +29,7 @@ class Branch
 
 	public var dir: Vec2;
 	public var length: Float;
+	public var square: Float;
 	public var widthStart: Float;
 	public var widthEnd: Float;
 	public var startPos : Vec2;
@@ -104,10 +105,11 @@ class Branch
 	public function GiveEnergyToLeaf(l: Leaf, energyPiece:Float)
 	{
 		if (energy<0) return;
-		if (l.length >= l.maxLength) return;
+		//if (l.length >= l.maxLength) return;
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		l.energy += delta;
+		//if (l.energy>Plant.MAX_ENERGY_IN_LEAF) l.energy = Plant.MAX_ENERGY_IN_LEAF;
 		energy -= delta;
 	}
 
@@ -119,37 +121,48 @@ class Branch
         var delta: Float  =  energy *dt;
 		if (delta>energy) delta = energy;
 
-		length +=  delta ; 
+		length +=  Math.sqrt(delta);  
 		widthStart= length*Thikness;
 		widthEnd=0;
 
 		energy -=  delta; 
 	}
 
+	public function ChangeEnergy(plant:Plant, energyPiece: Float):Float
+	{
+		var usedEnergy: Float =0 ;
+		energy +=energyPiece;
+		if (energy>Plant.MAX_ENERGY_IN_BRANCH) {
+			
+			usedEnergy = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH) ;
+			energy = Plant.MAX_ENERGY_IN_BRANCH;
+			return usedEnergy;
+		}
+		return energyPiece;
+	}
 
 	public function ConsumeEnergy(plant:Plant, dt: Float)
 	{
 
-		if (energy<0 ) return;
+		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
 
-		 if (parentIndex >=0)
+/*		if (energy<0 ) return;
+
+		if (parentIndex >=0)
         {
             if (plant.branches[parentIndex].dead) 
 			{
-				energy -= (widthStart + widthEnd) * length * dt;
+				energy -= square * dt;
 			}
         }
-		
-		if (length < maxLength)
-		{
-			energy -= 0.0001* (widthStart + widthEnd) * length * dt;
-		}
-		else 	energy -= 0.002* (widthStart + widthEnd) * length * dt;
 
+		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
+		
 		if (energy < 0) 
 		{
 			dead = true;
-		}
+		}*/
+
 	}
 
 	public function CalculateEnergy(plant:Plant, dt: Float)
@@ -159,9 +172,16 @@ class Branch
 		var delta: Float;
 		delta  =  energy * dt;
 
+		ConsumeEnergy(plant,dt);
+
+		if (length< maxLength*0.1) return;
+
+        var energyDensity:Float = energy / square;
+         if (energyDensity< Plant.BRANCH_ENERGY_TO_SHARE) return;
+
         if (parentIndex >=0)
         {
-            GiveEnergyToBranch(plant.branches[parentIndex], delta);
+            GiveEnergyToBranch(plant.branches[parentIndex], Plant.BRANCH_ENERGY_2_BRANCH * delta);
         }
 
         if (ChildrenIndices.length>0)
@@ -171,10 +191,7 @@ class Branch
             for (i in ChildrenIndices)
             {
 				var b:Branch = plant.branches[i];
-				if (b.length < b.maxLength)
-				{
-                	GiveEnergyToBranch(b, 0.33 * delta *0.5 );
-				}; // else  GiveEnergyToBranch(b, b.weight * delta * 0.3 );
+               	GiveEnergyToBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
 			}
 		}
 
@@ -184,11 +201,9 @@ class Branch
 
             for (i in LeavesIndices)
             {
-                GiveEnergyToLeaf(plant.leaves[i],  delta);
+                GiveEnergyToLeaf(plant.leaves[i],  Plant.BRANCH_ENERGY_2_LEAF * delta);
             } 
 		}  
-
-	    ConsumeEnergy(plant,dt);
 		
 	}
 
@@ -232,8 +247,6 @@ class Branch
 			widthStart = length* Thikness + widthEnd;
 		}
 
-		
-		
 
 		// start points
 		if (parentIndex>=0 && !dead)
@@ -245,13 +258,13 @@ class Branch
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
 
-
 		// end points
 		sideVec = dir.skew().mult(widthEnd);
 
-
 		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
+
+		square = (widthEnd + widthStart) *0.5 * length;
 
 		
 	}
@@ -261,7 +274,8 @@ class Branch
 		if (deathtime> DEATH_TIME_TO_DISAPPEAR) return;
 
 		var g2 = framebuffer.g2;
-		var c: Float = energy /36;
+		var energyDensity:Float = energy / square;
+		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_BRANCH;
 		if (c<0) c= 0;
 		if (c>1) c =1;
 		g2.color = kha.Color.fromFloats(0.8*c, 0.4*c, 0, 1);
