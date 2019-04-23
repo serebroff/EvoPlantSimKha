@@ -130,13 +130,19 @@ class Branch
 
 	public function ChangeEnergy(plant:Plant, energyPiece: Float):Float
 	{
-		var usedEnergy: Float =0 ;
+		var energyChange: Float =0 ;
 		energy +=energyPiece;
 		if (energy>Plant.MAX_ENERGY_IN_BRANCH) {
 			
-			usedEnergy = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH) ;
+			energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH) ;
 			energy = Plant.MAX_ENERGY_IN_BRANCH;
-			return usedEnergy;
+			return energyChange;
+		}
+		if (energy < 0) {
+			
+			energyChange = - energy ;
+			energy = 0;
+			return energyChange;
 		}
 		return energyPiece;
 	}
@@ -144,9 +150,9 @@ class Branch
 	public function ConsumeEnergy(plant:Plant, dt: Float)
 	{
 
-		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
+//		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
 
-/*		if (energy<0 ) return;
+		if (energy<0 ) return;
 
 		if (parentIndex >=0)
         {
@@ -161,7 +167,7 @@ class Branch
 		if (energy < 0) 
 		{
 			dead = true;
-		}*/
+		}
 
 	}
 
