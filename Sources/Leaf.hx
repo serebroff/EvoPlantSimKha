@@ -79,7 +79,7 @@ class Leaf
 		hasProducedBranch = false;
 	}
 
-	public function ConsumeEnergy(plant: Plant, dt: Float)
+	public function ConsumeEnergy(dt: Float)
 	{
 		if (parentBranch != null)
         {
@@ -116,7 +116,7 @@ class Leaf
         energy -=  delta; 
 	}
 
-	public function Calculate (plant:Plant, dt: Float): Void {
+	public function Calculate (dt: Float): Void {
 		
 		if (dead)
 		{

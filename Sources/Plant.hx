@@ -205,14 +205,14 @@ class Plant
 
             if (b.totalDeath) continue;
 
-            b.Calculate(this,dt);
+            b.Calculate(dt);
 
             if (b.dead) continue;
 
             b.CalculateGrowth(dt);
             
 
-            b.CalculateEnergy(this, dt);
+            b.CalculateEnergy(dt);
             
             if (b.length < b.maxLength * 0.1 ) continue;
             if (b.LeavesIndices.length == 3) continue;
@@ -242,12 +242,12 @@ class Plant
             index++;
             if (l.totalDeath) continue;
 
-            l.Calculate(this,dt);
+            l.Calculate(dt);
             if (l.dead) continue;
             
             delta = l.energy * dt;
             l.CalculateGrowth(dt);
-            l.ConsumeEnergy(this,dt);
+            l.ConsumeEnergy(dt);
             
             energyDensity = l.energy / l.square;
             if (energyDensity< LEAF_ENERGY_TO_SHARE) continue;

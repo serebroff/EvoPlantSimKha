@@ -148,7 +148,7 @@ class Branch
 		return energyPiece;
 	}
 
-	public function ConsumeEnergy(plant:Plant, dt: Float)
+	public function ConsumeEnergy(dt: Float)
 	{
 
 //		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
@@ -172,14 +172,14 @@ class Branch
 
 	}
 
-	public function CalculateEnergy(plant:Plant, dt: Float)
+	public function CalculateEnergy(dt: Float)
 	{
 		if (energy<=0) return;
 
 		var delta: Float;
 		delta  =  energy * dt;
 
-		ConsumeEnergy(plant,dt);
+		ConsumeEnergy(dt);
 
 		if (length< maxLength*0.1) return;
 
@@ -205,7 +205,7 @@ class Branch
 	}
 
 
-	public function Calculate (plant:Plant, dt: Float): Void {
+	public function Calculate ( dt: Float): Void {
 		if (dead)
 		{
 			deathtime += dt;
