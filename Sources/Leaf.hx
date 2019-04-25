@@ -16,7 +16,7 @@ using Plant;
 
 class Leaf
 {
-	public var parentIndex: Int;
+	public var parentBranch: Branch;
 	public var GenerationIndex: Int;
 	public var maxLength: Float;
 
@@ -64,7 +64,7 @@ class Leaf
 	{
 		energy = 1;
 		square = 1;
-		parentIndex = -1;
+		parentBranch = null;
 		GenerationIndex = 0;
 		maxLength = 20;
 
@@ -81,9 +81,9 @@ class Leaf
 
 	public function ConsumeEnergy(plant: Plant, dt: Float)
 	{
-		if (parentIndex >=0)
+		if (parentBranch != null)
         {
-            if (plant.branches[parentIndex].dead) 
+            if (parentBranch.dead) 
 			{
 				energy -= square * dt;
 			}
@@ -128,7 +128,7 @@ class Leaf
 			startPos.y += deathtime *5;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
-		else startPos.setFrom( plant.branches[parentIndex].endPos);
+		else startPos.setFrom( parentBranch.endPos);
 
 
 		endPos.setFrom(dir);

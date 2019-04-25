@@ -102,7 +102,7 @@ class Plant
         var  newBranch : Branch = null; // new Branch();
         
         var leafParent = leaves[ParentLeafIndex];
-        var branchParent = branches[leafParent.parentIndex];
+        var branchParent = leafParent.parentBranch;
 
          var deadReplace:Bool = false;
         var newIndex: Int =0;
@@ -124,7 +124,7 @@ class Plant
             branches.push(newBranch);
         }
 
-        branchParent.ChildrenIndices.push(newIndex);
+        branchParent.ChildrenIndices.push(newBranch);
        
         
         //newBranch.startPos.setFrom(branchParent.endPos);
@@ -136,7 +136,7 @@ class Plant
         
         //newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
         newBranch.dir.setFrom( leafParent.dir );
-        newBranch.parentIndex = leafParent.parentIndex;
+        newBranch.parentBranch = leafParent.parentBranch;
         newBranch.energy = 0;
         newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
 
@@ -178,13 +178,13 @@ class Plant
             leaves.push(newLeaf);
         }
 
-        parent.LeavesIndices.push(newIndex);
+        parent.LeavesIndices.push(newLeaf);
         
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.maxLength=dna.leaf_length;
         newLeaf.Thikness = dna.leaf_tickness;
-        newLeaf.parentIndex = ParentBranchIndex;
+        newLeaf.parentBranch = parent;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        
 
@@ -214,7 +214,6 @@ class Plant
 
             b.CalculateEnergy(this, dt);
             
-            //if (b.GenerationIndex< MAX_GENERATIONS && b.ChildrenIndices.length ==0)
             if (b.length < b.maxLength * 0.1 ) continue;
             if (b.LeavesIndices.length == 3) continue;
 
@@ -253,7 +252,7 @@ class Plant
             energyDensity = l.energy / l.square;
             if (energyDensity< LEAF_ENERGY_TO_SHARE) continue;
 
-            l.GiveEnergyToBranch(branches[l.parentIndex], LEAF_ENERGY_2_BRANCH * delta);      
+            l.GiveEnergyToBranch(l.parentBranch, LEAF_ENERGY_2_BRANCH * delta);      
 
 
             if (l.length< l.maxLength*0.5 || l.hasProducedBranch) continue;

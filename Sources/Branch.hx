@@ -16,7 +16,8 @@ using Plant;
 class Branch
 {
 	public static inline var DEATH_TIME_TO_DISAPPEAR = 3;
-	public var parentIndex: Int;
+
+	public var parentBranch: Branch;
 	public var GenerationIndex: Int;
 	public var maxGenerations: Int;
 
@@ -24,8 +25,8 @@ class Branch
 
 
 	public var weight : Float;
-	public var ChildrenIndices : Array<Int>;
-	public var LeavesIndices : Array<Int>;
+	public var ChildrenIndices : Array<Branch>;
+	public var LeavesIndices : Array<Leaf>;
 
 	public var dir: Vec2;
 	public var length: Float;
@@ -70,7 +71,7 @@ class Branch
 
 	public function Init()
 	{
-		parentIndex = -1;
+		parentBranch = null;
 		GenerationIndex = 0;
 		maxGenerations = 1;
 
@@ -154,9 +155,9 @@ class Branch
 
 		if (energy<0 ) return;
 
-		if (parentIndex >=0)
+		if (parentBranch != null)		
         {
-            if (plant.branches[parentIndex].dead) 
+            if (parentBranch.dead) 
 			{
 				energy -= square * dt;
 			}
@@ -185,32 +186,22 @@ class Branch
         var energyDensity:Float = energy / square;
          if (energyDensity< Plant.BRANCH_ENERGY_TO_SHARE) return;
 
-        if (parentIndex >=0)
+        if (parentBranch != null)
         {
-            GiveEnergyToBranch(plant.branches[parentIndex], Plant.BRANCH_ENERGY_2_BRANCH * delta);
+            GiveEnergyToBranch(parentBranch, Plant.BRANCH_ENERGY_2_BRANCH * delta);
         }
 
-        if (ChildrenIndices.length>0)
-        {
-            var i=0;
                     
-            for (i in ChildrenIndices)
-            {
-				var b:Branch = plant.branches[i];
-               	GiveEnergyToBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
-			}
+        for (b in ChildrenIndices)
+        {
+          	GiveEnergyToBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
 		}
 
-	    if (LeavesIndices.length>0)
-        {
-            var i=0;
 
-            for (i in LeavesIndices)
-            {
-                GiveEnergyToLeaf(plant.leaves[i],  Plant.BRANCH_ENERGY_2_LEAF * delta);
-            } 
-		}  
-		
+        for (l in LeavesIndices)
+        {
+            GiveEnergyToLeaf(l,  Plant.BRANCH_ENERGY_2_LEAF * delta);
+        } 		
 	}
 
 
@@ -225,9 +216,9 @@ class Branch
 			startPos.y += deathtime *10;
 			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
 		}
-		else if (parentIndex>=0)
+		else if (parentBranch != null)
 		{
-			startPos.setFrom(plant.branches[parentIndex].endPos);
+			startPos.setFrom(parentBranch.endPos);
 		}
 
 
@@ -242,7 +233,7 @@ class Branch
 			var c: Int = 0;
 			while (c <ChildrenIndices.length)
 			{
-				w = plant.branches[ChildrenIndices[c]].widthStart;
+				w = ChildrenIndices[c].widthStart;
 				if (wMax < w) 
 				{
 					wMax =  w;
@@ -255,9 +246,9 @@ class Branch
 
 
 		// start points
-		if (parentIndex>=0 && !dead)
+		if (parentBranch!= null && !dead)
 		{
-			sideVec.setFrom( plant.branches[parentIndex].dir.skew().mult(widthStart));
+			sideVec.setFrom( parentBranch.dir.skew().mult(widthStart));
 		} 
 		else sideVec.setFrom( dir.skew().mult(widthStart));
 
