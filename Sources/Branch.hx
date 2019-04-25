@@ -22,7 +22,7 @@ class Branch
 	public var maxGenerations: Int;
 
 	public var energy: Float;
-
+	public var energyDensity : Float;
 
 	public var weight : Float;
 	public var ChildrenIndices : Array<Branch>;
@@ -76,7 +76,9 @@ class Branch
 		maxGenerations = 1;
 
 		energy = 1;
+		energyDensity = 0;
 		weight =1;
+		square =1;
 		ChildrenIndices.splice(0, ChildrenIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
 
@@ -94,7 +96,7 @@ class Branch
 	}
 
 
-	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
+	public function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
 	{
 		if (energy<0) return;
 		var delta: Float = energyPiece;
@@ -183,18 +185,17 @@ class Branch
 
 		if (length< maxLength*0.1) return;
 
-        var energyDensity:Float = energy / square;
          if (energyDensity< Plant.BRANCH_ENERGY_TO_SHARE) return;
 
         if (parentBranch != null)
         {
-            GiveEnergyToBranch(parentBranch, Plant.BRANCH_ENERGY_2_BRANCH * delta);
+            ExchangeEnergyWithBranch(parentBranch, Plant.BRANCH_ENERGY_2_BRANCH * delta);
         }
 
                     
         for (b in ChildrenIndices)
         {
-          	GiveEnergyToBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
+          	ExchangeEnergyWithBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
 		}
 
 
@@ -262,6 +263,10 @@ class Branch
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
 		square = (widthEnd + widthStart) *0.5 * length;
+		if (square>0)
+		{
+			energyDensity = energy / square;
+		}
 
 		
 	}
@@ -271,7 +276,6 @@ class Branch
 		if (deathtime> DEATH_TIME_TO_DISAPPEAR) return;
 
 		var g2 = framebuffer.g2;
-		var energyDensity:Float = energy / square;
 		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_BRANCH;
 		if (c<0) c= 0;
 		if (c>1) c =1;

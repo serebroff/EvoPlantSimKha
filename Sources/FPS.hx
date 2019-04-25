@@ -13,7 +13,7 @@ class FPS
 
     var previousRealTime:Float;
     var realTime:Float;
-    var dT : Float;
+    static public var dt : Float;
     
     var fps : Float;
 
@@ -34,8 +34,8 @@ class FPS
     {
         previousRealTime = realTime;
         realTime = Scheduler.realTime();
-        dT = realTime - previousRealTime;
-        frametimePassed += dT;
+        dt = realTime - previousRealTime;
+        frametimePassed += dt;
         if (frametimePassed > TIME_TO_COUNT) 
         {
             fps = 1 / (frametimePassed / numframesPassed );

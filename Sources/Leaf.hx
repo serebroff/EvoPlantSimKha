@@ -21,6 +21,7 @@ class Leaf
 	public var maxLength: Float;
 
 	public var energy: Float;
+	public var energyDensity : Float;
 
 	public var dir: Vec2;
 	public var length: Float;
@@ -64,6 +65,7 @@ class Leaf
 	{
 		energy = 1;
 		square = 1;
+		energyDensity = 0;
 		parentBranch = null;
 		GenerationIndex = 0;
 		maxLength = 20;
@@ -97,13 +99,29 @@ class Leaf
 		}
 	}
 
+	public function EnergyManagment()
+	{
+		if (energy<0) return;
 
-	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
+		CalculateGrowth(FPS.dt);
+
+		if (length< maxLength*0.2) return;
+
+
+        if (energyDensity< Plant.LEAF_ENERGY_TO_SHARE) return;
+
+		//parentBranch.
+		//LEAF_ENERGY_2_BRANCH * delta
+	}
+
+	public function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
 	{
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		b.energy += delta;
 		energy -= delta;
+
+
 	}
 
 	public function CalculateGrowth(dt: Float)
@@ -148,6 +166,11 @@ class Leaf
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
 		square = (widthEnd + widthStart) *0.5 * length;
+		if (square>0)
+		{
+			energyDensity = energy / square;
+		}
+
 		
 	}
 	
@@ -156,7 +179,6 @@ class Leaf
 		if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
 
 		var g2 = framebuffer.g2;
-		var energyDensity:Float = energy / square;
 		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_LEAF;
 		var r: Float = 0;
 		if (c<0) c= 0;

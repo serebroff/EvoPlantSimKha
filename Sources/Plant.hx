@@ -217,8 +217,8 @@ class Plant
             if (b.length < b.maxLength * 0.1 ) continue;
             if (b.LeavesIndices.length == 3) continue;
 
-            energyDensity = b.energy / b.square;
-            if (energyDensity> BRANCH_ENERGY_TO_PRODUCE_LEAF)  
+
+            if (b.energyDensity> BRANCH_ENERGY_TO_PRODUCE_LEAF)  
             {
                 
                 CreateNewLeaf(BranchIndex, dna.angle * (-1 + 2* Math.random()));
@@ -252,7 +252,7 @@ class Plant
             energyDensity = l.energy / l.square;
             if (energyDensity< LEAF_ENERGY_TO_SHARE) continue;
 
-            l.GiveEnergyToBranch(l.parentBranch, LEAF_ENERGY_2_BRANCH * delta);      
+            l.ExchangeEnergyWithBranch(l.parentBranch, LEAF_ENERGY_2_BRANCH * delta);      
 
 
             if (l.length< l.maxLength*0.5 || l.hasProducedBranch) continue;
@@ -268,16 +268,11 @@ class Plant
 
     }
 
-    public function RemoveDead()
-    {
-        if (leaves.length!=0 && leaves[leaves.length-1].totalDeath) {
-            leaves.splice(leaves.length-1,1 );
-        }
-    }
 
     public function Calculate(dt:Float) {
-        CalculateBranches(dt);
         CalculateLeaves(dt);
+        CalculateBranches(dt);
+
     }
 
     public function Draw (framebuffer:Framebuffer): Void {

@@ -80,11 +80,10 @@ class Project {
 		var framebuffer: Framebuffer;
 		framebuffer = frames[0];
 
-        previousRealTime = realTime;
-        realTime = Scheduler.time();
-		tickperframe = (realTime - previousRealTime) ;
 
-		Ecosystem.instance.Calculate(tickperframe);
+		fps.update();
+
+		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
 
 		var g2 = framebuffer.g2;
@@ -94,7 +93,6 @@ class Project {
 
     	Ecosystem.instance.Render(framebuffer);
 
-	   fps.update();
 
         g2.font = font;
         g2.fontSize = 32;
