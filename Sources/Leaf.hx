@@ -89,15 +89,15 @@ class Leaf
 			
 			energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH * square) ;
 			energy = Plant.MAX_ENERGY_IN_BRANCH * square;
-			return energyChange;
+			return -energyChange;
 		}
 		}
 		if (energy < 0) {
 			
 			energyChange = energy - energyPiece  ;
 			energy = 0;
-			//dead = true;
-			return energyChange;
+			dead = true;
+			return -energyChange;
 		}
 		return -energyPiece;
 	}
@@ -136,7 +136,7 @@ class Leaf
 		{
 			//if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 			{
-				delta = FPS.dt * Plant.BRANCH_ENERGY_2_LEAF * parentBranch.square;
+				delta = FPS.dt * Plant.BRANCH_ENERGY_2_LEAF * parentBranch.energy;
 				//ChangeEnergy(parentBranch.ChangeEnergy(-delta));
 				energy += delta;
 				parentBranch.energy -= delta;
@@ -146,7 +146,7 @@ class Leaf
 		{
 			if (energyDensity > Plant.LEAF_ENERGY_TO_SHARE)
 			{
-				delta = FPS.dt * Plant.LEAF_ENERGY_2_BRANCH * square;
+				delta = FPS.dt * Plant.LEAF_ENERGY_2_BRANCH * energy;
 				//parentBranch.ChangeEnergy(ChangeEnergy(-delta));
 				parentBranch.energy += delta;
 				energy -= delta;

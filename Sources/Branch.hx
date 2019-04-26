@@ -51,12 +51,14 @@ class Branch  extends  Leaf
 
 		var delta:Float = 0;
 		
-		delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * parentBranch.square;
+		delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
+
 		if (length< maxLength*0.1) {
 			energy += delta;
 			parentBranch.energy -= delta;			
 		}
-		else if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+		else 
+		if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 		{
 
 			energy += delta;
@@ -64,7 +66,7 @@ class Branch  extends  Leaf
 		}
 		else 
 		{
-			delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * square;
+			delta =  FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * energy;
 			energy -= delta;
 			parentBranch.energy += delta;
 		}
