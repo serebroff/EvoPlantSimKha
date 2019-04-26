@@ -13,7 +13,7 @@ using Utils;
 using kha.graphics2.GraphicsExtension;
 using Plant;
 
-class Branch
+class Branch // extends  Leaf
 {
 	public static inline var DEATH_TIME_TO_DISAPPEAR = 3;
 
@@ -23,10 +23,6 @@ class Branch
 
 	public var energy: Float;
 	public var energyDensity : Float;
-
-	public var weight : Float;
-	public var ChildrenIndices : Array<Branch>;
-	public var LeavesIndices : Array<Leaf>;
 
 	public var dir: Vec2;
 	public var length: Float;
@@ -41,13 +37,16 @@ class Branch
 	public var deathtime: Float;
 	public var totalDeath: Bool;
 
-	var sideVec: Vec2 ;
+//	var sideVec: Vec2 ;
 
 	public var v1: Vec2;
 	public var v2: Vec2;
 	public var v3: Vec2;
 	public var v4 :Vec2;
 
+
+	public var ChildrenIndices : Array<Branch>;
+	public var LeavesIndices : Array<Leaf>;
 
 	public function new() 
     {
@@ -64,7 +63,7 @@ class Branch
 		v3= new Vec2(0,0);
 		v4= new Vec2(0,0);
 
-		sideVec = new Vec2(0,0);
+	//	sideVec = new Vec2(0,0);
 
 		Init();
 	}
@@ -77,7 +76,6 @@ class Branch
 
 		energy = 1;
 		energyDensity = 0;
-		weight =1;
 		square =1;
 		ChildrenIndices.splice(0, ChildrenIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
@@ -245,13 +243,13 @@ class Branch
 			widthStart = length* Thikness + widthEnd;
 		}
 
-
+		var sideVec: Vec2;
 		// start points
 		if (parentBranch!= null && !dead)
 		{
-			sideVec.setFrom( parentBranch.dir.skew().mult(widthStart));
+			sideVec = parentBranch.dir.skew().mult(widthStart);
 		} 
-		else sideVec.setFrom( dir.skew().mult(widthStart));
+		else sideVec = dir.skew().mult(widthStart);
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);

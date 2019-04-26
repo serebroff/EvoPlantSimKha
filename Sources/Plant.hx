@@ -129,7 +129,6 @@ class Plant
         
         //newBranch.startPos.setFrom(branchParent.endPos);
         newBranch.startPos.setFrom(leafParent.startPos);
-        //newBranch.weight = weight;
         newBranch.maxLength = dna.branch_length;
         newBranch.length = 0;
         newBranch.Thikness = dna.branch_tickness;

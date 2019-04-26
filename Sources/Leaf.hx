@@ -110,7 +110,11 @@ class Leaf
 
         if (energyDensity< Plant.LEAF_ENERGY_TO_SHARE) return;
 
-		//parentBranch.
+		if (energyDensity >parentBranch.energyDensity)
+		{
+
+		}
+
 		//LEAF_ENERGY_2_BRANCH * delta
 	}
 
@@ -155,7 +159,7 @@ class Leaf
 		widthStart= 0;
 		widthEnd= length*Thikness *0.5;
 
-		var sideVec: Vec2 = new Vec2(0,0);
+		var sideVec: Vec2;
 		sideVec = dir.skew().mult(widthStart);
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
