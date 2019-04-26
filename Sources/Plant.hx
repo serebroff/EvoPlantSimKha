@@ -79,11 +79,14 @@ class Plant
 
         this.pos = new Vec2(System.windowWidth() * 0.5, System.windowHeight());
 
-        var  firstBranch : Branch = new Branch();
+        var  firstBranch : Branch = new Branch(this);
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.length = 20;
+        firstBranch.endPos.set(0, -100);
+        firstBranch.length = 100;
         firstBranch.energy = 140;
+        firstBranch.parentPlant = this;
+        firstBranch.Thikness = dna.branch_tickness;
 
         this.branches = [];
         this.branches.push(firstBranch);
@@ -97,11 +100,10 @@ class Plant
 
 
 
-    public function CreateNewBranch(ParentLeafIndex: Int) 
+    public function CreateNewBranch(leafParent: Leaf) 
     {
         var  newBranch : Branch = null; // new Branch();
         
-        var leafParent = leaves[ParentLeafIndex];
         var branchParent = leafParent.parentBranch;
 
          var deadReplace:Bool = false;
@@ -120,7 +122,7 @@ class Plant
 
         if (!deadReplace)
         {
-            newBranch = new Branch();
+            newBranch = new Branch(this);
             branches.push(newBranch);
         }
 
@@ -173,7 +175,7 @@ class Plant
 
         if (!deadReplace)
         {
-            newLeaf = new Leaf();
+            newLeaf = new Leaf(this);
             leaves.push(newLeaf);
         }
 
@@ -260,7 +262,7 @@ class Plant
             if (energyDensity> LEAF_ENERGY_TO_PRODUCE_BRANCH)  
             {
                 l.hasProducedBranch = true;
-                CreateNewBranch(index);
+                CreateNewBranch(l);
             }
 
         }

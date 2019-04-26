@@ -16,6 +16,7 @@ using Plant;
 
 class Leaf
 {
+	public var parentPlant: Plant;
 	public var parentBranch: Branch;
 	public var GenerationIndex: Int;
 	public var maxLength: Float;
@@ -42,9 +43,9 @@ class Leaf
 	public var v4 :Vec2;
 
 
-	public function new() 
+	public function new(plant:Plant) 
     {
-
+		parentPlant = plant;
 
 		dir = new Vec2(0,-1);
 		startPos = new Vec2(0,0);

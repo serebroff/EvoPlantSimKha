@@ -13,88 +13,30 @@ using Utils;
 using kha.graphics2.GraphicsExtension;
 using Plant;
 
-class Branch // extends  Leaf
+class Branch  extends  Leaf
 {
 	public static inline var DEATH_TIME_TO_DISAPPEAR = 3;
-
-	public var parentBranch: Branch;
-	public var GenerationIndex: Int;
-	public var maxGenerations: Int;
-
-	public var energy: Float;
-	public var energyDensity : Float;
-
-	public var dir: Vec2;
-	public var length: Float;
-	public var square: Float;
-	public var widthStart: Float;
-	public var widthEnd: Float;
-	public var startPos : Vec2;
-	public var endPos : Vec2;
-	public var Thikness : Float;
-	public var maxLength: Float;
-	public var dead: Bool;
-	public var deathtime: Float;
-	public var totalDeath: Bool;
-
-//	var sideVec: Vec2 ;
-
-	public var v1: Vec2;
-	public var v2: Vec2;
-	public var v3: Vec2;
-	public var v4 :Vec2;
-
-
 	public var ChildrenIndices : Array<Branch>;
 	public var LeavesIndices : Array<Leaf>;
 
-	public function new() 
+	public function new(plant: Plant) 
     {
 		ChildrenIndices = [];
 		LeavesIndices = [];
-
-		dir = new Vec2(0,-1);
-		startPos = new Vec2(0,0);
-		endPos = new Vec2(0,100);
-
-
-		v1= new Vec2(0,0);
-		v2= new Vec2(0,0);
-		v3= new Vec2(0,0);
-		v4= new Vec2(0,0);
-
-	//	sideVec = new Vec2(0,0);
-
-		Init();
+		super(plant);
 	}
 
-	public function Init()
+	public override function Init()
 	{
-		parentBranch = null;
-		GenerationIndex = 0;
-		maxGenerations = 1;
-
-		energy = 1;
-		energyDensity = 0;
-		square =1;
+		super.Init();
+	
 		ChildrenIndices.splice(0, ChildrenIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
 
-		dir = new Vec2(0,-1);
-		length = 1;
-		widthStart = 1;
-		widthEnd = 1;
-		Thikness= 0.03;
-
-		maxLength = 140;
-		dead = false;
-		deathtime =0;
-		totalDeath = false;
-
 	}
 
 
-	public function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
+	public override function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
 	{
 		if (energy<0) return;
 		var delta: Float = energyPiece;
@@ -114,7 +56,7 @@ class Branch // extends  Leaf
 		energy -= delta;
 	}
 
-	public function CalculateGrowth(dt: Float)
+/*	public function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
 		if (length > maxLength) return;
@@ -127,7 +69,7 @@ class Branch // extends  Leaf
 		widthEnd=0;
 
 		energy -=  delta; 
-	}
+	}*/
 
 	public function ChangeEnergy(plant:Plant, energyPiece: Float):Float
 	{
@@ -148,7 +90,7 @@ class Branch // extends  Leaf
 		return energyPiece;
 	}
 
-	public function ConsumeEnergy(dt: Float)
+	public override function ConsumeEnergy(dt: Float)
 	{
 
 //		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
@@ -204,7 +146,7 @@ class Branch // extends  Leaf
 	}
 
 
-	public function Calculate ( dt: Float): Void {
+	public override function  Calculate ( dt: Float): Void {
 		if (dead)
 		{
 			deathtime += dt;
@@ -269,7 +211,7 @@ class Branch // extends  Leaf
 		
 	}
 	
-	public function Draw (framebuffer:Framebuffer): Void 
+	public override function Draw (framebuffer:Framebuffer): Void 
 	{
 		if (deathtime> DEATH_TIME_TO_DISAPPEAR) return;
 
@@ -285,7 +227,7 @@ class Branch // extends  Leaf
 
 	}
 	
-	public function DrawSkeleton (framebuffer:Framebuffer): Void
+	public override function DrawSkeleton (framebuffer:Framebuffer): Void
 	{
 		var g2 = framebuffer.g2;
 		g2.color = kha.Color.Black;
