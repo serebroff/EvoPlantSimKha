@@ -16,7 +16,10 @@ using Leaf;
 //-------------------------------------------------------
 class Beam  {
 
-        // constants
+       // constants
+    public static inline var BEAM_ENERGY  = 300;
+
+
     public var pos1: Vec2;
     public var pos2: Vec2;
     public var dist: Float;
@@ -46,8 +49,7 @@ class Beam  {
         
         dir = Sunlight.dir;
         
-        collisionLeafIndex = -1;
-        collisionPlantIndex = -1;
+        var collisionLeaf: Leaf = null;
 
         var plantIndex: Int =0;
         var leafIndex: Int =-1;
@@ -73,8 +75,8 @@ class Beam  {
                         dist=d1;
                         pos2 = pos1.add(dir.mult(d1));
                         collision = true;
-                        collisionLeafIndex = leafIndex;
-                        collisionPlantIndex = plantIndex;
+                        collisionLeaf = l;
+
                     }
                 }
             }
@@ -83,7 +85,7 @@ class Beam  {
 
         if (collision)
         {
-            Ecosystem.instance.plants[collisionPlantIndex].leaves[collisionLeafIndex].energy+=250*FPS.dt;
+            collisionLeaf.ChangeEnergy(BEAM_ENERGY*FPS.dt);
         }
 
     }

@@ -81,7 +81,6 @@ class Project {
 		framebuffer = frames[0];
 
 
-		fps.update();
 
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
@@ -103,6 +102,8 @@ class Project {
 		g2.drawString( "LEAVES " + Std.string(Ecosystem.instance.plants[0].leaves.length), 20, 60);
 
 		
-		g2.end();		
+		g2.end();	
+
+		fps.update();	
 	}
 }

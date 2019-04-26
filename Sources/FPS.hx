@@ -22,6 +22,7 @@ class FPS
         frametimePassed =0;
         realTime =0;
         fps=0;
+        dt = 0;
 
     };
 

@@ -31,7 +31,6 @@ class Leaf
 	public var square: Float;
 	public var startPos : Vec2;
 	public var endPos : Vec2;
-	public var Thikness : Float;
 	public var dead: Bool;
 	public var deathtime: Float;
 	public var totalDeath: Bool;
@@ -70,9 +69,6 @@ class Leaf
 		parentBranch = null;
 		GenerationIndex = 0;
 		maxLength = 20;
-
-		Thikness= 0.5;
-
 		length = 1;
 		widthStart = 1;
 		widthEnd = 1;
@@ -80,6 +76,30 @@ class Leaf
 		deathtime =0;
 		totalDeath= false;
 		hasProducedBranch = false;
+	}
+
+	public function ChangeEnergy(energyPiece: Float):Float
+	{
+		var energyChange: Float =0 ;
+		energy +=energyPiece;
+		if (square>5)
+		{
+		energyDensity = energy / square;
+		if (energyDensity > Plant.MAX_ENERGY_IN_BRANCH) {
+			
+			energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH * square) ;
+			energy = Plant.MAX_ENERGY_IN_BRANCH * square;
+			return energyChange;
+		}
+		}
+		if (energy < 0) {
+			
+			energyChange = energy - energyPiece  ;
+			energy = 0;
+			//dead = true;
+			return energyChange;
+		}
+		return -energyPiece;
 	}
 
 	public function ConsumeEnergy(dt: Float)
@@ -100,33 +120,38 @@ class Leaf
 		}
 	}
 
-	public function EnergyManagment()
-	{
-		if (energy<0) return;
-
-		CalculateGrowth(FPS.dt);
-
-		if (length< maxLength*0.2) return;
-
-
-        if (energyDensity< Plant.LEAF_ENERGY_TO_SHARE) return;
-
-		if (energyDensity >parentBranch.energyDensity)
-		{
-
-		}
-
-		//LEAF_ENERGY_2_BRANCH * delta
-	}
-
-	public function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
+	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
 	{
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		b.energy += delta;
 		energy -= delta;
 
+	}
 
+	public function ExchangeEnergyWithParent()
+	{
+		var delta:Float = 0;
+		if (length< maxLength)
+		{
+			//if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+			{
+				delta = FPS.dt * Plant.BRANCH_ENERGY_2_LEAF * parentBranch.square;
+				//ChangeEnergy(parentBranch.ChangeEnergy(-delta));
+				energy += delta;
+				parentBranch.energy -= delta;
+			}
+		}
+		else 
+		{
+			if (energyDensity > Plant.LEAF_ENERGY_TO_SHARE)
+			{
+				delta = FPS.dt * Plant.LEAF_ENERGY_2_BRANCH * square;
+				//parentBranch.ChangeEnergy(ChangeEnergy(-delta));
+				parentBranch.energy += delta;
+				energy -= delta;
+			}
+		}
 	}
 
 	public function CalculateGrowth(dt: Float)
@@ -158,7 +183,7 @@ class Leaf
 		endPos =startPos.add( endPos.mult(length));
 
 		widthStart= 0;
-		widthEnd= length*Thikness *0.5;
+		widthEnd= length * parentPlant.dna.leaf_tickness *0.5;
 
 		var sideVec: Vec2;
 		sideVec = dir.skew().mult(widthStart);
@@ -171,10 +196,10 @@ class Leaf
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
 		square = (widthEnd + widthStart) *0.5 * length;
-		if (square>0)
+		if (square>1)
 		{
 			energyDensity = energy / square;
-		}
+		} else energyDensity =0;
 
 		
 	}

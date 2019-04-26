@@ -36,13 +36,38 @@ class Branch  extends  Leaf
 	}
 
 
-	public override function ExchangeEnergyWithBranch(b: Branch, energyPiece:Float)
+	public override function GiveEnergyToBranch(b: Branch, energyPiece:Float)
 	{
 		if (energy<0) return;
 		var delta: Float = energyPiece;
 		if (energy < energyPiece) delta=energy; 
 		b.energy += delta;
 		energy -= delta;
+	}
+		
+	public override function ExchangeEnergyWithParent()
+	{
+		if (parentBranch == null) return;
+
+		var delta:Float = 0;
+		
+		delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * parentBranch.square;
+		if (length< maxLength*0.1) {
+			energy += delta;
+			parentBranch.energy -= delta;			
+		}
+		else if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+		{
+
+			energy += delta;
+			parentBranch.energy -= delta;
+		}
+		else 
+		{
+			delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * square;
+			energy -= delta;
+			parentBranch.energy += delta;
+		}
 	}
 
 	public function GiveEnergyToLeaf(l: Leaf, energyPiece:Float)
@@ -56,7 +81,7 @@ class Branch  extends  Leaf
 		energy -= delta;
 	}
 
-/*	public function CalculateGrowth(dt: Float)
+	public override function CalculateGrowth(dt: Float)
 	{
 		if (energy<0) return;
 		if (length > maxLength) return;
@@ -65,30 +90,13 @@ class Branch  extends  Leaf
 		if (delta>energy) delta = energy;
 
 		length +=  Math.sqrt(delta);  
-		widthStart= length*Thikness;
+		widthStart= length* parentPlant.dna.branch_tickness;
 		widthEnd=0;
 
 		energy -=  delta; 
-	}*/
-
-	public function ChangeEnergy(plant:Plant, energyPiece: Float):Float
-	{
-		var energyChange: Float =0 ;
-		energy +=energyPiece;
-		if (energy>Plant.MAX_ENERGY_IN_BRANCH) {
-			
-			energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH) ;
-			energy = Plant.MAX_ENERGY_IN_BRANCH;
-			return energyChange;
-		}
-		if (energy < 0) {
-			
-			energyChange = - energy ;
-			energy = 0;
-			return energyChange;
-		}
-		return energyPiece;
 	}
+
+
 
 	public override function ConsumeEnergy(dt: Float)
 	{
@@ -121,7 +129,6 @@ class Branch  extends  Leaf
 		var delta: Float;
 		delta  =  energy * dt;
 
-		ConsumeEnergy(dt);
 
 		if (length< maxLength*0.1) return;
 
@@ -129,13 +136,13 @@ class Branch  extends  Leaf
 
         if (parentBranch != null)
         {
-            ExchangeEnergyWithBranch(parentBranch, Plant.BRANCH_ENERGY_2_BRANCH * delta);
+            GiveEnergyToBranch(parentBranch, Plant.BRANCH_ENERGY_2_BRANCH * delta);
         }
 
                     
         for (b in ChildrenIndices)
         {
-          	ExchangeEnergyWithBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
+          	GiveEnergyToBranch(b, Plant.BRANCH_ENERGY_2_BRANCH * delta  );
 		}
 
 
@@ -182,7 +189,7 @@ class Branch  extends  Leaf
 				c++;
 			}
 			widthEnd = wMax;
-			widthStart = length* Thikness + widthEnd;
+			widthStart = length* parentPlant.dna.branch_tickness + widthEnd;
 		}
 
 		var sideVec: Vec2;
@@ -203,10 +210,10 @@ class Branch  extends  Leaf
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
 		square = (widthEnd + widthStart) *0.5 * length;
-		if (square>0)
+		if (square>1)
 		{
 			energyDensity = energy / square;
-		}
+		} else energyDensity =0;
 
 		
 	}
