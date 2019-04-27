@@ -53,12 +53,17 @@ class Branch  extends  Leaf
 		
 		delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
 
-		if (length< maxLength*0.1) {
+		if (length< maxLength*0.5) {
 			energy += delta;
 			parentBranch.energy -= delta;			
 		}
-		else 
-		if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+		else if (parentBranch.energyDensity < energyDensity)
+		{
+			delta =  FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * energy;
+			energy -= delta;
+			parentBranch.energy += delta;			
+		}/*
+		else if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 		{
 
 			energy += delta;
@@ -69,7 +74,7 @@ class Branch  extends  Leaf
 			delta =  FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * energy;
 			energy -= delta;
 			parentBranch.energy += delta;
-		}
+		}*/
 	}
 
 	public function GiveEnergyToLeaf(l: Leaf, energyPiece:Float)
@@ -102,8 +107,6 @@ class Branch  extends  Leaf
 
 	public override function ConsumeEnergy(dt: Float)
 	{
-
-//		energy -= Plant.BRANCH_ENERGY_CONSUME * square * dt;
 
 		if (energy<0 ) return;
 
