@@ -22,7 +22,6 @@ class Ecosystem
     }
 
     public var ecosystem_time: Float;
-    public var sun_angle: Float;
 
     public var foton: Array<Foton>;
     public var sunlight : Sunlight;
@@ -31,7 +30,6 @@ class Ecosystem
 
     private function new() {
         ecosystem_time =0;
-        sun_angle = 0;
         
         sunlight = new Sunlight();
 
@@ -56,7 +54,6 @@ class Ecosystem
 
 
         ecosystem_time += dt;
-        sun_angle = Math.sin(ecosystem_time * 0.1); 
 
     }
 

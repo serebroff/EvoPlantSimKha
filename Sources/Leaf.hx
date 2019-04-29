@@ -16,6 +16,10 @@ using Plant;
 
 class Leaf
 {
+	public static inline var DEATH_TIME = 4;
+	public static inline var DISAPPEAR_TIME = 3;
+	public static inline var TIME_TO_FALL = 3;
+
 	public var parentPlant: Plant;
 	public var parentBranch: Branch;
 	public var GenerationIndex: Int;
@@ -33,6 +37,7 @@ class Leaf
 	public var endPos : Vec2;
 	public var dead: Bool;
 	public var deathtime: Float;
+	public var disapperTime: Float;
 	public var totalDeath: Bool;
 	public var hasProducedBranch: Bool;
 
@@ -74,24 +79,34 @@ class Leaf
 		widthEnd = 1;
 		dead = false;
 		deathtime =0;
+		disapperTime =0;
 		totalDeath= false;
 		hasProducedBranch = false;
 	}
 
-	public function ChangeEnergy(energyPiece: Float):Float
+	public function AddEnergy(energyPiece: Float):Float
 	{
+		if (parentBranch.dead) return 0;
+
 		var energyChange: Float =0 ;
 		energy +=energyPiece;
+
 		if (square>5)
 		{
-		energyDensity = energy / square;
-		if (energyDensity > Plant.MAX_ENERGY_IN_BRANCH) {
+			energyDensity = energy / square;
+			if (energyDensity > Plant.MAX_ENERGY_IN_BRANCH) {
 			
-			energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH * square) ;
-			energy = Plant.MAX_ENERGY_IN_BRANCH * square;
-			return -energyChange;
+				energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH * square) ;
+				energy = Plant.MAX_ENERGY_IN_BRANCH * square;
+				return -energyChange;
+			}
 		}
-		}
+		return energyPiece;
+	}
+
+	public function RemoveEnergy(energyPiece: Float):Float
+	{
+		var energyChange: Float =0 ;
 		if (energy < 0) {
 			
 			energyChange = energy - energyPiece  ;
@@ -104,13 +119,6 @@ class Leaf
 
 	public function ConsumeEnergy(dt: Float)
 	{
-		if (parentBranch != null)
-        {
-            if (parentBranch.dead) 
-			{
-				energy -= square * dt;
-			}
-        }
 
 		energy -= Plant.LEAF_ENERGY_CONSUME * square * dt;
 		
@@ -120,21 +128,19 @@ class Leaf
 		}
 	}
 
-	public function GiveEnergyToBranch(b: Branch, energyPiece:Float)
-	{
-		var delta: Float = energyPiece;
-		if (energy < energyPiece) delta=energy; 
-		b.energy += delta;
-		energy -= delta;
-
-	}
 
 	public function ExchangeEnergyWithParent()
 	{
 		var delta:Float = 0;
+		if (parentBranch.dead) 
+		{
+			energy -= 2* square * FPS.dt;
+			return;
+        }
+
 		if (length< maxLength)
 		{
-			//if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+			if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 			{
 				delta = FPS.dt * Plant.BRANCH_ENERGY_2_LEAF * parentBranch.energy;
 				//ChangeEnergy(parentBranch.ChangeEnergy(-delta));
@@ -169,12 +175,17 @@ class Leaf
 		if (dead)
 		{
 			deathtime += dt;
-			if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) {
+			if (deathtime> DEATH_TIME) {
 				totalDeath = true;
 				return;
 			}
+			
 			startPos.y += deathtime *5;
-			if (startPos.y > System.windowHeight()) startPos.y = System.windowHeight();
+
+			if (startPos.y > System.windowHeight()) {
+				startPos.y = System.windowHeight();
+				disapperTime += dt;
+			}
 		}
 		else startPos.setFrom( parentBranch.endPos);
 
@@ -206,19 +217,20 @@ class Leaf
 	
 	public function Draw (framebuffer:Framebuffer): Void 
 	{
-		if (deathtime> Branch.DEATH_TIME_TO_DISAPPEAR) return;
+		if (deathtime> DEATH_TIME) return;
+
+		var a: Float = 1 - disapperTime / DISAPPEAR_TIME;
+		if (a<0) a=0;
 
 		var g2 = framebuffer.g2;
 		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_LEAF;
 		var r: Float = 0;
 		if (c<0) c= 0;
 		if (c>1) c =1;
-		r = 0.5 - 0.5*c;
-		if (length<maxLength) r=0;
 
-		g2.color = kha.Color.fromFloats(r, c, 0, 1);
-		if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
-	//	g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
+		g2.color = kha.Color.fromFloats(0, c, 0, a);
+	//	if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
+
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);
 
 	}

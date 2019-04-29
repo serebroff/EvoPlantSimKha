@@ -86,7 +86,7 @@ class Project {
 
 
 		var g2 = framebuffer.g2;
-		var r:Float =  0.1 * Math.abs(Ecosystem.instance.sun_angle ) ;
+		var r:Float =  0.1 * Math.abs(Sunlight.sun_angle ) ;
 		g2.begin(true, kha.Color.fromFloats( 0.5+r, 0.6, 1, 1));
 		
 

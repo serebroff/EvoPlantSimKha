@@ -41,7 +41,7 @@ class Foton {
 
     public function Renew(): Void {
  
-        var angle:Float  = Math.PI*0.5 - Math.PI* 0.4 *  Ecosystem.instance.sun_angle; 
+        var angle:Float  = Math.PI*0.5 - Math.PI* 0.4 *  Sunlight.sun_angle; 
         dir.set(Math.cos(angle), Math.sin(angle));
         dir.normalize();
 
@@ -77,7 +77,7 @@ class Foton {
 
 		//g2.color = kha.Color.Orange; //fromFloats(0.2,0.2,0.9, 0.7 );
         
-        var r:Float =  0.8 * Math.abs(Ecosystem.instance.sun_angle ) ;
+        var r:Float =  0.8 * Math.abs(Sunlight.sun_angle ) ;
 		g2.color = kha.Color.fromFloats( 1, 1-r, 0, 1);
 		
         g2.drawLine (pos.x, pos.y , pos.x + dir.x*BEAM_LENGTH, pos.y + dir.y*BEAM_LENGTH, 2);

@@ -19,6 +19,8 @@ class Sunlight {
 
     public static inline var RADIUS = 1700;
     public static inline var NUM_BEAMS = 70;
+    public static inline var SUN_FULL_TURN_IN_SEC = 8; 
+
     public static var BEAM_DISTANCE = 30;
     public static var BEAM_LENGTH = 2700; 
 
@@ -32,6 +34,9 @@ class Sunlight {
     public var radius : Float;
     public var beam_delta : Float;
 
+    public static var sun_time : Float;
+    public static var sun_angle : Float;
+
 
 	public var Frequency: Float; // per sec per pixel
 
@@ -42,6 +47,9 @@ class Sunlight {
         angle = 0;
         radius = RADIUS;
         beam_delta =0;
+
+        sun_time =0;
+        sun_angle=0;
         
         ar_beams =  [for (i in 0...NUM_BEAMS) new Beam()];
   //      ar_beams = new Vector<Beam>(NUM_BEAMS);
@@ -55,7 +63,11 @@ class Sunlight {
 
     public function Calculate(dt:Float) 
     {
-        angle  = - Math.PI*0.5 - Math.PI* 0.2 *  Ecosystem.instance.sun_angle; 
+
+        sun_time += dt;
+        sun_angle = Math.sin(Math.PI * sun_time / SUN_FULL_TURN_IN_SEC); 
+
+        angle  = - Math.PI*0.5 - Math.PI* 0.2 *  sun_angle; 
         dir.set(-Math.cos(angle), -Math.sin(angle));
 
         /*beam_delta += dt *20 ;
@@ -98,17 +110,10 @@ class Sunlight {
 
       public function Draw (framebuffer:Framebuffer): Void 
       {
-        /*var g2 = framebuffer.g2;
-		g2.color = kha.Color.fromFloats(0,0,0,0.5);
-		g2.drawLine(center.x,center.y,pos.x,pos.y,2); */
-
-
-         for (b in ar_beams)
+        for (b in ar_beams)
         {
             b.Draw(framebuffer);
         }
-
-
       }
 
 
