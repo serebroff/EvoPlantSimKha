@@ -16,9 +16,9 @@ using Plant;
 
 class Leaf
 {
-	public static inline var DEATH_TIME = 4;
-	public static inline var DISAPPEAR_TIME = 3;
-	public static inline var TIME_TO_FALL = 3;
+	public static inline var DEATH_TIME = 9;
+	public static inline var DISAPPEAR_TIME = 2;
+	public static inline var TIME_TO_FALL = 4;
 
 	public var parentPlant: Plant;
 	public var parentBranch: Branch;
@@ -37,6 +37,7 @@ class Leaf
 	public var endPos : Vec2;
 	public var dead: Bool;
 	public var deathtime: Float;
+	public var deathDeltaY: Float;
 	public var disapperTime: Float;
 	public var totalDeath: Bool;
 	public var hasProducedBranch: Bool;
@@ -79,6 +80,7 @@ class Leaf
 		widthEnd = 1;
 		dead = false;
 		deathtime =0;
+		deathDeltaY =0;
 		disapperTime =0;
 		totalDeath= false;
 		hasProducedBranch = false;
@@ -95,10 +97,10 @@ class Leaf
 		if (square>5)
 		{
 			energyDensity = energy / square;
-			if (energyDensity > Plant.MAX_ENERGY_IN_BRANCH) {
+			if (energyDensity > DNA.MAX_ENERGY_IN_BRANCH) {
 			
-				energyChange = energyPiece - (energy - Plant.MAX_ENERGY_IN_BRANCH * square) ;
-				energy = Plant.MAX_ENERGY_IN_BRANCH * square;
+				energyChange = energyPiece - (energy - DNA.MAX_ENERGY_IN_BRANCH * square) ;
+				energy = DNA.MAX_ENERGY_IN_BRANCH * square;
 				return -energyChange;
 			}
 		}
@@ -106,10 +108,21 @@ class Leaf
 	}
 
 
+	public function UpdateDensity()
+	{
+		square = (widthEnd + widthStart) *0.5 * length;
+
+		if (square>1)
+		{
+			energyDensity = energy / square;
+		} 
+		else energyDensity =0;
+	}
+
 	public function ConsumeEnergy(dt: Float)
 	{
 
-		energy -= Plant.LEAF_ENERGY_CONSUME * square * dt;
+		energy -= DNA.LEAF_ENERGY_CONSUME * square * dt;
 		
 		if (energy < 0) 
 		{
@@ -131,18 +144,16 @@ class Leaf
 		{
 			if (parentBranch.energyDensity > energyDensity)// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 			{
-				delta = FPS.dt * Plant.BRANCH_ENERGY_2_LEAF * parentBranch.energy;
-				//ChangeEnergy(parentBranch.ChangeEnergy(-delta));
+				delta = FPS.dt * DNA.BRANCH_ENERGY_2_LEAF * parentBranch.energy;
 				energy += delta;
 				parentBranch.energy -= delta;
 			}
 		}
 		else 
 		{
-			if (energyDensity > Plant.LEAF_ENERGY_TO_SHARE)
+			if (energyDensity > DNA.LEAF_ENERGY_TO_SHARE)
 			{
-				delta = FPS.dt * Plant.LEAF_ENERGY_2_BRANCH * energy;
-				//parentBranch.ChangeEnergy(ChangeEnergy(-delta));
+				delta = FPS.dt * DNA.LEAF_ENERGY_2_BRANCH * energy;
 				parentBranch.energy += delta;
 				energy -= delta;
 			}
@@ -153,7 +164,7 @@ class Leaf
 	{
 		if (energy<0) return;
 		if (length >= maxLength) return;
-        var delta: Float  =  energy *dt;
+        var delta: Float  = DNA.LEAF_GROWTH_RATE * energy *dt;
 		if (delta>energy) delta = energy;
         length +=  Math.sqrt(delta); 
         energy -=  delta; 
@@ -195,11 +206,7 @@ class Leaf
 		v2.set( endPos.x -  sideVec.x, endPos.y - sideVec.y ); 
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
-		square = (widthEnd + widthStart) *0.5 * length;
-		if (square>1)
-		{
-			energyDensity = energy / square;
-		} else energyDensity =0;
+		UpdateDensity();
 
 		
 	}
@@ -209,8 +216,8 @@ class Leaf
 		CalculatePos(dt);
 		
         if (!dead) {
-            if (length> maxLength*0.5 && !hasProducedBranch) {
-                if (energyDensity> Plant.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
+            if (length> maxLength* parentPlant.dna.leaf_frequency && !hasProducedBranch) {
+                if (energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
                 {
                     hasProducedBranch = true;
                     parentPlant.CreateNewBranch(this);
@@ -231,7 +238,7 @@ class Leaf
 		if (a<0) a=0;
 
 		var g2 = framebuffer.g2;
-		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_LEAF;
+		var c: Float = energyDensity / DNA.MAX_ENERGY_IN_LEAF;
 		var r: Float = 0;
 		if (c<0) c= 0;
 		if (c>1) c =1;

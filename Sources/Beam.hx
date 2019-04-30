@@ -51,14 +51,10 @@ class Beam  {
         
         var collisionLeaf: Leaf = null;
 
-        var plantIndex: Int =0;
-        var leafIndex: Int =-1;
-
         for (p in Ecosystem.instance.plants)
         {
             for (l in p.leaves)
             {
-                leafIndex++;
                 if (l.dead) continue;
 
                 d1 = pos1.GetRayToLineSegmentIntersection(dir, l.v2,l.v3); 
@@ -80,7 +76,6 @@ class Beam  {
                     }
                 }
             }
-            plantIndex++;    
         }
 
         if (collision)

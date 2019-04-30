@@ -53,16 +53,16 @@ class Branch  extends  Leaf
 		var delta:Float = 0;
 		
 		//if (length< maxLength*0.5) 
-		if (parentBranch.energyDensity > energyDensity && (parentBranch.energyDensity > Plant.BRANCH_ENERGY_TO_SHARE))
+		if (parentBranch.energyDensity > energyDensity && (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE))
 		{
-			delta = FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
+			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
 			energy += delta;
 			parentBranch.energy -= delta;			
 		}
-		else if (energyDensity > Plant.BRANCH_ENERGY_TO_SHARE)
+		else if (energyDensity > DNA.BRANCH_ENERGY_TO_SHARE)
 		// if (parentBranch.energyDensity < energyDensity)
 		{
-			delta =  FPS.dt * Plant.BRANCH_ENERGY_2_BRANCH * energy;
+			delta =  FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * energy;
 			energy -= delta;
 			parentBranch.energy += delta;			
 		}
@@ -74,7 +74,7 @@ class Branch  extends  Leaf
 		if (energy<0) return;
 		if (length > maxLength) return;
 
-        var delta: Float  =  energy *dt;
+        var delta: Float  = DNA.BRANCH_GROWTH_RATE * energy *dt;
 		if (delta>energy) delta = energy;
 
 		length +=  Math.sqrt(delta);  
@@ -97,8 +97,10 @@ class Branch  extends  Leaf
 			totalDeath = true;
 			return;
 		}	
-
-		startPos.y += deathtime *10;
+		if (deathtime> Leaf.TIME_TO_FALL)
+		{
+			startPos.y += (deathtime - Leaf.TIME_TO_FALL) *10;
+		}
 		
 		if (startPos.y > System.windowHeight()) {
 			disapperTime += dt;
@@ -174,10 +176,8 @@ class Branch  extends  Leaf
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
 		square = (widthEnd + widthStart) *0.5 * length;
-		if (square>1)
-		{
-			energyDensity = energy / square;
-		} else energyDensity =0;
+		
+		UpdateDensity();
 
 		
 	}
@@ -198,11 +198,13 @@ class Branch  extends  Leaf
 			b.Calculate(dt);
 		}
 
+		UpdateDensity();
+
 		if (!dead) {
 
-            if ((length > maxLength * 0.1 ) && (LeavesIndices.length < 2))
+            if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (LeavesIndices.length < 2))
             {
-                if (energyDensity> Plant.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
+                if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
                 {
                 
                     parentPlant.CreateNewLeaf(this, parentPlant.dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
@@ -215,6 +217,8 @@ class Branch  extends  Leaf
             ConsumeEnergy(dt);
          }
 
+
+
 	}
 	
 	public override function Draw (framebuffer:Framebuffer): Void 
@@ -225,7 +229,7 @@ class Branch  extends  Leaf
 		if (a<0) a=0;
 
 		var g2 = framebuffer.g2;
-		var c: Float = energyDensity / Plant.MAX_ENERGY_IN_BRANCH;
+		var c: Float = energyDensity / DNA.MAX_ENERGY_IN_BRANCH;
 		if (c<0) c= 0;
 		if (c>1) c =1;
 		g2.color = kha.Color.fromFloats(0.8*c, 0.4*c, 0, a);

@@ -19,7 +19,7 @@ class Sunlight {
 
     public static inline var RADIUS = 1700;
     public static inline var NUM_BEAMS = 70;
-    public static inline var SUN_FULL_TURN_IN_SEC = 8; 
+    public static inline var SUN_FULL_TURN_IN_SEC = 20; 
 
     public static var BEAM_DISTANCE = 30;
     public static var BEAM_LENGTH = 2700; 

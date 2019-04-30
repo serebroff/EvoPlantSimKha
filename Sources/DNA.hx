@@ -15,16 +15,38 @@ class DNA {
     public var leaf_tickness(get, never):Float;
     public var leaf_frequency(get, never):Float;
 
+        // constants
+    public static inline var LEAF_ENERGY_2_BRANCH = 1;
+    public static inline var BRANCH_ENERGY_2_LEAF = 1;
+    public static inline var BRANCH_ENERGY_2_BRANCH = 1;
+
+    public static inline var LEAF_GROWTH_RATE = 1;
+    public static inline var BRANCH_GROWTH_RATE = 1;
+
+    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0;
+    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0;
+
+    public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
+    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
+
+    public static inline var LEAF_ENERGY_CONSUME = 0.1;
+    public static inline var BRANCH_ENERGY_CONSUME = 0.1;
+
+    public static inline var MAX_ENERGY_IN_LEAF = 2;
+    public static inline var MAX_ENERGY_IN_BRANCH = 2;
+
+    public static inline var MAX_GENERATIONS = 15;
+
 
     public function new()
     {
         genes =[
             Math.PI*0.2,   // angle of new branches and leaves 0..PI/2
-            90,  // branch length
+            60,  // branch length
             0.03,  // branch tickness  w / l
             30,  // leaf lenght
-            0.4,  // leaf thickness
-            0.2  // leaf frequency
+            0.3,  // leaf thickness
+            0.7  // leaf frequency
         ];
 	}
 

@@ -27,31 +27,6 @@ class Plant
 
     public var pos: Vec2;
 
-
-
-    // constants
-    public static inline var LEAF_ENERGY_2_BRANCH = 1;
-    public static inline var BRANCH_ENERGY_2_LEAF = 1;
-    public static inline var BRANCH_ENERGY_2_BRANCH = 1;
-
-    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.6;
-    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.6;
-
-    public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
-
-    public static inline var LEAF_ENERGY_CONSUME = 0.1;
-    public static inline var BRANCH_ENERGY_CONSUME = 0.1;
-
-    public static inline var MAX_ENERGY_IN_LEAF = 2;
-    public static inline var MAX_ENERGY_IN_BRANCH = 2;
-
-    public static inline var MAX_GENERATIONS = 15;
-
-
-
- 
-
     public function new() 
     {
         dna = new DNA();
@@ -78,9 +53,6 @@ class Plant
     
    
     }
-
-
-
 
     public function CreateNewBranch(leafParent: Leaf) 
     {
