@@ -17,7 +17,7 @@ using Leaf;
 class Beam  {
 
        // constants
-    public static inline var BEAM_ENERGY  = 200;
+    public static inline var BEAM_ENERGY  = 100;
 
 
     public var pos1: Vec2;

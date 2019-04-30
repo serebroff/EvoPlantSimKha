@@ -34,11 +34,11 @@ class Plant
     public static inline var BRANCH_ENERGY_2_LEAF = 1;
     public static inline var BRANCH_ENERGY_2_BRANCH = 1;
 
-    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 1.0;
-    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 1.0;
+    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.6;
+    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.6;
 
-    public static inline var LEAF_ENERGY_TO_SHARE = 0.5;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.5;
+    public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
+    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
 
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;
@@ -179,6 +179,16 @@ class Plant
 
             if (!b.dead) {
 
+                if ((b.length > b.maxLength * 0.1 ) && (b.LeavesIndices.length < 2))
+                {
+                    if (b.energyDensity> BRANCH_ENERGY_TO_PRODUCE_LEAF)  
+                    {
+                
+                        CreateNewLeaf(b, dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
+                        CreateNewLeaf(b, -dna.angle );
+                       // CreateNewLeaf(b, 0 );
+                    }
+                }
                 b.CalculateGrowth(dt);
                 b.ExchangeEnergyWithParent();
 		        b.ConsumeEnergy(dt);
@@ -187,15 +197,7 @@ class Plant
             b.Calculate(dt);
             
 
-            if (b.length < b.maxLength * 0.1 ) continue;
-            if (b.LeavesIndices.length == 3) continue;
 
-
-            if (b.energyDensity> BRANCH_ENERGY_TO_PRODUCE_LEAF)  
-            {
-                
-                CreateNewLeaf(b, dna.angle * (-1 + 2* Math.random()));
-            }
             
         }
 
@@ -212,24 +214,20 @@ class Plant
         for (l in leaves)
         {
             if (l.totalDeath) continue;
-
-            
-            
             if (!l.dead) {
+
+                if (l.length> l.maxLength*0.5 && !l.hasProducedBranch) {
+                    if (l.energyDensity> LEAF_ENERGY_TO_PRODUCE_BRANCH)  
+                    {
+                        l.hasProducedBranch = true;
+                        CreateNewBranch(l);
+                    }
+                }
                 l.CalculateGrowth(dt);
                 l.ExchangeEnergyWithParent();
                 l.ConsumeEnergy(dt);
             }
             l.Calculate(dt);
-            if (l.dead) continue;
-            
-            if (l.length< l.maxLength*0.5 || l.hasProducedBranch) continue;
-            
-            if (l.energyDensity> LEAF_ENERGY_TO_PRODUCE_BRANCH)  
-            {
-                l.hasProducedBranch = true;
-                CreateNewBranch(l);
-            }
 
         }
 

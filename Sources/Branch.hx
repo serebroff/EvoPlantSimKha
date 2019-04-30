@@ -46,7 +46,7 @@ class Branch  extends  Leaf
 
 		if (parentBranch.dead) 
 		{
-			energy -= 2*square * FPS.dt;
+			energy -= 4 * square * FPS.dt;
 			return;
         }
 

@@ -87,6 +87,7 @@ class Leaf
 	public function AddEnergy(energyPiece: Float):Float
 	{
 		if (parentBranch.dead) return 0;
+		if (parentBranch.parentBranch!=null && parentBranch.parentBranch.dead) return 0;
 
 		var energyChange: Float =0 ;
 		energy +=energyPiece;
