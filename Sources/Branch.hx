@@ -108,7 +108,7 @@ class Branch  extends  Leaf
 	}
 
 
-	public override function  Calculate ( dt: Float): Void {
+	public override function  CalculatePos ( dt: Float): Void {
 		if (dead) CalculateDeath(dt);
 		else if (parentBranch != null)
 		{
@@ -118,7 +118,7 @@ class Branch  extends  Leaf
 		endPos.setFrom( startPos.add( dir.mult(length)) );
 
 		
-		if (ChildrenIndices.length >0)
+/*		if (ChildrenIndices.length >0)
 		{
 			var wMax: Float=0;
 			var w: Float =0;
@@ -138,6 +138,22 @@ class Branch  extends  Leaf
 		else {
 			widthStart= length* parentPlant.dna.branch_tickness;
 			widthEnd=0;
+		}
+*/
+		
+
+		if (length< maxLength) 
+		{
+			widthStart= length* parentPlant.dna.branch_tickness;
+			widthEnd=0;
+		} else widthStart = length* parentPlant.dna.branch_tickness + widthEnd;
+
+		if (parentBranch!= null)
+		{
+			if (parentBranch.widthEnd < widthStart ) 
+			{
+				parentBranch.widthEnd = widthStart;
+			}
 		}
 
 		var sideVec: Vec2;
@@ -164,6 +180,41 @@ class Branch  extends  Leaf
 		} else energyDensity =0;
 
 		
+	}
+
+	public override function  Calculate(dt: Float): Void 
+	{
+		
+		if (totalDeath) return;
+		
+		CalculatePos(dt);
+
+		for (l in LeavesIndices)
+		{
+			l.Calculate(dt);
+		}
+		for (b in ChildrenIndices)
+		{
+			b.Calculate(dt);
+		}
+
+		if (!dead) {
+
+            if ((length > maxLength * 0.1 ) && (LeavesIndices.length < 2))
+            {
+                if (energyDensity> Plant.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
+                {
+                
+                    parentPlant.CreateNewLeaf(this, parentPlant.dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
+                    parentPlant.CreateNewLeaf(this, -parentPlant.dna.angle );
+                   // CreateNewLeaf(b, 0 );
+                }
+            }
+            CalculateGrowth(dt);
+            ExchangeEnergyWithParent();
+            ConsumeEnergy(dt);
+         }
+
 	}
 	
 	public override function Draw (framebuffer:Framebuffer): Void 

@@ -166,77 +166,10 @@ class Plant
     }
 
 
-
-    public function CalculateBranches(dt:Float) {
-        
-        var b: Branch;
-        var delta: Float =0;
-        var energyDensity: Float;
-
-        for (b in branches)
-        {
-            if (b.totalDeath) continue;
-
-            if (!b.dead) {
-
-                if ((b.length > b.maxLength * 0.1 ) && (b.LeavesIndices.length < 2))
-                {
-                    if (b.energyDensity> BRANCH_ENERGY_TO_PRODUCE_LEAF)  
-                    {
-                
-                        CreateNewLeaf(b, dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
-                        CreateNewLeaf(b, -dna.angle );
-                       // CreateNewLeaf(b, 0 );
-                    }
-                }
-                b.CalculateGrowth(dt);
-                b.ExchangeEnergyWithParent();
-		        b.ConsumeEnergy(dt);
-            }
-
-            b.Calculate(dt);
-            
-
-
-            
-        }
-
-    }
-
-
-
-    public function CalculateLeaves(dt:Float) {
-
-        var l: Leaf;
-        var delta: Float;
-        var energyDensity: Float; 
-        var square : Float;
-        for (l in leaves)
-        {
-            if (l.totalDeath) continue;
-            if (!l.dead) {
-
-                if (l.length> l.maxLength*0.5 && !l.hasProducedBranch) {
-                    if (l.energyDensity> LEAF_ENERGY_TO_PRODUCE_BRANCH)  
-                    {
-                        l.hasProducedBranch = true;
-                        CreateNewBranch(l);
-                    }
-                }
-                l.CalculateGrowth(dt);
-                l.ExchangeEnergyWithParent();
-                l.ConsumeEnergy(dt);
-            }
-            l.Calculate(dt);
-
-        }
-
-    }
-
-
     public function Calculate(dt:Float) {
-        CalculateLeaves(dt);
-        CalculateBranches(dt);
+        firstBranch.Calculate(dt);
+/*        CalculateLeaves(dt);
+        CalculateBranches(dt);*/
 
     }
 

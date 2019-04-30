@@ -105,18 +105,6 @@ class Leaf
 		return energyPiece;
 	}
 
-	public function RemoveEnergy(energyPiece: Float):Float
-	{
-		var energyChange: Float =0 ;
-		if (energy < 0) {
-			
-			energyChange = energy - energyPiece  ;
-			energy = 0;
-			dead = true;
-			return -energyChange;
-		}
-		return -energyPiece;
-	}
 
 	public function ConsumeEnergy(dt: Float)
 	{
@@ -171,7 +159,7 @@ class Leaf
         energy -=  delta; 
 	}
 
-	public function Calculate (dt: Float): Void {
+	public function CalculatePos (dt: Float): Void {
 		
 		if (dead)
 		{
@@ -214,6 +202,25 @@ class Leaf
 		} else energyDensity =0;
 
 		
+	}
+
+	public function Calculate (dt: Float): Void {
+		if (totalDeath) return;
+		CalculatePos(dt);
+		
+        if (!dead) {
+            if (length> maxLength*0.5 && !hasProducedBranch) {
+                if (energyDensity> Plant.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
+                {
+                    hasProducedBranch = true;
+                    parentPlant.CreateNewBranch(this);
+                }
+            }
+            CalculateGrowth(dt);
+            ExchangeEnergyWithParent();
+            ConsumeEnergy(dt);
+        }
+	
 	}
 	
 	public function Draw (framebuffer:Framebuffer): Void 
