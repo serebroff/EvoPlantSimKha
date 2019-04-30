@@ -21,7 +21,7 @@ class DNA {
     public static inline var BRANCH_ENERGY_2_BRANCH = 1;
 
     public static inline var LEAF_GROWTH_RATE = 1;
-    public static inline var BRANCH_GROWTH_RATE = 1;
+    public static inline var BRANCH_GROWTH_RATE = 0.5;
 
     public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0;
     public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0;

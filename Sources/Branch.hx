@@ -66,6 +66,8 @@ class Branch  extends  Leaf
 			energy -= delta;
 			parentBranch.energy += delta;			
 		}
+
+		UpdateDensity();
 	}
 
 

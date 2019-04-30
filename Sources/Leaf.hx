@@ -158,6 +158,7 @@ class Leaf
 				energy -= delta;
 			}
 		}
+		UpdateDensity();
 	}
 
 	public function CalculateGrowth(dt: Float)
