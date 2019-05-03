@@ -220,6 +220,17 @@ class Branch  extends  Leaf
                    // CreateNewLeaf(b, 0 );
                 }*/
             }
+
+			if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (ChildrenIndices.length == 0))
+            {
+				var angles: Array<Float>;
+				angles = parentPlant.dna.getBranches(energyDensity);
+				for (a in angles)
+				{
+					parentPlant.CreateNewBranch(this, a ); 
+				}
+
+            }
             CalculateGrowth(dt);
             ExchangeEnergyWithParent();
             ConsumeEnergy(dt);

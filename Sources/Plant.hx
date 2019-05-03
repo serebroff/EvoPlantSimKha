@@ -36,8 +36,9 @@ class Plant
         firstBranch = new Branch(this);
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.endPos.set(0, -100);
-        firstBranch.length = 100;
+        firstBranch.endPos.set(0, -20);
+        firstBranch.length = 20;
+        firstBranch.maxLength = 100;
         firstBranch.energy = 540;
         firstBranch.parentPlant = this;
 
@@ -47,18 +48,19 @@ class Plant
 
         leaves = [];
         
-        CreateNewLeaf(firstBranch, dna.angle); 
+      /*  CreateNewLeaf(firstBranch, dna.angle); 
         CreateNewLeaf(firstBranch, - dna.angle); 
-        CreateNewLeaf(firstBranch, 0); 
+        CreateNewLeaf(firstBranch, 0); */
     
    
     }
 
-    public function CreateNewBranch(leafParent: Leaf, angle:Float =0) 
+ //   public function CreateNewBranch(leafParent: Leaf, angle:Float =0) 
+    public function CreateNewBranch(leafParent: Branch, angle:Float =0) 
     {
         var  newBranch : Branch = null; // new Branch();
         
-        var branchParent = leafParent.parentBranch;
+        var branchParent = leafParent; //leafParent.parentBranch;
 
         var deadReplace:Bool = false;
 
@@ -88,8 +90,8 @@ class Plant
        // newBranch.Thikness = dna.branch_tickness;
         
         //newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
-       // newBranch.dir.setFrom( leafParent.dir.rotate(angle) );
-        newBranch.parentBranch = leafParent.parentBranch;
+        newBranch.dir.setFrom( leafParent.dir.rotate(angle) );
+        newBranch.parentBranch = leafParent;//.parentBranch;
         //newBranch.energy = 0;
         newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
 

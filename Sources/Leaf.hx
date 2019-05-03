@@ -221,7 +221,7 @@ class Leaf
                 if (energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
                 {
                     hasProducedBranch = true;
-                    parentPlant.CreateNewBranch(this);
+                    //parentPlant.CreateNewBranch(this);
                 }
             }
             CalculateGrowth(dt);

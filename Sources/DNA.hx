@@ -21,13 +21,13 @@ class DNA {
     public static inline var BRANCH_ENERGY_2_BRANCH = 1;
 
     public static inline var LEAF_GROWTH_RATE = 1;
-    public static inline var BRANCH_GROWTH_RATE = 0.5;
+    public static inline var BRANCH_GROWTH_RATE = 1;
 
     public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.5;
     public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.5;
 
-    public static inline var LEAF_ENERGY_TO_SHARE = 0.8;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.8;
+    public static inline var LEAF_ENERGY_TO_SHARE = 0.5;
+    public static inline var BRANCH_ENERGY_TO_SHARE = 0.5;
 
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;
@@ -41,19 +41,25 @@ class DNA {
     public function new()
     {
         genes =[
-            80,      // [0] branch length
-            0.01,    // [1] branch tickness  w / l
+            60,      // [0] branch length
+            0.03,    // [1] branch tickness  w / l
             30,      // [2] leaf lenght
             0.3,     // [3] leaf thickness
-            0.8,        // [4] leaf frequency
+            0.5,        // [4] leaf frequency
             // leaves
-            Math.PI*0.2,   // [5] angle of new branches and leaves 0..PI/2
-            0.1,            // [6] probability of [5]
-            -Math.PI*0.2,   // angle of new branches and leaves 0..PI/2
-            0.1,            // [7] probability
-            0,      // [8]  angle of new branches and leaves 0..PI/2
-            1.0,     // [9]  probability
-            -1,
+            -Math.PI*0.4,   // [5] angle of new branches and leaves 0..PI/2
+            Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
+            0,      // [7]  angle of new branches and leaves 0..PI/2
+            -10,
+            -Math.PI*0.2,   // [9] angle of new branches 0..PI/2
+            0.1,            // [10] probability of [5]
+            Math.PI*0.2,   // [11] angle of new branches 0..PI/2
+            0.1,            // [12] probability
+            -0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability
+            0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability
+            -10
          
         ];
 	}
@@ -93,18 +99,15 @@ class DNA {
     {
         var angles: Array<Float>;
         angles = new Array<Float>();
-        if (Math.random() < genes[6])
+
+        var n:Int = 9;
+        while (genes[n]>-10)
         {
-            angles.push(genes[5]);
-        }        
-        if (Math.random() < genes[8])
-        {
-            angles.push(genes[7]);
-        }
-        
-        if (Math.random() < genes[10])
-        {
-            angles.push(genes[9]);
+            if (Math.random() < genes[n+1])
+            {
+                angles.push(genes[n]);
+            }
+            n+=2;    
         }
         return angles;
     }
@@ -113,12 +116,12 @@ class DNA {
     {
         var angles: Array<Float>;
         angles = new Array<Float>();
-  
-        angles.push(genes[5]);
-                
-        angles.push(genes[7]);
-        
-        angles.push(genes[9]);
+        var n:Int=5;
+        while (genes[n]>-10)
+        {
+            angles.push(genes[n]);
+            n++;    
+        }
   
         return angles;
     }
