@@ -37,6 +37,11 @@ class DNA {
 
     public static inline var MAX_GENERATIONS = 15;
 
+    public static inline var END_OF_SEQUENCE = -10000;
+    
+    public var leaves_index: Int;
+    public var branches_index: Int;
+
 
     public function new()
     {
@@ -46,25 +51,39 @@ class DNA {
             30,      // [2] leaf lenght
             0.3,     // [3] leaf thickness
             0.5,        // [4] leaf frequency
+            END_OF_SEQUENCE,
             // leaves
             -Math.PI*0.4,   // [5] angle of new branches and leaves 0..PI/2
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
-            0,      // [7]  angle of new branches and leaves 0..PI/2
-            -10,
-            -Math.PI*0.2,   // [9] angle of new branches 0..PI/2
+            Math.PI * 0.7,
+            - Math.PI * 0.7,
+            END_OF_SEQUENCE,
+            -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
             0.1,            // [10] probability of [5]
-            Math.PI*0.2,   // [11] angle of new branches 0..PI/2
+            Math.PI*0.3,   // [11] angle of new branches 0..PI/2
             0.1,            // [12] probability
-            -0.2,      // [13]  angle of new branches  0..PI/2
+            -Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
             0.5,     // [14]  probability
-            0.2,      // [13]  angle of new branches  0..PI/2
+            Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
             0.5,     // [14]  probability
-            -10
+            END_OF_SEQUENCE
          
         ];
+
+        var i: Int =0;
+        leaves_index = 0;
+        while(genes[i]>END_OF_SEQUENCE) i++;
+        i++;
+        leaves_index=i;
+
+        while(genes[i]>END_OF_SEQUENCE) i++;
+        i++;
+        branches_index = i;
+
+
 	}
 
-
+ 
     private  function get_branch_length():Float
     {
         return genes[0];
@@ -100,8 +119,8 @@ class DNA {
         var angles: Array<Float>;
         angles = new Array<Float>();
 
-        var n:Int = 9;
-        while (genes[n]>-10)
+        var n:Int = branches_index;
+        while (genes[n]>END_OF_SEQUENCE)
         {
             if (Math.random() < genes[n+1])
             {
@@ -116,8 +135,8 @@ class DNA {
     {
         var angles: Array<Float>;
         angles = new Array<Float>();
-        var n:Int=5;
-        while (genes[n]>-10)
+        var n:Int = leaves_index;
+        while (genes[n]>END_OF_SEQUENCE)
         {
             angles.push(genes[n]);
             n++;    
