@@ -104,9 +104,9 @@ class Branch  extends  Leaf
 			startPos.y += (deathtime - Leaf.TIME_TO_FALL) *10;
 		}
 		
-		if (startPos.y > System.windowHeight()) {
+		if (startPos.y > 0) {
 			disapperTime += dt;
-			startPos.y = System.windowHeight();	
+			startPos.y = 0;	
 		}
 
 	}
@@ -204,15 +204,21 @@ class Branch  extends  Leaf
 
 		if (!dead) {
 
-            if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (LeavesIndices.length < 2))
+            if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (LeavesIndices.length == 0))
             {
-                if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
+				var angles: Array<Float>;
+				angles = parentPlant.dna.getLeaves(energyDensity);
+				for (a in angles)
+				{
+					parentPlant.CreateNewLeaf(this, a ); 
+				}
+         /*       if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
                 {
                 
                     parentPlant.CreateNewLeaf(this, parentPlant.dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
                     parentPlant.CreateNewLeaf(this, -parentPlant.dna.angle );
                    // CreateNewLeaf(b, 0 );
-                }
+                }*/
             }
             CalculateGrowth(dt);
             ExchangeEnergyWithParent();

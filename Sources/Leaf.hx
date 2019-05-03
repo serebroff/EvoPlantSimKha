@@ -183,8 +183,8 @@ class Leaf
 			
 			startPos.y += deathtime *5;
 
-			if (startPos.y > System.windowHeight()) {
-				startPos.y = System.windowHeight();
+			if (startPos.y >0) {
+				startPos.y = 0;
 				disapperTime += dt;
 			}
 		}

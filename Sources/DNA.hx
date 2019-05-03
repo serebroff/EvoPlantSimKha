@@ -23,11 +23,11 @@ class DNA {
     public static inline var LEAF_GROWTH_RATE = 1;
     public static inline var BRANCH_GROWTH_RATE = 0.5;
 
-    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0;
-    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0;
+    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.5;
+    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.5;
 
-    public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
+    public static inline var LEAF_ENERGY_TO_SHARE = 0.8;
+    public static inline var BRANCH_ENERGY_TO_SHARE = 0.8;
 
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;
@@ -41,42 +41,86 @@ class DNA {
     public function new()
     {
         genes =[
-            Math.PI*0.2,   // angle of new branches and leaves 0..PI/2
-            60,  // branch length
-            0.03,  // branch tickness  w / l
-            30,  // leaf lenght
-            0.3,  // leaf thickness
-            0.7  // leaf frequency
+            80,      // [0] branch length
+            0.01,    // [1] branch tickness  w / l
+            30,      // [2] leaf lenght
+            0.3,     // [3] leaf thickness
+            0.8,        // [4] leaf frequency
+            // leaves
+            Math.PI*0.2,   // [5] angle of new branches and leaves 0..PI/2
+            0.1,            // [6] probability of [5]
+            -Math.PI*0.2,   // angle of new branches and leaves 0..PI/2
+            0.1,            // [7] probability
+            0,      // [8]  angle of new branches and leaves 0..PI/2
+            1.0,     // [9]  probability
+            -1,
+         
         ];
 	}
 
-    private  function get_angle():Float
-    {
-        return genes[0];
-    }
+
     private  function get_branch_length():Float
     {
-        return genes[1];
+        return genes[0];
     }
 
     private  function get_branch_tickness():Float
     {
-        return genes[2];
+        return genes[1];
     }
 
     private  function get_leaf_length():Float
     {
-        return genes[3];
+        return genes[2];
     }
     
     private  function get_leaf_tickness():Float
     {
-        return genes[4];
+        return genes[3];
     }
     
     private  function get_leaf_frequency():Float
     {
+        return genes[4];
+    }
+
+    private  function get_angle():Float
+    {
         return genes[5];
+    }
+
+    public function getBranches(energy) 
+    {
+        var angles: Array<Float>;
+        angles = new Array<Float>();
+        if (Math.random() < genes[6])
+        {
+            angles.push(genes[5]);
+        }        
+        if (Math.random() < genes[8])
+        {
+            angles.push(genes[7]);
+        }
+        
+        if (Math.random() < genes[10])
+        {
+            angles.push(genes[9]);
+        }
+        return angles;
+    }
+
+    public function getLeaves(energy) 
+    {
+        var angles: Array<Float>;
+        angles = new Array<Float>();
+  
+        angles.push(genes[5]);
+                
+        angles.push(genes[7]);
+        
+        angles.push(genes[9]);
+  
+        return angles;
     }
 	
     public  function dupblicateDNA() 

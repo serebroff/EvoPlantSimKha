@@ -1,5 +1,6 @@
 package;
 
+import kha.math.FastMatrix3;
 import kha.Framebuffer;
 import kha.Scheduler;
 import kha.System;
@@ -89,8 +90,21 @@ class Project {
 		var r:Float =  0.1 * Math.abs(Sunlight.sun_angle ) ;
 		g2.begin(true, kha.Color.fromFloats( 0.5+r, 0.6, 1, 1));
 		
+		/*var scaleHeight = (System.windowHeight / 1080);
+		var m: kha.math.FastMatrix3 = kha.math.FastMatrix3.scale(scaleHeight,scaleHeight);
+		//m.multmat(kha.math.FastMatrix3.translation(System.windowWidth() * 0.5 , System.windowHeight()));
+	
+		g2.transformation.setFrom(m); */
+
+		g2.transformation.setFrom(kha.math.FastMatrix3.translation(System.windowWidth() * 0.5 , System.windowHeight()));
+
+	
+		
 
     	Ecosystem.instance.Render(framebuffer);
+
+		g2.transformation.setFrom(kha.math.FastMatrix3.identity());
+
 
 
         g2.font = font;

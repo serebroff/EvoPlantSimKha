@@ -58,7 +58,7 @@ class Sunlight {
             b.Init();
         }  */
       
-        center = new Vec2(System.windowWidth() * 0.5 , System.windowHeight());
+        center = new Vec2(0,0);
     }
 
     public function Calculate(dt:Float) 
