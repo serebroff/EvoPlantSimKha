@@ -217,7 +217,7 @@ class Leaf
 		CalculatePos(dt);
 		
         if (!dead) {
-            if (length> maxLength* parentPlant.dna.leaf_frequency && !hasProducedBranch) {
+            if (length> maxLength* parentPlant.dna.leaf_growth_pos && !hasProducedBranch) {
                 if (energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
                 {
                     hasProducedBranch = true;

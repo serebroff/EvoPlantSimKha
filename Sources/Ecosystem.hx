@@ -21,7 +21,7 @@ class Ecosystem
         return _instance;
     }
 
-    public var ecosystem_time: Float;
+    static public var ecosystem_time: Float;
 
     public var foton: Array<Foton>;
     public var sunlight : Sunlight;

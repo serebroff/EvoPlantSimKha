@@ -204,24 +204,23 @@ class Branch  extends  Leaf
 
 		if (!dead) {
 
-            if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (LeavesIndices.length == 0))
+            if ((length > maxLength * parentPlant.dna.leaf_growth_pos ) 
+			&& (LeavesIndices.length == 0) &&
+			energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getLeaves(energyDensity);
 				for (a in angles)
 				{
 					parentPlant.CreateNewLeaf(this, a ); 
+					if (a != 0) parentPlant.CreateNewLeaf(this, -a );
 				}
-         /*       if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)  
-                {
-                
-                    parentPlant.CreateNewLeaf(this, parentPlant.dna.angle ); //*Utils.rndsign()); // (-1 + 2* Math.random()));
-                    parentPlant.CreateNewLeaf(this, -parentPlant.dna.angle );
-                   // CreateNewLeaf(b, 0 );
-                }*/
+
             }
 
-			if ((length > maxLength * parentPlant.dna.leaf_frequency ) && (ChildrenIndices.length == 0))
+			if ((length > maxLength * parentPlant.dna.branch_growth_pos ) 
+			&& (ChildrenIndices.length == 0)
+			&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getBranches(energyDensity);
