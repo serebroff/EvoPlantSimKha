@@ -114,11 +114,12 @@ class Project {
 
 		g2.drawString( "BRANCHES " + Std.string(Ecosystem.instance.plants[0].branches.length), 20, 40);
 		g2.drawString( "LEAVES " + Std.string(Ecosystem.instance.plants[0].leaves.length), 20, 60);
-/*
-		g2.fontSize = 128;
-		var year: Int = Math.ceil(Ecosystem.ecosystem_time/Sunlight.SUN_FULL_TURN_IN_SEC); 
-		g2.drawString( "YEAR " + Std.string(year), System.windowWidth()/2, 60);
-		*/
+
+		g2.fontSize = 64;
+		var year: Int = Math.ceil(Ecosystem.ecosystem_time / Sunlight.SUN_FULL_TURN_IN_SEC); 
+		
+		g2.drawString( "YEAR " + Std.string(year), System.windowWidth()/2-60, 60); 
+		
 		g2.end();	
 
 		fps.update();	

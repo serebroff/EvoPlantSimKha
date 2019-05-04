@@ -48,8 +48,8 @@ class DNA {
     public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.1;
     public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.1;
 
-    public static inline var LEAF_ENERGY_TO_SHARE = 0.8;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.8;
+    public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
+    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
 
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;

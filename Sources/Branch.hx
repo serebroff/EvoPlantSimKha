@@ -205,8 +205,8 @@ class Branch  extends  Leaf
 		if (!dead) {
 
             if ((length > maxLength * parentPlant.dna.leaf_growth_pos ) 
-			&& (LeavesIndices.length == 0) &&
-			energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
+			&& (LeavesIndices.length == 0) )
+		//	&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getLeaves(energyDensity);
@@ -219,8 +219,8 @@ class Branch  extends  Leaf
             }
 
 			if ((length > maxLength * parentPlant.dna.branch_growth_pos ) 
-			&& (ChildrenIndices.length == 0)
-			&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
+			&& (ChildrenIndices.length == 0))
+		//	&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getBranches(energyDensity);
