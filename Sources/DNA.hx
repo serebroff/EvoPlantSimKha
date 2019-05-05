@@ -39,17 +39,18 @@ class DNA {
 
         // constants
     public static inline var LEAF_ENERGY_2_BRANCH = 1;
-    public static inline var BRANCH_ENERGY_2_LEAF = 2;
+    public static inline var BRANCH_ENERGY_2_LEAF = 1;
     public static inline var BRANCH_ENERGY_2_BRANCH = 1;
 
     public static inline var LEAF_GROWTH_RATE = 1;
     public static inline var BRANCH_GROWTH_RATE = 1;
 
-    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 0.1;
-    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 0.1;
+    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 1.0;
+    public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 1.0;
 
     public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
-    public static inline var BRANCH_ENERGY_TO_SHARE = 0.0;
+    public static inline var BRANCH_ENERGY_TO_SHARE_WITH_CHILD = 1.0;
+    public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
 
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;
@@ -57,8 +58,11 @@ class DNA {
     public static inline var MAX_ENERGY_IN_LEAF = 2;
     public static inline var MAX_ENERGY_IN_BRANCH = 2;
 
+    public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
+
     public static inline var MAX_GENERATIONS = 15;
 
+    public static inline var END_OF_GENE = -1000;
     public static inline var END_OF_SEQUENCE = -10000;
     
     public var leaves_index: Int;
@@ -69,27 +73,27 @@ class DNA {
     {
         genes =[
 
-            60,      // [0] branch length
+            20,      // [0] branch length
             0.02,    // [1] branch tickness  w / l
-            30,      // [2] leaf lenght
-            0.3,     // [3] leaf thickness
-            0.5,        // [4] leaf start growth position [0,1] on branch
+            40,      // [2] leaf lenght
+            0.2,     // [3] leaf thickness
+            0.3,        // [4] leaf start growth position [0,1] on branch
             0.5,        // [5] branch start growth position [0,1] on branch
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
-            Math.PI * 0.7,
+       //     Math.PI * 0.7,
             END_OF_SEQUENCE,
-           -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
-            0.1,            // [10] probability of [5]
+   /*        -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
+            0.5,            // [10] probability of [5]
             Math.PI*0.3,   // [11] angle of new branches 0..PI/2
-            0.1,            // [12] probability
-            -Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
+            0.5,            // [12] probability
+     /*       -Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
             0.2,     // [14]  probability
             Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
-            0.2,     // [14]  probability  
+            0.2,     // [14]  probability  */ 
             0,
-            0.5,
+            1.0,
             END_OF_SEQUENCE
          
         ];
@@ -168,7 +172,7 @@ class DNA {
         {
             if (Math.random() < genes[n+1])
             {
-                angles.push(genes[n]);
+                angles.push(genes[n] + (2*Math.random()-1)*BRANCH_ANGLE_DEVIATION);
             }
             n+=2;    
         }

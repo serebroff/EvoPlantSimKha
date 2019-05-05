@@ -123,7 +123,10 @@ class Leaf
 	{
 
 		energy -= DNA.LEAF_ENERGY_CONSUME * square * dt;
-		
+		if (energyDensity>DNA.MAX_ENERGY_IN_BRANCH)
+		{
+		//	energy = square * DNA.MAX_ENERGY_IN_BRANCH;
+		}
 		if (energy < 0) 
 		{
 			dead = true;

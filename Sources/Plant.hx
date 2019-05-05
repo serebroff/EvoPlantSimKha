@@ -39,7 +39,7 @@ class Plant
         firstBranch.endPos.set(0, -20);
         firstBranch.length = 20;
         firstBranch.maxLength = 100;
-        firstBranch.energy = 540;
+        firstBranch.energy = 2000;
         firstBranch.parentPlant = this;
 
 

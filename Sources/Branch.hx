@@ -53,13 +53,16 @@ class Branch  extends  Leaf
 		var delta:Float = 0;
 		
 		//if (length< maxLength*0.5) 
-		if (parentBranch.energyDensity > energyDensity && (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE))
+		if (parentBranch.energyDensity > energyDensity 
+		//	&& length < maxLength
+		//	&& !naked
+			&& (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_CHILD))
 		{
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
 			energy += delta;
 			parentBranch.energy -= delta;			
 		}
-		else if (energyDensity > DNA.BRANCH_ENERGY_TO_SHARE)
+		else if (energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_PARENT)
 		// if (parentBranch.energyDensity < energyDensity)
 		{
 			delta =  FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * energy;
@@ -205,8 +208,8 @@ class Branch  extends  Leaf
 		if (!dead) {
 
             if ((length > maxLength * parentPlant.dna.leaf_growth_pos ) 
-			&& (LeavesIndices.length == 0) )
-		//	&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
+			&& (LeavesIndices.length == 0) //)
+			&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getLeaves(energyDensity);
@@ -219,8 +222,8 @@ class Branch  extends  Leaf
             }
 
 			if ((length > maxLength * parentPlant.dna.branch_growth_pos ) 
-			&& (ChildrenIndices.length == 0))
-		//	&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
+			&& (ChildrenIndices.length == 0) //)
+			&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getBranches(energyDensity);
