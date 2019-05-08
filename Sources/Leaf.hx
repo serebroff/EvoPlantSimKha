@@ -35,6 +35,7 @@ class Leaf
 	public var square: Float;
 	public var startPos : Vec2;
 	public var endPos : Vec2;
+	public var posOnBranch: Float;
 	public var dead: Bool;
 	public var deathtime: Float;
 	public var deathDeltaY: Float;
@@ -78,6 +79,7 @@ class Leaf
 		length = 1;
 		widthStart = 1;
 		widthEnd = 1;
+		posOnBranch = 1;
 		dead = false;
 		deathtime =0;
 		deathDeltaY =0;
@@ -194,7 +196,11 @@ class Leaf
 				disapperTime += dt;
 			}
 		}
-		else startPos.setFrom( parentBranch.endPos);
+		else {
+			var len: Float = posOnBranch * parentBranch.maxLength;
+			if (parentBranch.length<  len) len = parentBranch.length;
+			startPos.setFrom( parentBranch.startPos.add( parentBranch.dir.mult(len)));
+		}
 
 
 		endPos.setFrom(dir);
@@ -223,13 +229,13 @@ class Leaf
 		CalculatePos(dt);
 		
         if (!dead) {
-            if (length> maxLength* parentPlant.dna.leaf_growth_pos && !hasProducedBranch) {
-                if (energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)  
+/*            if (length> maxLength* parentPlant.dna.leaf_growth_pos && !hasProducedBranch) {
+                if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH)  
                 {
                     hasProducedBranch = true;
                     //parentPlant.CreateNewBranch(this);
                 }
-            }
+			}*/
             CalculateGrowth(dt);
             ExchangeEnergyWithParent();
             ConsumeEnergy(dt);

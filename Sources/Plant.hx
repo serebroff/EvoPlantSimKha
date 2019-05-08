@@ -36,9 +36,9 @@ class Plant
         firstBranch = new Branch(this);
 
         firstBranch.startPos.set(pos.x, pos.y);
-        firstBranch.endPos.set(0, -20);
-        firstBranch.length = 20;
-        firstBranch.maxLength = 100;
+        firstBranch.endPos.set(0, -1);
+        firstBranch.length = 1;
+        firstBranch.maxLength = dna.branch_length;
         firstBranch.energy = 2000;
         firstBranch.parentPlant = this;
 
@@ -101,7 +101,7 @@ class Plant
 
 
 
-    public function CreateNewLeaf(parent: Branch, angle: Float) {
+    public function CreateNewLeaf(parent: Branch, angle: Float, posOnBranch: Float = 1) {
 
         var  newLeaf : Leaf = null; 
 
@@ -127,7 +127,7 @@ class Plant
         }
 
         parent.LeavesIndices.push(newLeaf);
-        
+        newLeaf.posOnBranch = posOnBranch;
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.maxLength=dna.leaf_length;

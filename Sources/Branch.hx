@@ -19,6 +19,7 @@ class Branch  extends  Leaf
 	public var ChildrenIndices : Array<Branch>;
 	public var LeavesIndices : Array<Leaf>;
 	var naked : Bool ;
+	var length0: Float;
 
 	public function new(plant: Plant) 
     {
@@ -35,6 +36,7 @@ class Branch  extends  Leaf
 		LeavesIndices.splice(0, LeavesIndices.length);
 
 		 naked  = false;
+		 length0 =0;
 
 	}
 
@@ -127,32 +129,9 @@ class Branch  extends  Leaf
 
 		endPos.setFrom( startPos.add( dir.mult(length)) );
 
-		
-/*		if (ChildrenIndices.length >0)
-		{
-			var wMax: Float=0;
-			var w: Float =0;
-			var c: Int = 0;
-			while (c <ChildrenIndices.length)
-			{
-				w = ChildrenIndices[c].widthStart;
-				if (wMax < w) 
-				{
-					wMax =  w;
-				}
-				c++;
-			}
-			widthEnd = wMax;
-			widthStart = length* parentPlant.dna.branch_tickness + widthEnd;
-		} 
-		else {
-			widthStart= length* parentPlant.dna.branch_tickness;
-			widthEnd=0;
-		}
-*/
-		
 
-		if (length< maxLength) 
+
+		if (length< maxLength && ChildrenIndices.length == 0) 
 		{
 			widthStart= length* parentPlant.dna.branch_tickness;
 			widthEnd=0;
@@ -210,23 +189,30 @@ class Branch  extends  Leaf
 
 		if (!dead) {
 
-            if ((length > maxLength * parentPlant.dna.leaf_growth_pos ) 
-			&& (LeavesIndices.length == 0) //)
-			&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
+			var step : Float = maxLength * parentPlant.dna.leaf_growth_pos ;
+
+			var l1: Float = Math.ceil(length/ step);
+			var l0: Float = Math.ceil(length0/ step);
+			
+            if ( l0 != l1 && (length < maxLength) )
+			//(length >  maxLength * parentPlant.dna.leaf_growth_pos ) 
+			//&& (LeavesIndices.length == 0) //)
+		//	&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
             {
 				var angles: Array<Float>;
+				var k: Float = l1 * step / maxLength;
 				angles = parentPlant.dna.getLeaves(energyDensity);
 				for (a in angles)
 				{
-					parentPlant.CreateNewLeaf(this, a ); 
-					if (a != 0) parentPlant.CreateNewLeaf(this, -a );
+					parentPlant.CreateNewLeaf(this, a , k ); 
+					if (a != 0) parentPlant.CreateNewLeaf(this, -a, k );
 				}
 
             }
 
-			if ((length > maxLength * parentPlant.dna.branch_growth_pos ) 
+			if ((length >= maxLength * parentPlant.dna.branch_growth_pos ) 
 			&& (ChildrenIndices.length == 0) //)
-			&& energyDensity> DNA.LEAF_ENERGY_TO_PRODUCE_BRANCH)
+			&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH)
             {
 				var angles: Array<Float>;
 				angles = parentPlant.dna.getBranches(energyDensity);
@@ -236,6 +222,9 @@ class Branch  extends  Leaf
 				}
 
             }
+			
+			length0 = length;
+
             CalculateGrowth(dt);
             ExchangeEnergyWithParent();
             ConsumeEnergy(dt);

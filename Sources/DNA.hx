@@ -45,15 +45,15 @@ class DNA {
     public static inline var LEAF_GROWTH_RATE = 1;
     public static inline var BRANCH_GROWTH_RATE = 1;
 
-    public static inline var LEAF_ENERGY_TO_PRODUCE_BRANCH = 1.0;
+    public static inline var BRANCH_ENERGY_TO_PRODUCE_BRANCH = 1.0;
     public static inline var BRANCH_ENERGY_TO_PRODUCE_LEAF = 1.0;
 
     public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
     public static inline var BRANCH_ENERGY_TO_SHARE_WITH_CHILD = 1.0;
     public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
 
-    public static inline var LEAF_ENERGY_CONSUME = 0.15;
-    public static inline var BRANCH_ENERGY_CONSUME = 0.15;
+    public static inline var LEAF_ENERGY_CONSUME = 0.2;
+    public static inline var BRANCH_ENERGY_CONSUME = 0.2;
 
     public static inline var MAX_ENERGY_IN_LEAF = 3;
     public static inline var MAX_ENERGY_IN_BRANCH = 3;
@@ -73,16 +73,16 @@ class DNA {
     {
         genes =[
 
-            60,      // [0] branch length
-            0.03,    // [1] branch tickness  w / l
-            40,      // [2] leaf lenght
+            120,      // [0] branch length
+            0.02,    // [1] branch tickness  w / l
+            30,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
-            0.3,        // [4] leaf start growth position [0,1] on branch
+            0.7,        // [4] leaf step [0,1] on branch
             1,        // [5] branch start growth position [0,1] on branch
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
-            Math.PI * 0.7,
+         //   Math.PI * 0.7,
             END_OF_SEQUENCE,
    /*        -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
             0.5,            // [10] probability of [5]
@@ -92,7 +92,7 @@ class DNA {
             0.5,     // [14]  probability
             Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
             0.5,     // [14]  probability   
-            0,
+            0,  
             1.0,
             END_OF_SEQUENCE
          
