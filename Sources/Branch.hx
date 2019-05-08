@@ -96,7 +96,7 @@ class Branch  extends  Leaf
 		}
 		if (!naked) return;
 		
-		deathtime += dt;
+		deathtime += FPS.dt;
 		
 		if (deathtime> Leaf.DEATH_TIME) {
 			totalDeath = true;
@@ -108,7 +108,7 @@ class Branch  extends  Leaf
 		}
 		
 		if (startPos.y > 0) {
-			disapperTime += dt;
+			disapperTime +=  FPS.dt;
 			startPos.y = 0;	
 		}
 

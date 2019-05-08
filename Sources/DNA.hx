@@ -55,8 +55,8 @@ class DNA {
     public static inline var LEAF_ENERGY_CONSUME = 0.1;
     public static inline var BRANCH_ENERGY_CONSUME = 0.1;
 
-    public static inline var MAX_ENERGY_IN_LEAF = 2;
-    public static inline var MAX_ENERGY_IN_BRANCH = 2;
+    public static inline var MAX_ENERGY_IN_LEAF = 3;
+    public static inline var MAX_ENERGY_IN_BRANCH = 3;
 
     public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
 
@@ -73,25 +73,25 @@ class DNA {
     {
         genes =[
 
-            20,      // [0] branch length
-            0.02,    // [1] branch tickness  w / l
+            60,      // [0] branch length
+            0.03,    // [1] branch tickness  w / l
             40,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
             0.3,        // [4] leaf start growth position [0,1] on branch
-            0.5,        // [5] branch start growth position [0,1] on branch
+            1,        // [5] branch start growth position [0,1] on branch
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
-       //     Math.PI * 0.7,
+            Math.PI * 0.7,
             END_OF_SEQUENCE,
    /*        -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
             0.5,            // [10] probability of [5]
             Math.PI*0.3,   // [11] angle of new branches 0..PI/2
             0.5,            // [12] probability
-     /*       -Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
-            0.2,     // [14]  probability
-            Math.PI*0.1,      // [13]  angle of new branches  0..PI/2
-            0.2,     // [14]  probability  */ 
+     */       -Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability
+            Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability   
             0,
             1.0,
             END_OF_SEQUENCE

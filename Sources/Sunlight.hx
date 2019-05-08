@@ -70,11 +70,6 @@ class Sunlight {
         angle  = - Math.PI*0.5 - Math.PI* 0.2 *  sun_angle; 
         dir.set(-Math.cos(angle), -Math.sin(angle));
 
-        /*beam_delta += dt *20 ;
-        if (beam_delta> BEAM_DISTANCE)
-        {
-            beam_delta -= BEAM_DISTANCE; 
-        }*/
 
         pos = center.add(dir.mult(-radius) );
         var perpendicular : Vec2;
