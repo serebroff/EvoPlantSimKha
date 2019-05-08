@@ -82,6 +82,7 @@ class Project {
 		framebuffer = frames[0];
 
 
+		fps.update();	
 
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
@@ -122,6 +123,6 @@ class Project {
 		
 		g2.end();	
 
-		fps.update();	
+
 	}
 }

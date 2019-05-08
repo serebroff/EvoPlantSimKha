@@ -181,6 +181,9 @@ class Leaf
 			deathtime += dt;
 			if (deathtime> DEATH_TIME) {
 				totalDeath = true;
+				if (parentBranch!=null) {
+					parentBranch.LeavesIndices.remove(this);
+				}
 				return;
 			}
 			

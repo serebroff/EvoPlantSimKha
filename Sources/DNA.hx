@@ -52,8 +52,8 @@ class DNA {
     public static inline var BRANCH_ENERGY_TO_SHARE_WITH_CHILD = 1.0;
     public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
 
-    public static inline var LEAF_ENERGY_CONSUME = 0.1;
-    public static inline var BRANCH_ENERGY_CONSUME = 0.1;
+    public static inline var LEAF_ENERGY_CONSUME = 0.15;
+    public static inline var BRANCH_ENERGY_CONSUME = 0.15;
 
     public static inline var MAX_ENERGY_IN_LEAF = 3;
     public static inline var MAX_ENERGY_IN_BRANCH = 3;

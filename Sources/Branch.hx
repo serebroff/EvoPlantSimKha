@@ -100,6 +100,9 @@ class Branch  extends  Leaf
 		
 		if (deathtime> Leaf.DEATH_TIME) {
 			totalDeath = true;
+			if (parentBranch!=null) {
+				parentBranch.ChildrenIndices.remove(this);
+			}
 			return;
 		}	
 		if (deathtime> Leaf.TIME_TO_FALL)

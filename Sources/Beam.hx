@@ -32,7 +32,7 @@ class Beam  {
 
        // constants
     public static inline var BEAM_ENERGY  = 200;
-    public static inline var LOSS_OF_EVERGY_IN_LEAF  = 0.3;
+    public static inline var LOSS_OF_EVERGY_IN_LEAF  = 0.5;
 
 
     public var pos1: Vec2;
@@ -131,9 +131,9 @@ class Beam  {
     {
         var g2 = framebuffer.g2;
         var r:Float =  1 - 0.1 * Math.abs(Sunlight.sun_angle ) ;
-        var alpha: Float = 0.6;
+        var alpha: Float = 0.4;
 
-		g2.color = kha.Color.fromFloats( 1, r, 0, alpha);
+		g2.color = kha.Color.fromFloats( 1, r, 0, 0.1 + alpha);
         
         if (intercections_with_leaf.length != 0)
         {
@@ -141,14 +141,14 @@ class Beam  {
             g2.drawLine(pos1.x,pos1.y,intercections_with_leaf[i].pos.x, intercections_with_leaf[i].pos.y ,2);
             while (i < intercections_with_leaf.length -1)
             {
-                g2.color = kha.Color.fromFloats( 1, r, 0, alpha * intercections_with_leaf[i].power);
+                g2.color = kha.Color.fromFloats( 1, r, 0, 0.1 + alpha * intercections_with_leaf[i].power);
                 g2.drawLine(intercections_with_leaf[i].pos.x,intercections_with_leaf[i].pos.y,
-                    intercections_with_leaf[i+1].pos.x, intercections_with_leaf[i +1].pos.y ,1);
+                    intercections_with_leaf[i+1].pos.x, intercections_with_leaf[i +1].pos.y ,2 );
                     i++;
             }
 
-            g2.color = kha.Color.fromFloats( 1, r, 0, alpha * intercections_with_leaf[i].power);
-            g2.drawLine(intercections_with_leaf[i].pos.x, intercections_with_leaf[i].pos.y,pos2.x,pos2.y, 1);
+            g2.color = kha.Color.fromFloats( 1, r, 0, 0.1 + alpha * intercections_with_leaf[i].power);
+            g2.drawLine(intercections_with_leaf[i].pos.x, intercections_with_leaf[i].pos.y,pos2.x,pos2.y, 2);
             
         }
         else 
