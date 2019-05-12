@@ -188,8 +188,12 @@ class Branch  extends  Leaf
 		UpdateDensity();
 
 		if (!dead) {
-
+/*			var numleaves:Float = 1/ parentPlant.dna.leaf_growth_pos;
+			var even: Bool = true;
+			if (Math.ceil(numleaves)%2 ==1) even = false;
+			*/
 			var step : Float = maxLength * parentPlant.dna.leaf_growth_pos ;
+			//if (even) step = maxLength * parentPlant.dna.leaf_growth_pos ;
 
 			var l1: Float = Math.ceil(length/ step);
 			var l0: Float = Math.ceil(length0/ step);
@@ -203,8 +207,9 @@ class Branch  extends  Leaf
 				var k: Float = l1 * step / maxLength;
 				angles = parentPlant.dna.getLeaves(energyDensity);
 				for (a in angles)
-				{
-					parentPlant.CreateNewLeaf(this, a , k ); 
+				{  
+					parentPlant.CreateNewLeaf(this,  a  , k ); 
+					//parentPlant.CreateNewLeaf(this, LeavesIndices.length%2==0? a : -a , k ); 
 					if (a != 0) parentPlant.CreateNewLeaf(this, -a, k );
 				}
 
