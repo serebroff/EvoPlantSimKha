@@ -188,12 +188,13 @@ class Branch  extends  Leaf
 		UpdateDensity();
 
 		if (!dead) {
-/*			var numleaves:Float = 1/ parentPlant.dna.leaf_growth_pos;
+
+			var numleaves : Int = Math.ceil(parentPlant.dna.leaves_number);
 			var even: Bool = true;
 			if (Math.ceil(numleaves)%2 ==1) even = false;
-			*/
-			var step : Float = maxLength * parentPlant.dna.leaf_growth_pos ;
-			//if (even) step = maxLength * parentPlant.dna.leaf_growth_pos ;
+
+			var step : Float = maxLength / numleaves ;
+			if (even) step *= 2;
 
 			var l1: Float = Math.ceil(length/ step);
 			var l0: Float = Math.ceil(length0/ step);
@@ -208,9 +209,12 @@ class Branch  extends  Leaf
 				angles = parentPlant.dna.getLeaves(energyDensity);
 				for (a in angles)
 				{  
-					parentPlant.CreateNewLeaf(this,  a  , k ); 
-					//parentPlant.CreateNewLeaf(this, LeavesIndices.length%2==0? a : -a , k ); 
-					if (a != 0) parentPlant.CreateNewLeaf(this, -a, k );
+					if (even) {
+						parentPlant.CreateNewLeaf(this,  a  , k ); 
+						if (a != 0) parentPlant.CreateNewLeaf(this, -a, k );
+					} else {
+						parentPlant.CreateNewLeaf(this, (Math.floor(LeavesIndices.length/angles.length)%2==0? a : -a) * (GenerationIndex%2 ==0? -1:1) , k ); 
+					}
 				}
 
             }
@@ -252,6 +256,7 @@ class Branch  extends  Leaf
 		if (c>1) c =1;
 		g2.color = kha.Color.fromFloats(0.8*c, 0.4*c, 0, a);
 		if (dead) g2.color = kha.Color.fromFloats(0, 0, 0, a);
+		if (length< maxLength) g2.color = kha.Color.fromFloats(0, c, 0, a);
 
 		g2.fillTriangle(v1.x,v1.y, v2.x,v2.y, v4.x,v4.y);
 		g2.fillTriangle(v2.x,v2.y, v3.x,v3.y, v4.x,v4.y);

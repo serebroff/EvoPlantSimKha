@@ -81,17 +81,17 @@ class DNA {
             0.2,     // [3] leaf thickness
             0.2,        // [4] leaf step [0,1] on branch
             1,        // [5] branch start growth position [0,1] on branch
-            5,        // [6] number of leaves
+            7,        // [6] number of leaves
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
-         //   Math.PI * 0.7,
+        //    Math.PI * 0.7,
             END_OF_SEQUENCE,
    /*        -Math.PI*0.3,   // [9] angle of new branches 0..PI/2
             0.5,            // [10] probability of [5]
             Math.PI*0.3,   // [11] angle of new branches 0..PI/2
             0.5,            // [12] probability
-     */       -Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
+     */      -Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
             0.5,     // [14]  probability
             Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
             0.5,     // [14]  probability   
