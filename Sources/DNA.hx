@@ -81,8 +81,8 @@ class DNA {
             30,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
             0.2,        // [4] leaf step [0,1] on branch
-            0.5,        // [5] branch start growth position [0,1] on branch
-            11,        // [6] number of leaves
+            1,        // [5] branch start growth position [0,1] on branch
+            12,        // [6] number of leaves
        //     5,          // generation to blossom
             END_OF_SEQUENCE,
             // leaves
@@ -125,6 +125,7 @@ class DNA {
 
 
         var i: Int =0;
+
         while(genes[i]>END_OF_SEQUENCE) i++;
         i++;
         leaves_index=i;
