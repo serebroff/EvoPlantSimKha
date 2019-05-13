@@ -30,6 +30,7 @@ class Plant
     public function new() 
     {
         dna = new DNA();
+        dna.Init();
 
         pos = new Vec2(0,0);
 

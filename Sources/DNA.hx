@@ -71,17 +71,19 @@ class DNA {
     public var branches_index: Int;
 
 
-    public function new()
-    {
-        genes =[
 
-            100,      // [0] branch length
+    public function Init()
+    {
+         genes =[
+
+            200,      // [0] branch length
             0.03,    // [1] branch tickness  w / l
             30,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
             0.2,        // [4] leaf step [0,1] on branch
-            1,        // [5] branch start growth position [0,1] on branch
-            7,        // [6] number of leaves
+            0.5,        // [5] branch start growth position [0,1] on branch
+            11,        // [6] number of leaves
+       //     5,          // generation to blossom
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
@@ -121,8 +123,8 @@ class DNA {
         ];
 
 
+
         var i: Int =0;
-        leaves_index = 0;
         while(genes[i]>END_OF_SEQUENCE) i++;
         i++;
         leaves_index=i;
@@ -130,10 +132,16 @@ class DNA {
         while(genes[i]>END_OF_SEQUENCE) i++;
         i++;
         branches_index = i;
+           
+    }
 
-
+    
+    public function new()
+    {
+        genes = [];
+        leaves_index = 0;
+        branches_index = 0;
 	}
-
  
     private  function get_branch_length():Float
     {
@@ -201,9 +209,17 @@ class DNA {
         return angles;
     }
 	
-    public  function dupblicateDNA() 
+    public  function dupblicateDNA() : DNA
     {
-
+        var newDNA : DNA;
+        newDNA = new DNA();
+        newDNA.genes = genes.copy();
+        for (g in newDNA.genes)
+        {
+            if (g==END_OF_SEQUENCE || g==END_OF_GENE) continue;
+            g *= 0.8 + 0.4 * Math.random();
+        }
+        return newDNA;
     }
     	
 }
