@@ -24,10 +24,15 @@ class Plant
 
     public var pos: Vec2;
 
-    public function new() 
+    public function new(newDNA: DNA = null, energy: Float = 2000) 
     {
-        dna = new DNA();
-        dna.Init();
+        if (newDNA != null) {
+            dna = newDNA;
+        } 
+        else {
+            dna = new DNA();
+            dna.Init();
+        }
 
         pos = new Vec2(0,0);
 
@@ -37,12 +42,29 @@ class Plant
         firstBranch.endPos.set(0, -1);
         firstBranch.maxLength = dna.branch_length;
         firstBranch.thickness = dna.branch_thickness;
-        firstBranch.energy = 2000;
+        firstBranch.energy = energy;
         firstBranch.parentPlant = this;
 
         Ecosystem.branches.push(firstBranch);
-   
     }
+    
+/*    public function new(newDNA: DNA, energy: Float) 
+    {
+        dna = newDNA;
+
+        pos = new Vec2(0,0);
+
+        firstBranch = new Branch(this);
+
+        firstBranch.startPos.set(pos.x, pos.y);
+        firstBranch.endPos.set(0, -1);
+        firstBranch.maxLength = dna.branch_length;
+        firstBranch.thickness = dna.branch_thickness;
+        firstBranch.energy = energy;
+        firstBranch.parentPlant = this;
+
+        Ecosystem.branches.push(firstBranch);
+    }  */
 
  
     public function CreateNewBranch(branchParent: Branch, angle:Float =0) 
