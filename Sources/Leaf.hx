@@ -19,6 +19,7 @@ class Leaf {
 	public var parentBranch:Branch;
 	public var GenerationIndex:Int;
 	public var maxLength:Float;
+	public var thickness:Float;
 	public var energy:Float;
 	public var energyDensity:Float;
 	public var dir:Vec2;
@@ -62,6 +63,7 @@ class Leaf {
 		parentBranch = null;
 		GenerationIndex = 0;
 		maxLength = 20;
+		thickness = 1 ;
 		length = 1;
 		widthStart = 1;
 		widthEnd = 1;
@@ -191,7 +193,7 @@ class Leaf {
 		endPos = startPos.add(endPos.mult(length));
 
 		widthStart = 0;
-		widthEnd = length * parentPlant.dna.leaf_tickness * 0.5;
+		widthEnd = length * thickness * 0.5;
 
 		var sideVec:Vec2;
 		sideVec = dir.skew().mult(widthStart);
@@ -213,13 +215,6 @@ class Leaf {
 		CalculatePos(dt);
 
 		if (!dead) {
-			/*			if (length> maxLength* parentPlant.dna.leaf_growth_pos && !hasProducedBranch) {
-				if (energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH)
-				{
-					hasProducedBranch = true;
-					//parentPlant.CreateNewBranch(this);
-				}
-			}*/
 			CalculateGrowth(dt);
 			ExchangeEnergyWithParent();
 			ConsumeEnergy(dt);

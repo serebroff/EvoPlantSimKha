@@ -32,10 +32,11 @@ class DNA {
     public var megagenes: Array<Gene>;
     
     public var branch_length(get, never):Float;
-    public var branch_tickness(get, never):Float;
+    public var branch_thickness(get, never):Float;
     public var leaf_length(get, never):Float;
-    public var leaf_tickness(get, never):Float;
-    public var leaf_growth_pos(get, never):Float;
+    public var leaf_thickness(get, never):Float;
+    public var seed_length(get, never):Float;
+    public var seed_thickness(get, never):Float;
     public var branch_growth_pos(get, never):Float;
     public var leaves_number(get, never):Float;
     public var generation2blossom(get, never):Float;
@@ -82,13 +83,14 @@ class DNA {
          genes =[
 
             80,      // [0] branch length
-            0.03,    // [1] branch tickness  w / l
+            0.03,    // [1] branch thickness  w / l
             30,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
-            0.2,        // [4] leaf step [0,1] on branch
-            1,        // [5] branch start growth position [0,1] on branch
-            5,        // [6] number of leaves
-            2,          // [7] generation to blossom
+            20,         // [4] seed length
+            0.5,        // [5] seed thickness
+            1,        // [6] branch start growth position [0,1] on branch
+            5,        // [7] number of leaves
+            2,          // [8] generation to blossom
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
@@ -111,7 +113,7 @@ class DNA {
         megagenes = [
 
             new Gene( [60]),      // [0] branch length
-            new Gene([0.01] ),    // [1] branch tickness  w / l
+            new Gene([0.01] ),    // [1] branch thickness  w / l
             new Gene( [30 ]),      // [2] leaf lenght
             new Gene( [0.3 ]),     // [3] leaf thickness
             new Gene( [0.5 ]),        // [4] leaf start growth position [0,1] on branch
@@ -154,7 +156,7 @@ class DNA {
         return genes[0];
     }
 
-    private  function get_branch_tickness():Float
+    private  function get_branch_thickness():Float
     {
         return genes[1];
     }
@@ -164,28 +166,31 @@ class DNA {
         return genes[2];
     }
     
-    private  function get_leaf_tickness():Float
+    private  function get_leaf_thickness():Float
     {
         return genes[3];
     }
-    
-    private  function get_leaf_growth_pos():Float
+    private  function get_seed_length(): Float
     {
         return genes[4];
     }
-
-    private  function get_branch_growth_pos():Float
+    private  function get_seed_thickness():Float
     {
         return genes[5];
     }
 
-    private  function get_leaves_number(): Float
+    private  function get_branch_growth_pos():Float
     {
         return genes[6];
     }
-    private  function get_generation2blossom(): Float 
+
+    private  function get_leaves_number(): Float
     {
         return genes[7];
+    }
+    private  function get_generation2blossom(): Float 
+    {
+        return genes[8];
     }
 
     public function getBranches() 

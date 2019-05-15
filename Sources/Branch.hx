@@ -119,10 +119,10 @@ class Branch extends Leaf {
 		endPos.setFrom(startPos.add(dir.mult(length)));
 
 		if (length < maxLength && ChildrenIndices.length == 0) {
-			widthStart = length * parentPlant.dna.branch_tickness;
+			widthStart = length * thickness;
 			widthEnd = 0;
 		} else
-			widthStart = length * parentPlant.dna.branch_tickness + widthEnd;
+			widthStart = length * thickness + widthEnd;
 
 		if (parentBranch != null) {
 			if (parentBranch.widthEnd < widthStart) {
@@ -170,7 +170,6 @@ class Branch extends Leaf {
 		var l0:Float = Math.ceil(length0 / step);
 
 		if (l0 != l1 && (length < maxLength))
-			// (length >  maxLength * parentPlant.dna.leaf_growth_pos )
 			// && (LeavesIndices.length == 0) //)
 			//	&& energyDensity> DNA.BRANCH_ENERGY_TO_PRODUCE_LEAF)
 		{

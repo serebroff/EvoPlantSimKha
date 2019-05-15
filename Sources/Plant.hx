@@ -22,10 +22,6 @@ class Plant
 
     public var firstBranch: Branch;
 
-    public var branches: Array<Branch>;
-    public var leaves: Array<Leaf>;
-    public var seeds: Array<Seed>;
-
     public var pos: Vec2;
 
     public function new() 
@@ -40,20 +36,11 @@ class Plant
         firstBranch.startPos.set(pos.x, pos.y);
         firstBranch.endPos.set(0, -1);
         firstBranch.maxLength = dna.branch_length;
+        firstBranch.thickness = dna.branch_thickness;
         firstBranch.energy = 2000;
         firstBranch.parentPlant = this;
 
-
-        branches = [];
-        branches.push(firstBranch);
-
-        leaves = [];
-        seeds = [];
-        
-      /*  CreateNewLeaf(firstBranch, dna.angle); 
-        CreateNewLeaf(firstBranch, - dna.angle); 
-        CreateNewLeaf(firstBranch, 0); */
-    
+        Ecosystem.branches.push(firstBranch);
    
     }
 
@@ -64,7 +51,7 @@ class Plant
         
         var deadReplace:Bool = false;
 
-        for (b in branches)
+        for (b in Ecosystem.branches)
         {
             if (b.totalDeath) {
                 newBranch = b;
@@ -77,7 +64,7 @@ class Plant
         if (!deadReplace)
         {
             newBranch = new Branch(this);
-            branches.push(newBranch);
+            Ecosystem.branches.push(newBranch);
         }
 
         branchParent.ChildrenIndices.push(newBranch);
@@ -85,6 +72,7 @@ class Plant
         
         newBranch.startPos.setFrom(branchParent.startPos);
         newBranch.maxLength = dna.branch_length;
+        newBranch.thickness = dna.branch_thickness;
         newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
         newBranch.parentBranch = branchParent;
 
@@ -97,7 +85,7 @@ class Plant
         var  newSeed : Seed = null; 
         var deadReplace:Bool = false;
 
-        for (s in seeds)
+        for (s in Ecosystem.seeds)
         {
             if (s.totalDeath) {
                 newSeed = s;
@@ -110,13 +98,14 @@ class Plant
         if (!deadReplace)
         {
             newSeed = new Seed(this);
-            seeds.push(newSeed);
+            Ecosystem.seeds.push(newSeed);
         }
 
         parent.SeedsIndices.push(newSeed);
         newSeed.startPos.setFrom(parent.endPos);
         newSeed.dir.setFrom( parent.dir.rotate(angle));
-        newSeed.maxLength=dna.leaf_length;
+        newSeed.maxLength=dna.seed_length;
+        newSeed.thickness = dna.seed_thickness;
         newSeed.parentBranch = parent;
         newSeed.GenerationIndex = parent.GenerationIndex + 1;
 
@@ -129,7 +118,7 @@ class Plant
       
         var deadReplace:Bool = false;
 
-        for (l in leaves)
+        for (l in Ecosystem.leaves)
         {
             if (l.totalDeath) {
                 newLeaf = l;
@@ -142,7 +131,7 @@ class Plant
         if (!deadReplace)
         {
             newLeaf = new Leaf(this);
-            leaves.push(newLeaf);
+            Ecosystem.leaves.push(newLeaf);
         }
 
         parent.LeavesIndices.push(newLeaf);
@@ -150,6 +139,7 @@ class Plant
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.maxLength=dna.leaf_length;
+        newLeaf.thickness = dna.leaf_thickness;
         newLeaf.parentBranch = parent;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        
@@ -158,34 +148,13 @@ class Plant
 
 
     public function Calculate(dt:Float) {
+
         firstBranch.Calculate(dt);
-/*        CalculateLeaves(dt);
-        CalculateBranches(dt);*/
 
     }
 
     public function Draw (framebuffer:Framebuffer): Void {
 
-        for( b in branches)
-        {
-            b.Draw(framebuffer);
-        }
-   /*     for( b in branches)
-        {
-            b.DrawSkeleton(framebuffer);
-        }*/
-        
-        for( l in leaves)
-        {
-            l.Draw(framebuffer);
-           // l.DrawSkeleton(framebuffer);
-        }
-
-        for( s in seeds)
-        {
-            s.Draw(framebuffer);
-           // l.DrawSkeleton(framebuffer);
-        }
     }
 
 }

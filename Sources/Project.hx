@@ -100,9 +100,9 @@ class Project {
         g2.color = kha.Color.Black;
 		g2.drawString( "FPS " + Std.string(fps.getFPS()), 20, 20);
 
-		g2.drawString( "BRANCHES " + Std.string(Ecosystem.instance.plants[0].branches.length), 20, 40);
-		g2.drawString( "LEAVES " + Std.string(Ecosystem.instance.plants[0].leaves.length), 20, 60);
-		g2.drawString( "SEEDS " + Std.string(Ecosystem.instance.plants[0].seeds.length), 20, 80);
+		g2.drawString( "BRANCHES " + Std.string(Ecosystem.branches.length), 20, 40);
+		g2.drawString( "LEAVES " + Std.string(Ecosystem.leaves.length), 20, 60);
+		g2.drawString( "SEEDS " + Std.string(Ecosystem.seeds.length), 20, 80);
 
 		g2.fontSize = 64;
 		var year: Int = Math.ceil(Ecosystem.ecosystem_time / Sunlight.SUN_FULL_TURN_IN_SEC); 

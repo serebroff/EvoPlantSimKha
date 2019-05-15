@@ -23,12 +23,20 @@ class Ecosystem
 
     public var plants(default, null): Array<Plant>;
 
+    static public var branches: Array<Branch>;
+    static public var leaves: Array<Leaf>;
+    static public var seeds: Array<Seed>;
+
     private function new() {
         ecosystem_time =0;
         
         sunlight = new Sunlight();
 
-         this.plants = [new Plant()];
+        branches = [];
+        leaves = [];
+        seeds = [];
+
+         plants = [new Plant()];
 
     }
 
@@ -37,14 +45,11 @@ class Ecosystem
         
         sunlight.Calculate(dt);
 
-        for (plant in this.plants) {
-            plant.Calculate(dt);
+        for (p in plants) {
+            p.Calculate(dt);
         }
 
-
         sunlight.CheckCollision(dt);
-
-
 
         ecosystem_time += dt;
 
@@ -53,9 +58,24 @@ class Ecosystem
     public function Render(framebuffer:kha.Framebuffer) {
 
 
-        for (plant in plants)
+        /*for (plant in plants)
         {
             plant.Draw(framebuffer);
+        }*/
+
+        for( b in Ecosystem.branches)
+        {
+            b.Draw(framebuffer);
+        }
+        
+        for( l in Ecosystem.leaves)
+        {
+            l.Draw(framebuffer);
+        }
+
+        for( s in Ecosystem.seeds)
+        {
+            s.Draw(framebuffer);
         }
 
         sunlight.Draw(framebuffer);
