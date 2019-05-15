@@ -38,6 +38,7 @@ class DNA {
     public var leaf_growth_pos(get, never):Float;
     public var branch_growth_pos(get, never):Float;
     public var leaves_number(get, never):Float;
+    public var generation2blossom(get, never):Float;
 
         // constants
     public static inline var LEAF_ENERGY_2_BRANCH = 1;
@@ -76,14 +77,14 @@ class DNA {
     {
          genes =[
 
-            200,      // [0] branch length
+            80,      // [0] branch length
             0.03,    // [1] branch tickness  w / l
             30,      // [2] leaf lenght
             0.2,     // [3] leaf thickness
             0.2,        // [4] leaf step [0,1] on branch
             1,        // [5] branch start growth position [0,1] on branch
-            12,        // [6] number of leaves
-       //     5,          // generation to blossom
+            5,        // [6] number of leaves
+            4,          // [7] generation to blossom
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
@@ -178,8 +179,12 @@ class DNA {
     {
         return genes[6];
     }
+    private  function get_generation2blossom(): Float 
+    {
+        return genes[7];
+    }
 
-    public function getBranches(energy) 
+    public function getBranches() 
     {
         var angles: Array<Float>;
         angles = new Array<Float>();
@@ -196,7 +201,7 @@ class DNA {
         return angles;
     }
 
-    public function getLeaves(energy) 
+    public function getLeaves() 
     {
         var angles: Array<Float>;
         angles = new Array<Float>();

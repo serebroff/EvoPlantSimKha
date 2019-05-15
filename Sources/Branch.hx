@@ -13,12 +13,14 @@ using Plant;
 class Branch extends Leaf {
 	public var ChildrenIndices:Array<Branch>;
 	public var LeavesIndices:Array<Leaf>;
+	public var SeedsIndices:Array<Seed>;
 
 	var naked:Bool;
 	var length0:Float;
 
 	public function new(plant:Plant) {
 		ChildrenIndices = [];
+		SeedsIndices = [];
 		LeavesIndices = [];
 		super(plant);
 	}
@@ -27,6 +29,7 @@ class Branch extends Leaf {
 		super.Init();
 
 		ChildrenIndices.splice(0, ChildrenIndices.length);
+		SeedsIndices.splice(0, SeedsIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
 
 		naked = false;
@@ -77,7 +80,8 @@ class Branch extends Leaf {
 		energy -= delta;
 	}
 
-	public function CalculateDeath(dt:Float):Void {
+
+	public override function CalculateDeath(dt:Float):Void {
 		naked = true;
 		for (c in ChildrenIndices) {
 			naked = naked && c.naked;
@@ -103,6 +107,7 @@ class Branch extends Leaf {
 			startPos.y = 0;
 		}
 	}
+
 
 	public override function CalculatePos(dt:Float):Void {
 		if (dead)
@@ -147,15 +152,19 @@ class Branch extends Leaf {
 		UpdateDensity();
 	}
 
+
 	public function AddNewLeaves():Void {
 		var numleaves:Int = Math.ceil(parentPlant.dna.leaves_number);
 		var even:Bool = true;
-		if (Math.ceil(numleaves) % 2 == 1)
+		if (Math.ceil(numleaves) % 2 == 1) {
 			even = false;
+		}
 
 		var step:Float = maxLength / numleaves;
-		if (even)
+		
+		if (even) {
 			step *= 2;
+		}
 
 		var l1:Float = Math.ceil(length / step);
 		var l0:Float = Math.ceil(length0 / step);
@@ -167,7 +176,7 @@ class Branch extends Leaf {
 		{
 			var angles:Array<Float>;
 			var k:Float = l1 * step / maxLength;
-			angles = parentPlant.dna.getLeaves(energyDensity);
+			angles = parentPlant.dna.getLeaves();
 			for (a in angles) {
 				if (even) {
 					parentPlant.CreateNewLeaf(this, a, k);
@@ -183,25 +192,53 @@ class Branch extends Leaf {
 		length0 = length;
 	}
 
-	public function AddNewBranches():Void {
-		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) && (ChildrenIndices.length == 0) // )
-			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH) {
+
+	public function AddNewSeeds():Void {
+		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) 
+			&& (ChildrenIndices.length == 0) // )
+			&& (SeedsIndices.length == 0) 
+			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH
+			&& (GenerationIndex == parentPlant.dna.generation2blossom)) 
+		{
 			var angles:Array<Float>;
-			angles = parentPlant.dna.getBranches(energyDensity);
+			angles = parentPlant.dna.getBranches();
+			
+			for (a in angles) {
+				parentPlant.CreateNewSeed(this, a);
+			}
+		}
+	}
+
+
+	public function AddNewBranches():Void {
+		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) 
+			&& (ChildrenIndices.length == 0) // )
+			&& (SeedsIndices.length == 0)
+			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH) 
+		{
+			var angles:Array<Float>;
+			angles = parentPlant.dna.getBranches();
+			
 			for (a in angles) {
 				parentPlant.CreateNewBranch(this, a);
+
 			}
 		}
 	}
 
 	public override function Calculate(dt:Float):Void {
-		if (totalDeath)
+		
+		if (totalDeath)  {
 			return;
+		}
 
 		CalculatePos(dt);
 
 		for (l in LeavesIndices) {
 			l.Calculate(dt);
+		}
+		for (s in SeedsIndices) {
+			s.Calculate(dt);
 		}
 		for (b in ChildrenIndices) {
 			b.Calculate(dt);
@@ -211,6 +248,7 @@ class Branch extends Leaf {
 
 		if (!dead) {
 			AddNewLeaves();
+			AddNewSeeds();
 			AddNewBranches();
 
 			CalculateGrowth(dt);
@@ -234,14 +272,12 @@ class Branch extends Leaf {
 		if (c > 1)
 			c = 1;
 		g2.color = kha.Color.fromFloats(0.8 * c, 0.4 * c, 0, a);
-		
-		if (dead)
-		{
+
+		if (dead) {
 			g2.color = kha.Color.fromFloats(0, 0, 0, a);
 		}
-		
-		if (length < maxLength)
-		{
+
+		if (length < maxLength) {
 			g2.color = kha.Color.fromFloats(0, 0.2 + 0.8 * c, 0, a);
 		}
 

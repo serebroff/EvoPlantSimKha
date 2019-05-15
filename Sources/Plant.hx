@@ -24,6 +24,7 @@ class Plant
 
     public var branches: Array<Branch>;
     public var leaves: Array<Leaf>;
+    public var seeds: Array<Seed>;
 
     public var pos: Vec2;
 
@@ -48,6 +49,7 @@ class Plant
         branches.push(firstBranch);
 
         leaves = [];
+        seeds = [];
         
       /*  CreateNewLeaf(firstBranch, dna.angle); 
         CreateNewLeaf(firstBranch, - dna.angle); 
@@ -56,13 +58,11 @@ class Plant
    
     }
 
- //   public function CreateNewBranch(leafParent: Leaf, angle:Float =0) 
-    public function CreateNewBranch(leafParent: Branch, angle:Float =0) 
+ 
+    public function CreateNewBranch(branchParent: Branch, angle:Float =0) 
     {
         var  newBranch : Branch = null; // new Branch();
         
-        var branchParent = leafParent; //leafParent.parentBranch;
-
         var deadReplace:Bool = false;
 
         for (b in branches)
@@ -84,23 +84,44 @@ class Plant
         branchParent.ChildrenIndices.push(newBranch);
        
         
-        //newBranch.startPos.setFrom(branchParent.endPos);
-        newBranch.startPos.setFrom(leafParent.startPos);
+        newBranch.startPos.setFrom(branchParent.startPos);
         newBranch.maxLength = dna.branch_length;
-        //newBranch.length = 0;
-       // newBranch.Thikness = dna.branch_tickness;
-        
-        //newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
-        newBranch.dir.setFrom( leafParent.dir.rotate(angle) );
-        newBranch.parentBranch = leafParent;//.parentBranch;
-        //newBranch.energy = 0;
+        newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
+        newBranch.parentBranch = branchParent;
+
         newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
-
-
 
     }
 
+    public function CreateNewSeed(parent: Branch, angle: Float) {
 
+        var  newSeed : Seed = null; 
+        var deadReplace:Bool = false;
+
+        for (s in seeds)
+        {
+            if (s.totalDeath) {
+                newSeed = s;
+                newSeed.Init();
+                deadReplace = true;
+                break;
+            }
+        }  
+
+        if (!deadReplace)
+        {
+            newSeed = new Seed(this);
+            seeds.push(newSeed);
+        }
+
+        parent.SeedsIndices.push(newSeed);
+        newSeed.startPos.setFrom(parent.endPos);
+        newSeed.dir.setFrom( parent.dir.rotate(angle));
+        newSeed.maxLength=dna.leaf_length;
+        newSeed.parentBranch = parent;
+        newSeed.GenerationIndex = parent.GenerationIndex + 1;
+
+    }
 
     public function CreateNewLeaf(parent: Branch, angle: Float, posOnBranch: Float = 1) {
 
@@ -108,7 +129,6 @@ class Plant
 
       
         var deadReplace:Bool = false;
-        var newIndex: Int =0;
 
         for (l in leaves)
         {
@@ -118,7 +138,6 @@ class Plant
                 deadReplace = true;
                 break;
             }
-            newIndex++;
         }  
 
         if (!deadReplace)
@@ -132,8 +151,6 @@ class Plant
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.maxLength=dna.leaf_length;
-       // newLeaf.energy= 20;
-       // newLeaf.Thikness = dna.leaf_tickness;
         newLeaf.parentBranch = parent;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        
@@ -165,6 +182,11 @@ class Plant
            // l.DrawSkeleton(framebuffer);
         }
 
+        for( s in seeds)
+        {
+            s.Draw(framebuffer);
+           // l.DrawSkeleton(framebuffer);
+        }
     }
 
 }
