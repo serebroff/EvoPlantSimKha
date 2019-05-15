@@ -28,22 +28,8 @@ class Project {
 
 		fps = new FPS();
 
-		//Assets.loadEverything(loadAll);
-
-		//loadAll();
-
-
-
-		//System.notifyOnRender(render);
-
-
-		
-		//Scheduler.addTimeTask(update, 0, 1 / 60);
-	
-
-		//kha.input.Mouse.get().notify(onMouseDown, null, onMouseMove, null);
-
 	}
+
 
 	public function loadAll()
 	{
@@ -54,6 +40,7 @@ class Project {
 	    font             = Assets.fonts.arial_black;
 	    initLevel();
 		
+		fps.Init();	
 		allLoaded =true;
 	}
 	
@@ -77,12 +64,12 @@ class Project {
 
 	function render( frames: Array<Framebuffer>)
 	{		
-		if (!allLoaded) return;
+		if (!allLoaded) {
+			return;
+		}
 		var framebuffer: Framebuffer;
 		framebuffer = frames[0];
 
-
-		fps.update();	
 
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
@@ -123,6 +110,8 @@ class Project {
 		g2.drawString( "YEAR " + Std.string(year), System.windowWidth()/2-60, 60); 
 		
 		g2.end();	
+
+		fps.update();	
 
 
 	}

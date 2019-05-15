@@ -26,6 +26,11 @@ class FPS
 
     };
 
+    public function Init() {
+        realTime = Scheduler.realTime();
+        previousRealTime = realTime;
+    }
+
     public function getFPS()
     {
         return fps;

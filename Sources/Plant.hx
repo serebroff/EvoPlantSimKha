@@ -39,7 +39,6 @@ class Plant
 
         firstBranch.startPos.set(pos.x, pos.y);
         firstBranch.endPos.set(0, -1);
-        firstBranch.length = 1;
         firstBranch.maxLength = dna.branch_length;
         firstBranch.energy = 2000;
         firstBranch.parentPlant = this;

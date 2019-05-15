@@ -44,6 +44,7 @@ class DNA {
     public static inline var LEAF_ENERGY_2_BRANCH = 1;
     public static inline var BRANCH_ENERGY_2_LEAF = 1;
     public static inline var BRANCH_ENERGY_2_BRANCH = 1;
+    public static inline var BRANCH_ENERGY_2_SEED = 1;
 
     public static inline var LEAF_GROWTH_RATE = 1;
     public static inline var BRANCH_GROWTH_RATE = 1;
@@ -57,9 +58,12 @@ class DNA {
 
     public static inline var LEAF_ENERGY_CONSUME = 0.2;
     public static inline var BRANCH_ENERGY_CONSUME = 0.2;
+    public static inline var SEED_ENERGY_CONSUME = 0.2;
+    public static inline var SEED_ENERGY_2_CONSERVATE = 1;
+    public static inline var MAX_CONSERVATED_ENERGY = 4;
 
-    public static inline var MAX_ENERGY_IN_LEAF = 3;
-    public static inline var MAX_ENERGY_IN_BRANCH = 3;
+    public static inline var MAX_ENERGY_DENSITY = 3;
+   // public static inline var MAX_ENERGY_DENSITY = 3;
 
     public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
 
@@ -84,7 +88,7 @@ class DNA {
             0.2,        // [4] leaf step [0,1] on branch
             1,        // [5] branch start growth position [0,1] on branch
             5,        // [6] number of leaves
-            4,          // [7] generation to blossom
+            2,          // [7] generation to blossom
             END_OF_SEQUENCE,
             // leaves
             Math.PI*0.4,   // [6] angle of new branches and leaves 0..PI/2
@@ -215,7 +219,7 @@ class DNA {
         return angles;
     }
 	
-    public  function dupblicateDNA() : DNA
+    public  function duplicate() : DNA
     {
         var newDNA : DNA;
         newDNA = new DNA();

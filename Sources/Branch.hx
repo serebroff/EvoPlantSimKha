@@ -266,7 +266,7 @@ class Branch extends Leaf {
 			a = 0;
 
 		var g2 = framebuffer.g2;
-		var c:Float = energyDensity / DNA.MAX_ENERGY_IN_BRANCH;
+		var c:Float = energyDensity / DNA.MAX_ENERGY_DENSITY;
 		if (c < 0)
 			c = 0;
 		if (c > 1)

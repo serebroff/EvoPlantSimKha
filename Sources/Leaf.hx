@@ -85,9 +85,9 @@ class Leaf {
 
 		if (square > 5) {
 			energyDensity = energy / square;
-			if (energyDensity > DNA.MAX_ENERGY_IN_BRANCH) {
-				energyChange = energyPiece - (energy - DNA.MAX_ENERGY_IN_BRANCH * square);
-				energy = DNA.MAX_ENERGY_IN_BRANCH * square;
+			if (energyDensity > DNA.MAX_ENERGY_DENSITY) {
+				energyChange = energyPiece - (energy - DNA.MAX_ENERGY_DENSITY * square);
+				energy = DNA.MAX_ENERGY_DENSITY * square;
 				return -energyChange;
 			}
 		}
@@ -99,15 +99,19 @@ class Leaf {
 
 		if (square > 1) {
 			energyDensity = energy / square;
-		} else
+		} else {
 			energyDensity = 0;
+		}
+		if (energyDensity> DNA.MAX_ENERGY_DENSITY)
+		{
+			energyDensity = DNA.MAX_ENERGY_DENSITY;
+			energy = energyDensity * square;
+		}
 	}
 
 	public function ConsumeEnergy(dt:Float) {
 		energy -= DNA.LEAF_ENERGY_CONSUME * square * dt;
-		if (energyDensity > DNA.MAX_ENERGY_IN_BRANCH) {
-			//	energy = square * DNA.MAX_ENERGY_IN_BRANCH;
-		}
+
 		if (energy < 0) {
 			dead = true;
 		}
@@ -138,10 +142,14 @@ class Leaf {
 	}
 
 	public function CalculateGrowth(dt:Float) {
-		if (energy < 0)
+		if (energy < 0) {
 			return;
-		if (length >= maxLength)
+		}
+
+		if (length >= maxLength) {
 			return;
+		}
+
 		var delta:Float = DNA.LEAF_GROWTH_RATE * energy * dt;
 		if (delta > energy)
 			delta = energy;
@@ -199,8 +207,9 @@ class Leaf {
 	}
 
 	public function Calculate(dt:Float):Void {
-		if (totalDeath)
+		if (totalDeath) {
 			return;
+		}
 		CalculatePos(dt);
 
 		if (!dead) {
@@ -226,7 +235,7 @@ class Leaf {
 			a = 0;
 
 		var g2 = framebuffer.g2;
-		var c:Float = energyDensity / DNA.MAX_ENERGY_IN_LEAF;
+		var c:Float = energyDensity / DNA.MAX_ENERGY_DENSITY;
 		var r:Float = 0;
 		if (c < 0)
 			c = 0;

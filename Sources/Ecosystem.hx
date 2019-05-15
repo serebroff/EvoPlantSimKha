@@ -3,10 +3,6 @@
 //-------------------------------------------------------
 class Ecosystem 
 {
-    public static inline var MAX_CREATURES: Int = 1;
-
-    public static inline var MAX_FOOD: Int = 500;
-
     public static var instance(get, null):Ecosystem;
 
     private static var _instance:Ecosystem;
@@ -23,7 +19,6 @@ class Ecosystem
 
     static public var ecosystem_time: Float;
 
-    public var foton: Array<Foton>;
     public var sunlight : Sunlight;
 
     public var plants(default, null): Array<Plant>;
@@ -33,9 +28,7 @@ class Ecosystem
         
         sunlight = new Sunlight();
 
-         this.plants = [for (i in 0...MAX_CREATURES) new Plant()];
-        this.foton = [for (i in 0...MAX_FOOD) new Foton()];
-
+         this.plants = [new Plant()];
 
     }
 
