@@ -157,7 +157,15 @@ class Plant
 
     public function Calculate(dt:Float) {
 
+        if (firstBranch == null) {
+            return;
+        }
+
         firstBranch.Calculate(dt);
+
+        if (firstBranch.totalDeath) {
+            firstBranch = null;
+        }
 
     }
 
