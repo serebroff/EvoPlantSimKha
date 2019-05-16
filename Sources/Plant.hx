@@ -22,7 +22,7 @@ class Plant
 
     public var firstBranch: Branch;
 
-    public function new(pos: Vec2 = null, newDNA: DNA = null, energy: Float = 1000) 
+    public function new(pos: Vec2 = null, newDNA: DNA = null, energy: Float = 150) 
     {
         if (newDNA != null) {
             dna = newDNA;
@@ -32,7 +32,8 @@ class Plant
             dna.Init();
         }
 
-        firstBranch = new Branch(this);
+        firstBranch = CreateNewBranch();
+        //firstBranch = new Branch(this);
 
         if (pos != null ) {
             firstBranch.startPos.set(pos.x, pos.y);
@@ -41,19 +42,19 @@ class Plant
             firstBranch.startPos.set(0, 0);
         }
 
-        firstBranch.endPos.set(0, -1);
+/*        firstBranch.endPos.set(0, -1);
         firstBranch.maxLength = dna.branch_length;
         firstBranch.thickness = dna.branch_thickness;
         firstBranch.energy = energy;
         firstBranch.parentPlant = this;
 
-        Ecosystem.branches.push(firstBranch);
+        Ecosystem.branches.push(firstBranch);*/
     }
     
 
 
  
-    public function CreateNewBranch(branchParent: Branch, angle:Float =0) 
+    public function CreateNewBranch(branchParent: Branch = null, angle:Float =0) : Branch
     {
         var  newBranch : Branch = null; // new Branch();
         
@@ -71,20 +72,23 @@ class Plant
 
         if (!deadReplace)
         {
-            newBranch = new Branch(this);
+            newBranch = new Branch();
             Ecosystem.branches.push(newBranch);
         }
 
-        branchParent.ChildrenIndices.push(newBranch);
-       
-        
-        newBranch.startPos.setFrom(branchParent.startPos);
         newBranch.maxLength = dna.branch_length;
         newBranch.thickness = dna.branch_thickness;
-        newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
-        newBranch.parentBranch = branchParent;
+        newBranch.parentPlant = this;
 
-        newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
+        if (branchParent!=null) {
+            branchParent.ChildrenIndices.push(newBranch);
+            newBranch.startPos.setFrom(branchParent.startPos);
+            newBranch.dir.setFrom( branchParent.dir.rotate(angle) );
+            newBranch.parentBranch = branchParent;
+            newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
+        }
+       
+        return newBranch;
 
     }
 
@@ -105,15 +109,18 @@ class Plant
 
         if (!deadReplace)
         {
-            newSeed = new Seed(this);
+            newSeed = new Seed();
             Ecosystem.seeds.push(newSeed);
         }
+
+        newSeed.parentPlant = this; 
+        newSeed.newDNA = dna.duplicate();
+        newSeed.maxLength=dna.seed_length;
+        newSeed.thickness = dna.seed_thickness;
 
         parent.SeedsIndices.push(newSeed);
         newSeed.startPos.setFrom(parent.endPos);
         newSeed.dir.setFrom( parent.dir.rotate(angle));
-        newSeed.maxLength=dna.seed_length;
-        newSeed.thickness = dna.seed_thickness;
         newSeed.parentBranch = parent;
         newSeed.GenerationIndex = parent.GenerationIndex + 1;
 
@@ -138,16 +145,18 @@ class Plant
 
         if (!deadReplace)
         {
-            newLeaf = new Leaf(this);
+            newLeaf = new Leaf();
             Ecosystem.leaves.push(newLeaf);
         }
+
+        newLeaf.parentPlant = this;
+        newLeaf.maxLength=dna.leaf_length;
+        newLeaf.thickness = dna.leaf_thickness;
 
         parent.LeavesIndices.push(newLeaf);
         newLeaf.posOnBranch = posOnBranch;
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
-        newLeaf.maxLength=dna.leaf_length;
-        newLeaf.thickness = dna.leaf_thickness;
         newLeaf.parentBranch = parent;
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        

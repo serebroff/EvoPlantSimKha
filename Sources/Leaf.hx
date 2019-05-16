@@ -11,7 +11,9 @@ using kha.graphics2.GraphicsExtension;
 using Plant;
 
 class Leaf {
-	public static inline var DEATH_TIME = 9;
+	public static inline var LEAF_DEATH_TIME = 1;
+	
+	public static inline var BRANCH_DEATH_TIME = 6;
 	public static inline var DISAPPEAR_TIME = 2;
 	public static inline var TIME_TO_FALL = 4;
 
@@ -40,12 +42,11 @@ class Leaf {
 	public var v3:Vec2;
 	public var v4:Vec2;
 
-	public function new(plant:Plant) {
-		parentPlant = plant;
+	public function new() {
 
 		dir = new Vec2(0, -1);
 		startPos = new Vec2(0, 0);
-		endPos = new Vec2(0, 100);
+		endPos = new Vec2(0, -1);
 
 		v1 = new Vec2(0, 0);
 		v2 = new Vec2(0, 0);
@@ -72,6 +73,10 @@ class Leaf {
 		deathDeltaY = 0;
 		disapperTime = 0;
 		totalDeath = false;
+
+		dir.set(0, -1);
+		startPos.set(0, 0);
+		endPos.set(0, -1);
 	}
 
 	public function AddEnergy(energyPiece:Float):Float {
@@ -159,11 +164,9 @@ class Leaf {
 
 	public function CalculateDeath(dt:Float):Void {
 		deathtime += dt;
-		if (deathtime > DEATH_TIME) {
+		if (deathtime > LEAF_DEATH_TIME) {
 			totalDeath = true;
-			if (parentBranch != null) {
-				parentBranch.LeavesIndices.remove(this);
-			}
+			parentBranch.LeavesIndices.remove(this);
 			return;
 		}
 
@@ -171,7 +174,7 @@ class Leaf {
 
 		if (startPos.y > 0) {
 			startPos.y = 0;
-			disapperTime += dt;
+		//	disapperTime += dt;
 		}
 	}
 
@@ -220,9 +223,8 @@ class Leaf {
 	}
 
 	public function Draw(framebuffer:Framebuffer):Void {
-	//	if (deathtime > DEATH_TIME)			return;
 
-		var a:Float = 1 - disapperTime / DISAPPEAR_TIME;
+		var a:Float = 1 - deathtime / LEAF_DEATH_TIME;
 		if (a < 0)
 			a = 0;
 
@@ -234,7 +236,8 @@ class Leaf {
 		if (c > 1)
 			c = 1;
 
-		g2.color = kha.Color.fromFloats(0, c, 0, a);
+		if (totalDeath)  g2.color = kha.Color.fromFloats(0, 0, 1, 1);
+		else g2.color = kha.Color.fromFloats(0, c, 0, a);
 		//	if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
 
 		g2.fillTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);

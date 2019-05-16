@@ -46,7 +46,28 @@ class Ecosystem
     }
 
     public static function AddNewPlant(pos: Vec2, dna: DNA, energy: Float): Void {
-        plants.push( new Plant(pos, dna, energy));
+        var newPlant: Plant = null;
+        var replaceDead : Bool = false;
+        
+        for (p in plants){
+            if (p.firstBranch == null) {
+                newPlant = p;
+                replaceDead = true;
+                break;
+            }
+        }
+        
+        if (!replaceDead) {
+            newPlant = new Plant(pos, dna, energy);
+            plants.push(newPlant);
+        }
+        else {
+            newPlant.firstBranch = newPlant.CreateNewBranch();
+            newPlant.firstBranch.startPos.setFrom(pos);
+            newPlant.firstBranch.energy = energy;
+            newPlant.dna = dna;
+        }
+        
     }
 
     public function Calculate(dt: Float): Void {

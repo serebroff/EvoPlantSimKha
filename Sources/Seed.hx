@@ -8,19 +8,19 @@ using kha.graphics2.GraphicsExtension;
 // class of seed
 //-------------------------------------------------------
 class Seed extends Leaf {
-	var newDNA:DNA;
+	public var newDNA:DNA;
 	var conservatedEnergy:Float;
 	var seedEnergyDensity: Float;
 
-	public function new(plant:Plant) {
-		super(plant);
+	public function new() {
+		super();
 	}
 
 	public override function Init() {
 		super.Init();
 		conservatedEnergy = 0;
 		seedEnergyDensity = 0;
-		newDNA = parentPlant.dna.duplicate();
+		newDNA = null;
 	}
 
 	public override function ExchangeEnergyWithParent() {
@@ -87,8 +87,6 @@ class Seed extends Leaf {
 
 	
 	public override function Draw(framebuffer:Framebuffer):Void {
-
-//		if (deathtime > Leaf.DEATH_TIME)	return;
 
 		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
 		if (a < 0)

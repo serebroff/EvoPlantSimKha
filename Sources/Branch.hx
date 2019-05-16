@@ -19,11 +19,11 @@ class Branch extends Leaf {
 	var length0:Float;
 	var hasProducedSeeds: Bool;
 
-	public function new(plant:Plant) {
+	public function new() {
 		ChildrenIndices = [];
 		SeedsIndices = [];
 		LeavesIndices = [];
-		super(plant);
+		super();
 	}
 
 	public override function Init() {
@@ -93,7 +93,7 @@ class Branch extends Leaf {
 
 		deathtime += FPS.dt;
 
-		if (deathtime > Leaf.DEATH_TIME) {
+		if (deathtime > Leaf.BRANCH_DEATH_TIME) {
 			totalDeath = true;
 			if (parentBranch != null) {
 				parentBranch.ChildrenIndices.remove(this);
@@ -101,11 +101,11 @@ class Branch extends Leaf {
 			return;
 		}
 		if (deathtime > Leaf.TIME_TO_FALL) {
+			disapperTime += FPS.dt;
 			startPos.y += (deathtime - Leaf.TIME_TO_FALL) * 10;
 		}
 
 		if (startPos.y > 0) {
-			disapperTime += FPS.dt;
 			startPos.y = 0;
 		}
 	}
@@ -235,7 +235,19 @@ class Branch extends Leaf {
 			return;
 		}
 
+		if (!dead) {
+			AddNewLeaves();
+			AddNewSeeds();
+			AddNewBranches();
+
+			CalculateGrowth(dt);
+			ExchangeEnergyWithParent();
+			ConsumeEnergy(dt);
+		}
+
 		CalculatePos(dt);
+
+		UpdateDensity();
 
 		for (l in LeavesIndices) {
 			l.Calculate(dt);
@@ -249,19 +261,11 @@ class Branch extends Leaf {
 
 		UpdateDensity();
 
-		if (!dead) {
-			AddNewLeaves();
-			AddNewSeeds();
-			AddNewBranches();
 
-			CalculateGrowth(dt);
-			ExchangeEnergyWithParent();
-			ConsumeEnergy(dt);
-		}
 	}
 
 	public override function Draw(framebuffer:Framebuffer):Void {
-		//if (deathtime > Leaf.DEATH_TIME)		return;
+		//if (deathtime > Leaf.BRANCH_DEATH_TIME)		return;
 
 		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
 		if (a < 0)
