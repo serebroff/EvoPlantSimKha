@@ -99,7 +99,8 @@ class Project {
         g2.font = font;
         g2.fontSize = 32;
         g2.color = kha.Color.Black;
-		g2.drawString( "FPS " + Std.string(Math.floor(fps.getFPS()*100)*0.01), System.windowWidth()-140, 20);
+		g2.drawString( "FPS " + Utils.floatToStringPrecision(fps.getFPS(),1), System.windowWidth()-140, 20); 
+		//g2.drawString( "FPS " + Std.string(Math.fceil(fps.getFPS()*10)*0.1), System.windowWidth()-140, 20);
 		
 		g2.fontSize = 24;
 

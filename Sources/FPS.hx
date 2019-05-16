@@ -9,10 +9,11 @@ class FPS
     var numframesPassed : Int;
     var frametimePassed : Float; 
 
-    var TIME_TO_COUNT: Float = 0.22;
+    var TIME_TO_COUNT: Float = 0.25;
 
     var previousRealTime:Float;
     var realTime:Float;
+
     static public var dt : Float;
     
     var fps : Float;

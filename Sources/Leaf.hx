@@ -13,8 +13,8 @@ using Plant;
 class Leaf {
 	public static inline var LEAF_DEATH_TIME = 1;
 	
-	public static inline var BRANCH_DEATH_TIME = 6;
-	public static inline var DISAPPEAR_TIME = 2;
+	public static inline var BRANCH_DEATH_TIME = 1;
+	public static inline var DISAPPEAR_TIME = 1;
 	public static inline var TIME_TO_FALL = 4;
 
 	public var parentPlant:Plant;
