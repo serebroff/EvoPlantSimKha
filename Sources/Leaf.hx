@@ -35,7 +35,6 @@ class Leaf {
 	public var deathDeltaY:Float;
 	public var disapperTime:Float;
 	public var totalDeath:Bool;
-	public var hasProducedBranch:Bool;
 	public var v1:Vec2;
 	public var v2:Vec2;
 	public var v3:Vec2;
@@ -73,7 +72,6 @@ class Leaf {
 		deathDeltaY = 0;
 		disapperTime = 0;
 		totalDeath = false;
-		hasProducedBranch = false;
 	}
 
 	public function AddEnergy(energyPiece:Float):Float {
@@ -222,8 +220,7 @@ class Leaf {
 	}
 
 	public function Draw(framebuffer:Framebuffer):Void {
-		if (deathtime > DEATH_TIME)
-			return;
+	//	if (deathtime > DEATH_TIME)			return;
 
 		var a:Float = 1 - disapperTime / DISAPPEAR_TIME;
 		if (a < 0)

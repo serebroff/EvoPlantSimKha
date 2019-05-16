@@ -1,3 +1,8 @@
+
+import haxe.macro.Type.MethodKind;
+
+using Utils;
+
 //-------------------------------------------------------
 // Base class of living space for plants
 //-------------------------------------------------------
@@ -21,7 +26,7 @@ class Ecosystem
 
     public var sunlight : Sunlight;
 
-    public var plants(default, null): Array<Plant>;
+    static public var plants(default, null): Array<Plant>;
 
     static public var branches: Array<Branch>;
     static public var leaves: Array<Leaf>;
@@ -36,12 +41,15 @@ class Ecosystem
         leaves = [];
         seeds = [];
 
-         plants = [new Plant()];
+        plants = [new Plant()];
 
     }
 
+    public static function AddNewPlant(pos: Vec2, dna: DNA, energy: Float): Void {
+        plants.push( new Plant(pos, dna, energy));
+    }
 
-   public function Calculate(dt: Float): Void {
+    public function Calculate(dt: Float): Void {
         
         sunlight.Calculate(dt);
 
@@ -63,18 +71,21 @@ class Ecosystem
             plant.Draw(framebuffer);
         }*/
 
-        for( b in Ecosystem.branches)
+        for( b in branches)
         {
+            if (b.totalDeath) continue;
             b.Draw(framebuffer);
         }
         
-        for( l in Ecosystem.leaves)
+        for( l in leaves)
         {
+            if (l.totalDeath) continue;
             l.Draw(framebuffer);
         }
 
-        for( s in Ecosystem.seeds)
+        for( s in seeds)
         {
+            if (s.totalDeath) continue;
             s.Draw(framebuffer);
         }
 

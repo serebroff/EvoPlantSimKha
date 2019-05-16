@@ -70,6 +70,7 @@ class Project {
 		var framebuffer: Framebuffer;
 		framebuffer = frames[0];
 
+		fps.update();
 
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
@@ -98,8 +99,11 @@ class Project {
         g2.font = font;
         g2.fontSize = 32;
         g2.color = kha.Color.Black;
-		g2.drawString( "FPS " + Std.string(fps.getFPS()), 20, 20);
+		g2.drawString( "FPS " + Std.string(Math.floor(fps.getFPS()*100)*0.01), System.windowWidth()-140, 20);
+		
+		g2.fontSize = 24;
 
+		g2.drawString( "PLANTS " + Std.string(Ecosystem.plants.length), 20, 20);
 		g2.drawString( "BRANCHES " + Std.string(Ecosystem.branches.length), 20, 40);
 		g2.drawString( "LEAVES " + Std.string(Ecosystem.leaves.length), 20, 60);
 		g2.drawString( "SEEDS " + Std.string(Ecosystem.seeds.length), 20, 80);
@@ -111,7 +115,6 @@ class Project {
 		
 		g2.end();	
 
-		fps.update();	
 
 
 	}

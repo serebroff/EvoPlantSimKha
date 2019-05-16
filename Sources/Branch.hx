@@ -17,6 +17,7 @@ class Branch extends Leaf {
 
 	var naked:Bool;
 	var length0:Float;
+	var hasProducedSeeds: Bool;
 
 	public function new(plant:Plant) {
 		ChildrenIndices = [];
@@ -34,6 +35,7 @@ class Branch extends Leaf {
 
 		naked = false;
 		length0 = 0;
+		hasProducedSeeds = false;
 	}
 
 	public override function ExchangeEnergyWithParent() {
@@ -196,8 +198,9 @@ class Branch extends Leaf {
 		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) 
 			&& (ChildrenIndices.length == 0) // )
 			&& (SeedsIndices.length == 0) 
+			&& !hasProducedSeeds
 			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH
-			&& (GenerationIndex == parentPlant.dna.generation2blossom)) 
+			&& (GenerationIndex >= parentPlant.dna.generation2blossom)) 
 		{
 			var angles:Array<Float>;
 			angles = parentPlant.dna.getBranches();
@@ -205,6 +208,7 @@ class Branch extends Leaf {
 			for (a in angles) {
 				parentPlant.CreateNewSeed(this, a);
 			}
+			hasProducedSeeds = true;
 		}
 	}
 
@@ -257,8 +261,7 @@ class Branch extends Leaf {
 	}
 
 	public override function Draw(framebuffer:Framebuffer):Void {
-		if (deathtime > Leaf.DEATH_TIME)
-			return;
+		//if (deathtime > Leaf.DEATH_TIME)		return;
 
 		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
 		if (a < 0)

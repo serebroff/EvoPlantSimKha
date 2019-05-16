@@ -61,7 +61,7 @@ class DNA {
     public static inline var BRANCH_ENERGY_CONSUME = 0.2;
     public static inline var SEED_ENERGY_CONSUME = 0.2;
     public static inline var SEED_ENERGY_2_CONSERVATE = 1;
-    public static inline var MAX_CONSERVATED_ENERGY = 4;
+    public static inline var MAX_CONSERVATED_ENERGY = 10;
 
     public static inline var MAX_ENERGY_DENSITY = 3;
    // public static inline var MAX_ENERGY_DENSITY = 3;
@@ -75,7 +75,6 @@ class DNA {
     
     public var leaves_index: Int;
     public var branches_index: Int;
-
 
 
     public function Init()
@@ -109,8 +108,15 @@ class DNA {
             END_OF_SEQUENCE
          
         ];
+        
+        SetIndices();
 
-        megagenes = [
+    }
+
+    public function SetIndices()
+    {
+
+ /*       megagenes = [
 
             new Gene( [60]),      // [0] branch length
             new Gene([0.01] ),    // [1] branch thickness  w / l
@@ -127,7 +133,7 @@ class DNA {
             
             null
          
-        ];
+        ];*/
 
 
 
@@ -234,6 +240,7 @@ class DNA {
             if (g==END_OF_SEQUENCE || g==END_OF_GENE) continue;
             g *= 0.8 + 0.4 * Math.random();
         }
+        newDNA.SetIndices();
         return newDNA;
     }
     	

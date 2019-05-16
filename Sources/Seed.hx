@@ -1,3 +1,4 @@
+import Utils.Vec2;
 import kha.Framebuffer;
 import kha.System;
 
@@ -70,27 +71,24 @@ class Seed extends Leaf {
 
 	public override function CalculateDeath(dt:Float):Void {
 		deathtime += dt;
-		if (deathtime > Leaf.DEATH_TIME) {
-			totalDeath = true;
-			if (parentBranch != null) {
-				parentBranch.SeedsIndices.remove(this);
-			}
-			return;
-		}
 
 		startPos.y += deathtime * 5;
 
 		if (startPos.y > 0) {
 			startPos.y = 0;
-			disapperTime += dt;
+			Ecosystem.AddNewPlant(startPos, newDNA, conservatedEnergy);
+			if (parentBranch != null) {
+				parentBranch.SeedsIndices.remove(this);
+			}
+			totalDeath = true;
+
 		}
 	}
 
 	
 	public override function Draw(framebuffer:Framebuffer):Void {
 
-		if (deathtime > Leaf.DEATH_TIME)
-			return;
+//		if (deathtime > Leaf.DEATH_TIME)	return;
 
 		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
 		if (a < 0)
