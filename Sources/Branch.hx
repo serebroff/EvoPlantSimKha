@@ -38,6 +38,14 @@ class Branch extends Leaf {
 		hasProducedSeeds = false;
 	}
 
+	public override function ConsumeEnergy() {
+		energy -= DNA.BRANCH_ENERGY_CONSUME * square * FPS.dt;
+
+		if (energy < 0) {
+			dead = true;
+		}
+	}
+
 	public override function ExchangeEnergyWithParent() {
 		if (parentBranch == null)
 			return;
@@ -89,9 +97,19 @@ class Branch extends Leaf {
 			for (c in ChildrenIndices) {
 				readyToFall = readyToFall && c.readyToFall;
 			}
+
+			if (LeavesIndices.length != 0 || SeedsIndices.length != 0) {
+				readyToFall = false;
+			}
 		}
 
 		if (readyToFall) {
+			if (deathtime == 0)
+			{
+				if (parentBranch != null) {
+					parentBranch.ChildrenIndices.remove(this);
+				}
+			}
 			deathtime += FPS.dt;
 
 			if (deathtime > Leaf.TIME_TO_FALL) {
@@ -101,9 +119,6 @@ class Branch extends Leaf {
 
 			if (disapperTime > Leaf.BRANCH_DEATH_TIME) {
 				totalDeath = true;
-/*				if (parentBranch != null) {
-					parentBranch.ChildrenIndices.remove(this);
-				} */
 			}
 
 			if (startPos.y > 0) {
@@ -216,7 +231,6 @@ class Branch extends Leaf {
 			&&
 			(SeedsIndices.length == 0) &&
 			energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH) {
-
 			var angles:Array<Float>;
 			angles = parentPlant.dna.getBranches();
 
@@ -231,7 +245,6 @@ class Branch extends Leaf {
 			return;
 		}
 
-
 		if (!dead) {
 			AddNewLeaves();
 			// AddNewSeeds();
@@ -239,7 +252,7 @@ class Branch extends Leaf {
 
 			CalculateGrowth(dt);
 			ExchangeEnergyWithParent();
-			ConsumeEnergy(dt);
+			ConsumeEnergy();
 		}
 
 		UpdateDensity();

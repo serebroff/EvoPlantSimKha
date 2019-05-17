@@ -57,15 +57,18 @@ class Seed extends Leaf {
 		
 	}
 
-	public override function ConsumeEnergy(dt:Float) {
+	public override function ConsumeEnergy() {
 		
 		ConservateEnergy();
 
-		energy -= DNA.SEED_ENERGY_CONSUME * square * dt;
+		energy -= DNA.SEED_ENERGY_CONSUME * square * FPS.dt;
 		UpdateDensity();
 
 		if (energy < 0) {
 			dead = true;
+			if (parentBranch != null) {
+				parentBranch.SeedsIndices.remove(this);
+			}
 		}
 	}
 
@@ -77,9 +80,6 @@ class Seed extends Leaf {
 		if (startPos.y > 0) {
 			startPos.y = 0;
 			Ecosystem.AddNewPlant(startPos, newDNA, conservatedEnergy);
-			if (parentBranch != null) {
-				parentBranch.SeedsIndices.remove(this);
-			}
 			totalDeath = true;
 
 		}

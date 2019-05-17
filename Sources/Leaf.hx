@@ -114,11 +114,14 @@ class Leaf {
 		} 
 	}
 
-	public function ConsumeEnergy(dt:Float) {
-		energy -= DNA.LEAF_ENERGY_CONSUME * square * dt;
+	public function ConsumeEnergy() {
+		energy -= DNA.LEAF_ENERGY_CONSUME * square * FPS.dt;
 
 		if (energy < 0) {
 			dead = true;
+			if (parentBranch != null) {
+				parentBranch.LeavesIndices.remove(this);
+			}
 		}
 	}
 
@@ -166,7 +169,6 @@ class Leaf {
 		deathtime += FPS.dt;
 		if (deathtime > LEAF_DEATH_TIME) {
 			totalDeath = true;
-			parentBranch.LeavesIndices.remove(this);
 			return;
 		}
 
@@ -174,7 +176,6 @@ class Leaf {
 
 		if (startPos.y > 0) {
 			startPos.y = 0;
-		//	disapperTime += dt;
 		}
 		CalculateVertices();
 	}
@@ -215,7 +216,7 @@ class Leaf {
 		if (!dead) {
 			CalculateGrowth(dt);
 			ExchangeEnergyWithParent();
-			ConsumeEnergy(dt);
+			ConsumeEnergy();
 		}
 		
 //		if (dead) CalculateDeath();

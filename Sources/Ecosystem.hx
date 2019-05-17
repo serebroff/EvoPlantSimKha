@@ -84,23 +84,24 @@ class Ecosystem
         
         for( l in leaves)
         {
-            if (l.totalDeath) continue;
-            if (l.dead) l.CalculateDeath();
+            if (!l.totalDeath && l.dead) { 
+                l.CalculateDeath();
+            }
         }
 
         for( s in seeds)
         {
-            if (s.totalDeath) continue;
-            if (s.dead) s.CalculateDeath();
+            if (!s.totalDeath && s.dead)  {
+                s.CalculateDeath();
+            }
         }
 
-        /*for( b in branches)
+        for( b in branches)
         {
-            if (b.totalDeath) continue;
-            if (b.deathtime>0) {
+            if (!b.totalDeath && b.deathtime>0) {
                 b.CalculateDeath();
             }
-        } */
+        } 
 
         ecosystem_time += dt;
 
