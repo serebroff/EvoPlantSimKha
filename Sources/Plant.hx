@@ -64,6 +64,9 @@ class Plant
         {
             if (b.totalDeath) {
                 newBranch = b;
+                if (newBranch.parentBranch!=null && !newBranch.parentBranch.totalDeath) {
+                    newBranch.parentBranch.ChildrenIndices.remove(newBranch);
+                }
                 newBranch.Init();
                 deadReplace = true;
                 break;

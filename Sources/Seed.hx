@@ -47,6 +47,9 @@ class Seed extends Leaf {
 		seedEnergyDensity = conservatedEnergy/square;
 		if (seedEnergyDensity >= DNA.MAX_CONSERVATED_ENERGY) {
 			dead = true;
+			if (parentBranch != null) {
+				parentBranch.SeedsIndices.remove(this);
+			}
 			return;
 		}
 
@@ -81,7 +84,6 @@ class Seed extends Leaf {
 			startPos.y = 0;
 			Ecosystem.AddNewPlant(startPos, newDNA, conservatedEnergy);
 			totalDeath = true;
-
 		}
 		CalculateVertices();
 	}
