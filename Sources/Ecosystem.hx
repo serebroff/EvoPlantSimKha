@@ -73,12 +73,34 @@ class Ecosystem
     public function Calculate(dt: Float): Void {
         
         sunlight.Calculate(dt);
+        
+        sunlight.CheckCollision(dt);
 
         for (p in plants) {
             p.Calculate(dt);
         }
 
-        sunlight.CheckCollision(dt);
+
+        
+        for( l in leaves)
+        {
+            if (l.totalDeath) continue;
+            if (l.dead) l.CalculateDeath();
+        }
+
+        for( s in seeds)
+        {
+            if (s.totalDeath) continue;
+            if (s.dead) s.CalculateDeath();
+        }
+
+        /*for( b in branches)
+        {
+            if (b.totalDeath) continue;
+            if (b.deathtime>0) {
+                b.CalculateDeath();
+            }
+        } */
 
         ecosystem_time += dt;
 

@@ -87,6 +87,7 @@ class Plant
             newBranch.parentBranch = branchParent;
             newBranch.GenerationIndex = branchParent.GenerationIndex + 1;
         }
+        newBranch.CalculateVertices();
        
         return newBranch;
 
@@ -122,6 +123,8 @@ class Plant
         newSeed.startPos.setFrom(parent.endPos);
         newSeed.dir.setFrom( parent.dir.rotate(angle));
         newSeed.parentBranch = parent;
+        newSeed.CalculateVertices();
+
         newSeed.GenerationIndex = parent.GenerationIndex + 1;
 
     }
@@ -158,6 +161,8 @@ class Plant
         newLeaf.startPos.setFrom(parent.endPos);
         newLeaf.dir.setFrom( parent.dir.rotate(angle));
         newLeaf.parentBranch = parent;
+        newLeaf.CalculateVertices();
+
         newLeaf.GenerationIndex = parent.GenerationIndex + 1;
        
 

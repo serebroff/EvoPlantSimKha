@@ -111,7 +111,7 @@ class Leaf {
 		{
 			energyDensity = DNA.MAX_ENERGY_DENSITY;
 			energy = energyDensity * square;
-		}
+		} 
 	}
 
 	public function ConsumeEnergy(dt:Float) {
@@ -162,8 +162,8 @@ class Leaf {
 		energy -= delta;
 	}
 
-	public function CalculateDeath(dt:Float):Void {
-		deathtime += dt;
+	public function CalculateDeath():Void {
+		deathtime += FPS.dt;
 		if (deathtime > LEAF_DEATH_TIME) {
 			totalDeath = true;
 			parentBranch.LeavesIndices.remove(this);
@@ -176,13 +176,11 @@ class Leaf {
 			startPos.y = 0;
 		//	disapperTime += dt;
 		}
+		CalculateVertices();
 	}
 
-	public function CalculatePos(dt:Float):Void {
-		if (dead) {
-			CalculateDeath(dt);
-		} 
-		else {
+	public function CalculateVertices():Void {
+		if (!dead)  {
 			var len:Float = posOnBranch * parentBranch.maxLength;
 			if (parentBranch.length < len) {
 				len = parentBranch.length;
@@ -213,13 +211,15 @@ class Leaf {
 		if (totalDeath) {
 			return;
 		}
-		CalculatePos(dt);
 
 		if (!dead) {
 			CalculateGrowth(dt);
 			ExchangeEnergyWithParent();
 			ConsumeEnergy(dt);
 		}
+		
+//		if (dead) CalculateDeath();
+		CalculateVertices();
 	}
 
 	public function Draw(framebuffer:Framebuffer):Void {

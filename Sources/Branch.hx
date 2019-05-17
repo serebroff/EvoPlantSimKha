@@ -15,9 +15,9 @@ class Branch extends Leaf {
 	public var LeavesIndices:Array<Leaf>;
 	public var SeedsIndices:Array<Seed>;
 
-	var naked:Bool;
+	var readyToFall:Bool;
 	var length0:Float;
-	var hasProducedSeeds: Bool;
+	var hasProducedSeeds:Bool;
 
 	public function new() {
 		ChildrenIndices = [];
@@ -33,7 +33,7 @@ class Branch extends Leaf {
 		SeedsIndices.splice(0, SeedsIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
 
-		naked = false;
+		readyToFall = false;
 		length0 = 0;
 		hasProducedSeeds = false;
 	}
@@ -51,7 +51,7 @@ class Branch extends Leaf {
 
 		// if (length< maxLength*0.5)
 		if (parentBranch.energyDensity > energyDensity //	&& length < maxLength
-				//	&& !naked
+				//	&& !readyToFall
 			&& (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_CHILD)) {
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
 			energy += delta;
@@ -82,39 +82,40 @@ class Branch extends Leaf {
 		energy -= delta;
 	}
 
+	public override function CalculateDeath():Void {
+		readyToFall = true;
 
-	public override function CalculateDeath(dt:Float):Void {
-		naked = true;
-		for (c in ChildrenIndices) {
-			naked = naked && c.naked;
-		}
-		if (!naked)
-			return;
-
-		deathtime += FPS.dt;
-
-		if (deathtime > Leaf.BRANCH_DEATH_TIME) {
-			totalDeath = true;
-			if (parentBranch != null) {
-				parentBranch.ChildrenIndices.remove(this);
+		if (deathtime == 0) {
+			for (c in ChildrenIndices) {
+				readyToFall = readyToFall && c.readyToFall;
 			}
-			return;
-		}
-		if (deathtime > Leaf.TIME_TO_FALL) {
-			disapperTime += FPS.dt;
-			startPos.y += (deathtime - Leaf.TIME_TO_FALL) * 10;
 		}
 
-		if (startPos.y > 0) {
-			startPos.y = 0;
+		if (readyToFall) {
+			deathtime += FPS.dt;
+
+			if (deathtime > Leaf.TIME_TO_FALL) {
+				disapperTime += FPS.dt;
+				startPos.y += (deathtime - Leaf.TIME_TO_FALL) * 10;
+			}
+
+			if (disapperTime > Leaf.BRANCH_DEATH_TIME) {
+				totalDeath = true;
+/*				if (parentBranch != null) {
+					parentBranch.ChildrenIndices.remove(this);
+				} */
+			}
+
+			if (startPos.y > 0) {
+				startPos.y = 0;
+			}
 		}
+
+		CalculateVertices();
 	}
 
-
-	public override function CalculatePos(dt:Float):Void {
-		if (dead)
-			CalculateDeath(dt);
-		else if (parentBranch != null) {
+	public override function CalculateVertices():Void {
+		if (!dead && parentBranch != null) {
 			startPos.setFrom(parentBranch.endPos);
 		}
 
@@ -123,13 +124,12 @@ class Branch extends Leaf {
 		if (length < maxLength && ChildrenIndices.length == 0) {
 			widthStart = length * thickness;
 			widthEnd = 0;
-		} else
+		} else {
 			widthStart = length * thickness + widthEnd;
+		}
 
-		if (parentBranch != null) {
-			if (parentBranch.widthEnd < widthStart) {
-				parentBranch.widthEnd = widthStart;
-			}
+		if (parentBranch != null && parentBranch.widthEnd < widthStart) {
+			parentBranch.widthEnd = widthStart;
 		}
 
 		var sideVec:Vec2;
@@ -154,7 +154,6 @@ class Branch extends Leaf {
 		UpdateDensity();
 	}
 
-
 	public function AddNewLeaves():Void {
 		var numleaves:Int = Math.ceil(parentPlant.dna.leaves_number);
 		var even:Bool = true;
@@ -163,7 +162,7 @@ class Branch extends Leaf {
 		}
 
 		var step:Float = maxLength / numleaves;
-		
+
 		if (even) {
 			step *= 2;
 		}
@@ -193,18 +192,17 @@ class Branch extends Leaf {
 		length0 = length;
 	}
 
-
 	public function AddNewSeeds():Void {
-		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) 
-			&& (ChildrenIndices.length == 0) // )
-			&& (SeedsIndices.length == 0) 
-			&& !hasProducedSeeds
-			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH
-			&& (GenerationIndex >= parentPlant.dna.generation2blossom)) 
-		{
+		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) &&
+			(ChildrenIndices.length == 0) // )
+			&&
+			(SeedsIndices.length == 0) &&
+			!hasProducedSeeds &&
+			energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH &&
+			(GenerationIndex >= parentPlant.dna.generation2blossom)) {
 			var angles:Array<Float>;
 			angles = parentPlant.dna.getBranches();
-			
+
 			for (a in angles) {
 				parentPlant.CreateNewSeed(this, a);
 			}
@@ -212,32 +210,31 @@ class Branch extends Leaf {
 		}
 	}
 
-
 	public function AddNewBranches():Void {
-		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) 
-			&& (ChildrenIndices.length == 0) // )
-			&& (SeedsIndices.length == 0)
-			&& energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH) 
-		{
+		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) &&
+			(ChildrenIndices.length == 0) // )
+			&&
+			(SeedsIndices.length == 0) &&
+			energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH) {
+
 			var angles:Array<Float>;
 			angles = parentPlant.dna.getBranches();
-			
+
 			for (a in angles) {
 				parentPlant.CreateNewBranch(this, a);
-
 			}
 		}
 	}
 
 	public override function Calculate(dt:Float):Void {
-		
-		if (totalDeath)  {
+		if (totalDeath) {
 			return;
 		}
 
+
 		if (!dead) {
 			AddNewLeaves();
-			AddNewSeeds();
+			// AddNewSeeds();
 			AddNewBranches();
 
 			CalculateGrowth(dt);
@@ -245,38 +242,48 @@ class Branch extends Leaf {
 			ConsumeEnergy(dt);
 		}
 
-		CalculatePos(dt);
-
 		UpdateDensity();
 
 		for (l in LeavesIndices) {
-			l.Calculate(dt);
+			if (!l.dead) {
+				l.Calculate(dt);
+			}
 		}
 		for (s in SeedsIndices) {
-			s.Calculate(dt);
+			if (!s.dead) {
+				s.Calculate(dt);
+			}
 		}
 		for (b in ChildrenIndices) {
 			b.Calculate(dt);
 		}
 
-		UpdateDensity();
+		// CalculateVertices();
+		// UpdateDensity();
 
-
+		if (dead) {
+			CalculateDeath();
+		} else {
+			CalculateVertices();
+		}
 	}
 
 	public override function Draw(framebuffer:Framebuffer):Void {
-		//if (deathtime > Leaf.BRANCH_DEATH_TIME)		return;
-
-		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
-		if (a < 0)
+		var a:Float = 1 - disapperTime / Leaf.BRANCH_DEATH_TIME;
+		if (a < 0) {
 			a = 0;
+		}
 
 		var g2 = framebuffer.g2;
 		var c:Float = energyDensity / DNA.MAX_ENERGY_DENSITY;
-		if (c < 0)
+
+		if (c < 0) {
 			c = 0;
-		if (c > 1)
+		}
+		if (c > 1) {
 			c = 1;
+		}
+
 		g2.color = kha.Color.fromFloats(0.8 * c, 0.4 * c, 0, a);
 
 		if (dead) {

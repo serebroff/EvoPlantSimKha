@@ -69,8 +69,8 @@ class Seed extends Leaf {
 		}
 	}
 
-	public override function CalculateDeath(dt:Float):Void {
-		deathtime += dt;
+	public override function CalculateDeath():Void {
+		deathtime += FPS.dt;
 
 		startPos.y += deathtime * 5;
 
@@ -83,6 +83,7 @@ class Seed extends Leaf {
 			totalDeath = true;
 
 		}
+		CalculateVertices();
 	}
 
 	

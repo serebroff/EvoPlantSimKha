@@ -87,9 +87,6 @@ class Project {
 
 		g2.transformation.setFrom(kha.math.FastMatrix3.translation(System.windowWidth() * 0.5 , System.windowHeight()));
 
-	
-		
-
     	Ecosystem.instance.Render(framebuffer);
 
 		g2.transformation.setFrom(kha.math.FastMatrix3.identity());
