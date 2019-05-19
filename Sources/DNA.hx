@@ -238,7 +238,14 @@ class DNA {
         for (g in newDNA.genes)
         {
             if (g==END_OF_SEQUENCE || g==END_OF_GENE) continue;
-            g *= 0.8 + 0.4 * Math.random();
+            var r: Float = Math.random();
+            if (r < 0.33) {
+                g *= 0.8;    
+            } else if (r < 0.66) {
+                g*=1.2;
+            } 
+
+            //g *= 0.8 + 0.4 * Math.random();
         }
         newDNA.SetIndices();
         return newDNA;
