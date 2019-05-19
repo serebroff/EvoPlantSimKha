@@ -23,6 +23,10 @@ class Ecosystem
     }
 
     static public var ecosystem_time: Float;
+    static public var numLiveLeaves: Int;
+    static public var numLiveSeeds: Int;
+    static public var numLiveBranches: Int;
+    static public var numLivePlants: Int;
 
     public var sunlight : Sunlight;
 
@@ -34,6 +38,10 @@ class Ecosystem
 
     private function new() {
         ecosystem_time =0;
+        numLiveLeaves = 0;
+        numLiveSeeds = 0;
+        numLiveBranches = 0;
+        numLivePlants = 0;
         
         sunlight = new Sunlight();
 
@@ -76,29 +84,46 @@ class Ecosystem
         
         sunlight.CheckCollision(dt);
 
+        numLivePlants =0;
         for (p in plants) {
+            if (p.firstBranch==null) {
+                continue;
+            }
+            numLivePlants++;
             p.Calculate(dt);
         }
 
 
-        
+        numLiveLeaves=0;
         for( l in leaves)
         {
-            if (!l.totalDeath && l.dead) { 
+            if (l.totalDeath) continue;
+            numLiveLeaves++;
+            if (l.dead) { 
                 l.CalculateDeath();
             }
         }
 
+        numLiveSeeds =0;
         for( s in seeds)
         {
-            if (!s.totalDeath && s.dead)  {
+            if (s.totalDeath) {
+                continue;
+            }
+            numLiveSeeds++;
+            if ( s.dead)  {
                 s.CalculateDeath();
             }
         }
 
+        numLiveBranches=0;
         for( b in branches)
         {
-            if (!b.totalDeath && b.deathtime>0) {
+            if (b.totalDeath) {
+                continue;
+            }
+            numLiveBranches++;
+            if ( b.deathtime>0) {
                 b.CalculateDeath();
             }
         } 
