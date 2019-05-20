@@ -34,7 +34,7 @@ class Project {
 	public function loadAll()
 	{
 
-		//Scheduler.addTimeTask(function () { update(); }, 0, 1 / 10);
+	//	Scheduler.addTimeTask(function () { update(); }, 0, 1 / 40);
 		System.notifyOnFrames(function (frames) { render(frames); });
 
 	    font             = Assets.fonts.arial_black;
@@ -59,7 +59,10 @@ class Project {
 	}
 
 	function update(): Void {
-		//Ecosystem.instance.Calculate(1/10);
+		var dt = FPS.dt;
+		FPS.dt = 1/40;
+		Ecosystem.instance.Calculate(FPS.dt); 
+		FPS.dt = dt;
 	}
 
 	function render( frames: Array<Framebuffer>)
@@ -69,6 +72,8 @@ class Project {
 		}
 		var framebuffer: Framebuffer;
 		framebuffer = frames[0];
+
+		fps.update();
 
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
@@ -95,9 +100,10 @@ class Project {
         g2.fontSize = 32;
         g2.color = kha.Color.Black;
 		g2.drawString( "FPS " + Utils.floatToStringPrecision(fps.getFPS(),1), System.windowWidth()-140, 20); 
-		//g2.drawString( "FPS " + Std.string(Math.fceil(fps.getFPS()*10)*0.1), System.windowWidth()-140, 20);
+		g2.drawString( "dt " + Utils.floatToStringPrecision(FPS.dt,4), System.windowWidth()-140, 50); 
+	//	g2.drawString( "FPS " + Std.string(fps.getFPS()), System.windowWidth()-140, 20); 
 		
-		g2.fontSize = 24;
+	//	g2.fontSize = 24;
 
         
 		g2.drawString( "PLANTS " + Std.string(Ecosystem.numLivePlants) + " / " + Std.string(Ecosystem.plants.length), 20, 20);
@@ -111,8 +117,6 @@ class Project {
 		g2.drawString( "YEAR " + Std.string(year), System.windowWidth()/2-60, 60); 
 		
 		g2.end();	
-		
-		fps.update();
 
 
 	}

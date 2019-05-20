@@ -28,7 +28,7 @@ class FPS
     };
 
     public function Init() {
-        realTime = Scheduler.realTime();
+        realTime = Scheduler.time(); //Scheduler.realTime();
         previousRealTime = realTime;
     }
 
@@ -40,16 +40,20 @@ class FPS
     public function update()
     {
         previousRealTime = realTime;
-        realTime = Scheduler.realTime();
+      //  realTime = Scheduler.realTime();
+        realTime = Scheduler.time();
+        
         dt = realTime - previousRealTime;
         frametimePassed += dt;
+        numframesPassed ++;
+
         if (frametimePassed > TIME_TO_COUNT) 
         {
-            fps = 1 / (frametimePassed / numframesPassed );
-            frametimePassed -= TIME_TO_COUNT;
+            fps = numframesPassed / frametimePassed ;
+            frametimePassed =0; //-= TIME_TO_COUNT;
             numframesPassed = 0;
         }
-        numframesPassed ++;
+        
     }
 
 }
