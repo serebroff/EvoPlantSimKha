@@ -47,13 +47,29 @@ class Ecosystem
 
         branches = [];
         leaves = [];
+
+        plants = []; //new Plant()];
         seeds = [];
-
-        plants = [new Plant()];
-
+        
+        var newSeed = new Seed();
+        seeds.push(newSeed);
+        
+        var dna = new DNA();
+        dna.Init();
+        newSeed.newDNA = dna;
+        newSeed.maxLength=dna.seed_length;
+        newSeed.length = newSeed.maxLength;
+        newSeed.energy = 100;
+        newSeed.thickness = dna.seed_thickness;
+        newSeed.dead = true;
+        newSeed.startPos.set(0,-100);
+        newSeed.dir.set(0,-1);
+        newSeed.CalculateVertices();
+        newSeed.conservatedEnergy = DNA.MAX_CONSERVATED_ENERGY * newSeed.square;
+    
     }
 
-    public static function AddNewPlant(pos: Vec2, dna: DNA, energy: Float): Void {
+    public static function AddNewPlant(parentSeed: Seed): Void {
         var newPlant: Plant = null;
         var replaceDead : Bool = false;
         
@@ -66,14 +82,16 @@ class Ecosystem
         }
         
         if (!replaceDead) {
-            newPlant = new Plant(pos, dna, energy);
+            newPlant = new Plant(parentSeed.startPos, parentSeed.newDNA, parentSeed.conservatedEnergy);
+            newPlant.firstBranch.parentSeed = parentSeed;
             plants.push(newPlant);
         }
         else {
             newPlant.firstBranch = newPlant.CreateNewBranch();
-            newPlant.firstBranch.startPos.setFrom(pos);
-            newPlant.firstBranch.energy = energy;
-            newPlant.dna = dna;
+            newPlant.firstBranch.startPos.setFrom(parentSeed.startPos);
+            newPlant.firstBranch.energy = parentSeed.conservatedEnergy;
+            newPlant.firstBranch.parentSeed = parentSeed;
+            newPlant.dna = parentSeed.newDNA;
         }
         
     }

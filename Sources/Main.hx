@@ -12,7 +12,7 @@ class Main {
 
 
 	public static function main() {
-		System.start({title: "EvoPlantSim", width:1000, height: 800 }, //window: { mode: Fullscreen}}, 
+		System.start({title: "EvoPlantSim", width:1920, height: 1080 }, //window: { mode: Fullscreen}}, 
 		function (_) {
 			// Just loading everything is ok for small projects
 			Assets.loadEverything(function () {

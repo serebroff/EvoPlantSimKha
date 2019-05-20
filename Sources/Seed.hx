@@ -9,8 +9,9 @@ using kha.graphics2.GraphicsExtension;
 //-------------------------------------------------------
 class Seed extends Leaf {
 	public var newDNA:DNA;
-	var conservatedEnergy:Float;
+	public var conservatedEnergy:Float;
 	var seedEnergyDensity: Float;
+	var createdNewPlant: Bool;
 
 	public function new() {
 		super();
@@ -20,6 +21,7 @@ class Seed extends Leaf {
 		super.Init();
 		conservatedEnergy = 0;
 		seedEnergyDensity = 0;
+		createdNewPlant = false;
 		newDNA = null;
 	}
 
@@ -80,10 +82,13 @@ class Seed extends Leaf {
 
 		startPos.y += deathtime * 5;
 
-		if (startPos.y > 0) {
-			startPos.y = 0;
-			Ecosystem.AddNewPlant(startPos, newDNA, conservatedEnergy);
-			totalDeath = true;
+		if (startPos.y + maxLength*0.5 > 0) {
+			startPos.y = maxLength*0.5;
+			
+			if (!createdNewPlant) {
+				Ecosystem.AddNewPlant(this);
+				createdNewPlant = true;
+			}
 		}
 		CalculateVertices();
 	}
@@ -91,20 +96,20 @@ class Seed extends Leaf {
 	
 	public override function Draw(framebuffer:Framebuffer):Void {
 
-		var a:Float = 1 - disapperTime / Leaf.DISAPPEAR_TIME;
-		if (a < 0)
-			a = 0;
 
 		var g2 = framebuffer.g2;
+		seedEnergyDensity = conservatedEnergy/square;
 		var c:Float = seedEnergyDensity / DNA.MAX_CONSERVATED_ENERGY;
-		var r:Float = 0;
+
 		if (c < 0)
 			c = 0;
 		if (c > 1)
 			c = 1;
 
-		g2.color = kha.Color.fromFloats(c, 0, 0, a);
-		//	if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
+		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
+		if (createdNewPlant) {
+			g2.color = kha.Color.fromFloats(c, 1-c, 0, c);
+		}
 
 		g2.fillTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
 	}

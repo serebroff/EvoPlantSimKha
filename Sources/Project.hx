@@ -70,8 +70,6 @@ class Project {
 		var framebuffer: Framebuffer;
 		framebuffer = frames[0];
 
-		fps.update();
-
 		Ecosystem.instance.Calculate(FPS.dt); //tickperframe);
 
 
@@ -113,7 +111,8 @@ class Project {
 		g2.drawString( "YEAR " + Std.string(year), System.windowWidth()/2-60, 60); 
 		
 		g2.end();	
-
+		
+		fps.update();
 
 
 	}

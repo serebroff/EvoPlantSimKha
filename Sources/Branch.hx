@@ -15,6 +15,8 @@ class Branch extends Leaf {
 	public var LeavesIndices:Array<Leaf>;
 	public var SeedsIndices:Array<Seed>;
 
+	public var parentSeed : Seed; 
+
 	var readyToFall:Bool;
 	var length0:Float;
 	var hasProducedSeeds:Bool;
@@ -36,6 +38,7 @@ class Branch extends Leaf {
 		readyToFall = false;
 		length0 = 0;
 		hasProducedSeeds = false;
+		parentSeed = null;
 	}
 
 	public override function ConsumeEnergy() {
@@ -47,15 +50,28 @@ class Branch extends Leaf {
 	}
 
 	public override function ExchangeEnergyWithParent() {
-		if (parentBranch == null)
+		var delta:Float = 0;
+
+		if (parentSeed!= null) {
+			delta = parentSeed.conservatedEnergy * FPS.dt ;
+			parentSeed.conservatedEnergy -= delta;
+			energy += delta;
+			if (parentSeed.conservatedEnergy < 0.1)
+			{
+				parentSeed.totalDeath = true;
+				parentSeed = null;
+			}
 			return;
+		}
+		
+		if (parentBranch == null) {
+			return;
+		}
 
 		if (parentBranch.dead) {
 			energy -= 4 * square * FPS.dt;
 			return;
 		}
-
-		var delta:Float = 0;
 
 		// if (length< maxLength*0.5)
 		if (parentBranch.energyDensity > energyDensity //	&& length < maxLength
@@ -217,9 +233,9 @@ class Branch extends Leaf {
 			var angles:Array<Float>;
 			angles = parentPlant.dna.getBranches();
 
-			for (a in angles) {
-				parentPlant.CreateNewSeed(this, a);
-			}
+			//for (a in angles) {
+				parentPlant.CreateNewSeed(this, angles[0]);
+			//}
 			hasProducedSeeds = true;
 		}
 	}
