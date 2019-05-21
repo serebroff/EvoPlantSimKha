@@ -28,7 +28,7 @@ class FPS
     };
 
     public function Init() {
-        realTime = Scheduler.time(); //Scheduler.realTime();
+        realTime = Scheduler.realTime(); //Scheduler.realTime();
         previousRealTime = realTime;
     }
 

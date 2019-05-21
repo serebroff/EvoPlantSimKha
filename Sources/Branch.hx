@@ -164,19 +164,18 @@ class Branch extends Leaf {
 			parentBranch.widthEnd = widthStart;
 		}
 
-		var sideVec:Vec2;
 		// start points
 		if (parentBranch != null) // && !dead)
 		{
-			sideVec = parentBranch.dir.skew().mult(widthStart);
+			sideVec.setFrom(parentBranch.dir.skew().mult(widthStart));
 		} else
-			sideVec = dir.skew().mult(widthStart);
+			sideVec.setFrom( dir.skew().mult(widthStart));
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
 
 		// end points
-		sideVec = dir.skew().mult(widthEnd);
+		sideVec.setFrom(dir.skew().mult(widthEnd));
 
 		v2.set(endPos.x - sideVec.x, endPos.y - sideVec.y);
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);

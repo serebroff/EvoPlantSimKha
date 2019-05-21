@@ -22,6 +22,7 @@ class Sunlight {
 	public static var dir:Vec2;
 
 	public var pos:Vec2;
+	public var perpendicular: Vec2;
 	public var ar_beams:Array<Beam>;
 	//    public var ar_beams: Vector<Beam>;
 	public var center:Vec2;
@@ -36,6 +37,8 @@ class Sunlight {
 
 	public function new() {
 		dir = new Vec2(2, 1);
+		pos = new Vec2();
+		perpendicular = new Vec2();
 		Frequency = 1;
 		angle = 0;
 		radius = RADIUS;
@@ -61,16 +64,19 @@ class Sunlight {
 		angle = -Math.PI * 0.5 - Math.PI * 0.2 * sun_angle;
 		dir.set(-Math.cos(angle), -Math.sin(angle));
 
-		pos = center.add(dir.mult(-radius));
-		var perpendicular:Vec2;
-		perpendicular = dir.rotate(Math.PI * 0.5);
-		var v:Vec2 = new Vec2();
+		pos.setFrom( center.add(dir.mult(-radius)) );
+		
+		perpendicular.set(dir.y, -dir.x);
+		var v:Vec2 ;
 		var i:Int = 0;
 
 		while (i < NUM_BEAMS) {
-			v.setFrom(pos.add(perpendicular.mult(beam_delta + BEAM_DISTANCE * (i - Math.floor(NUM_BEAMS / 2)))));
-
-			ar_beams[i].pos1.setFrom(v);
+			v = ar_beams[i].pos1;
+			v.setFrom(
+				pos.add(
+					perpendicular.mult(beam_delta + BEAM_DISTANCE * (i - Math.floor(NUM_BEAMS / 2)))
+					)
+				);
 			ar_beams[i].pos2.setFrom(v.add(dir.mult(BEAM_LENGTH)));
 			ar_beams[i].dist = BEAM_LENGTH;
 			ar_beams[i].intercections_with_leaf = [];
@@ -79,11 +85,6 @@ class Sunlight {
 		}
 	}
 
-	public function CheckCollision(dt:Float) {
-		for (b in ar_beams) {
-			b.CheckCollision(dt);
-		}
-	}
 
 
 

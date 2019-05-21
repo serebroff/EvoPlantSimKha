@@ -105,52 +105,6 @@ class Beam {
 		}
 	}
 
-	public function CheckCollision(dt:Float) {
-		var l:Leaf;
-		var p:Plant;
-		var collision:Bool = false;
-		var intersection:IntersectionWithLeaf;
-
-		var dir:Vec2;
-		var d1:Float;
-		var d2:Float;
-
-		dir = Sunlight.dir;
-
-		var collisionLeaf:Leaf = null;
-
-		intercections_with_leaf = [];
-
-		for (l in Ecosystem.leaves) {
-			if (l.dead) {
-				continue;
-			}
-
-			d1 = pos1.GetRayToLineSegmentIntersection(dir, l.v2, l.v3);
-			if (d1 == 0) {
-				d1 = pos1.GetRayToLineSegmentIntersection(dir, l.v2, l.v4);
-			}
-
-			if (d1 != 0) {
-				if (dist > d1) {
-					intercections_with_leaf.push(new IntersectionWithLeaf(pos1.add(dir.mult(d1)), d1, l));
-				}
-			}
-		}
-
-		if (intercections_with_leaf.length != 0) {
-			intercections_with_leaf.sort(function(a, b) {
-				return Math.ceil(a.distance - b.distance);
-			});
-
-			var power:Float = 1;
-			for (i in intercections_with_leaf) {
-				i.leaf.AddEnergy(power * BEAM_ENERGY * FPS.dt);
-				power *= LOSS_OF_EVERGY_IN_LEAF;
-				i.power = power;
-			}
-		}
-	}
 
 	public function Draw(framebuffer:Framebuffer):Void {
 		var g2 = framebuffer.g2;

@@ -40,6 +40,8 @@ class Leaf {
 	public var v2:Vec2;
 	public var v3:Vec2;
 	public var v4:Vec2;
+	
+	var sideVec:Vec2;
 
 	public function new() {
 		dir = new Vec2(0, -1);
@@ -50,6 +52,7 @@ class Leaf {
 		v2 = new Vec2(0, 0);
 		v3 = new Vec2(0, 0);
 		v4 = new Vec2(0, 0);
+		sideVec = new Vec2();
 
 		Init();
 	}
@@ -192,13 +195,12 @@ class Leaf {
 		widthStart = 0;
 		widthEnd = length * thickness * 0.5;
 
-		var sideVec:Vec2;
-		sideVec = dir.skew().mult(widthStart);
+		sideVec.setFrom(dir.skew().mult(widthStart));
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
 
-		sideVec = dir.skew().mult(widthEnd);
+		sideVec.setFrom(dir.skew().mult(widthEnd));
 		v2.set(endPos.x - sideVec.x, endPos.y - sideVec.y);
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
@@ -215,7 +217,7 @@ class Leaf {
 		ConsumeEnergy();
 
 		CalculateVertices();
-		
+
 		Ecosystem.sunlight.CheckCollisionWithLeaf(this);
 	}
 
