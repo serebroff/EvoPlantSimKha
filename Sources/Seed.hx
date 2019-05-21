@@ -93,6 +93,18 @@ class Seed extends Leaf {
 		CalculateVertices();
 	}
 
+	public override function Calculate(dt:Float):Void {
+		if (totalDeath) {
+			return;
+		}
+
+		CalculateGrowth(dt);
+		ExchangeEnergyWithParent();
+		ConsumeEnergy();
+		
+		CalculateVertices();
+	}
+
 	
 	public override function Draw(framebuffer:Framebuffer):Void {
 

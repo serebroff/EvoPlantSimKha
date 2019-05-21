@@ -28,7 +28,7 @@ class Ecosystem
     static public var numLiveBranches: Int;
     static public var numLivePlants: Int;
 
-    public var sunlight : Sunlight;
+    static public var sunlight : Sunlight;
 
     static public var plants(default, null): Array<Plant>;
 
@@ -100,8 +100,6 @@ class Ecosystem
         
         sunlight.Calculate(dt);
         
-        sunlight.CheckCollision(dt);
-
         numLivePlants =0;
         for (p in plants) {
             if (p.firstBranch==null) {
@@ -147,6 +145,9 @@ class Ecosystem
         } 
 
         ecosystem_time += dt;
+
+        //sunlight.CheckCollision(dt);
+        sunlight.AddEnergyToHitedLeaves();
 
     }
 

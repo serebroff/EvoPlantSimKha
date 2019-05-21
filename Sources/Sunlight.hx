@@ -73,6 +73,7 @@ class Sunlight {
 			ar_beams[i].pos1.setFrom(v);
 			ar_beams[i].pos2.setFrom(v.add(dir.mult(BEAM_LENGTH)));
 			ar_beams[i].dist = BEAM_LENGTH;
+			ar_beams[i].intercections_with_leaf = [];
 
 			i++;
 		}
@@ -81,6 +82,49 @@ class Sunlight {
 	public function CheckCollision(dt:Float) {
 		for (b in ar_beams) {
 			b.CheckCollision(dt);
+		}
+	}
+
+
+
+	public function CheckCollisionWithLeaf(leaf: Leaf) {
+		var vecToLeaf: Vec2 = new Vec2();
+		var dist: Float = 0;
+		var distMin: Float = Math.POSITIVE_INFINITY;
+		var closestBeam: Beam = null;
+		var beamIndex: Int = 0;
+		for (b in ar_beams) {
+			vecToLeaf.setFrom(b.pos1.sub(leaf.startPos));
+			dist = vecToLeaf.lengthSquared();
+			if (dist < distMin) {
+				distMin = dist;
+			} else {
+				closestBeam = b;
+				break;
+			}
+			beamIndex++;
+		}
+		if (closestBeam!=null) {
+			var index_delta: Int = Math.ceil(leaf.length / BEAM_DISTANCE);
+			var index0: Int = beamIndex - index_delta;
+			var index1: Int = beamIndex + index_delta;
+			if (index0 <0) {
+				index0=0;
+			}
+			if (index1> NUM_BEAMS) {
+				index1=NUM_BEAMS;
+			}
+			var i: Int = index0;
+			while (i < index1) {
+				ar_beams[i].CheckCollisionWithLeaf(leaf);	
+				i++;
+			}
+		}
+	}
+
+	public function AddEnergyToHitedLeaves() {
+		for (b in ar_beams) {
+			b.AddEnergyToHitedLeaves();
 		}
 	}
 

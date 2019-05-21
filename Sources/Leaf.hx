@@ -12,7 +12,6 @@ using Plant;
 
 class Leaf {
 	public static inline var LEAF_DEATH_TIME = 1;
-	
 	public static inline var BRANCH_DEATH_TIME = 1;
 	public static inline var DISAPPEAR_TIME = 1;
 	public static inline var TIME_TO_FALL = 4;
@@ -43,7 +42,6 @@ class Leaf {
 	public var v4:Vec2;
 
 	public function new() {
-
 		dir = new Vec2(0, -1);
 		startPos = new Vec2(0, 0);
 		endPos = new Vec2(0, -1);
@@ -63,7 +61,7 @@ class Leaf {
 		parentBranch = null;
 		GenerationIndex = 0;
 		maxLength = 20;
-		thickness = 1 ;
+		thickness = 1;
 		length = 1;
 		widthStart = 1;
 		widthEnd = 1;
@@ -107,11 +105,10 @@ class Leaf {
 		} else {
 			energyDensity = 0;
 		}
-		if (energyDensity> DNA.MAX_ENERGY_DENSITY)
-		{
+		if (energyDensity > DNA.MAX_ENERGY_DENSITY) {
 			energyDensity = DNA.MAX_ENERGY_DENSITY;
 			energy = energyDensity * square;
-		} 
+		}
 	}
 
 	public function ConsumeEnergy() {
@@ -181,7 +178,7 @@ class Leaf {
 	}
 
 	public function CalculateVertices():Void {
-		if (!dead)  {
+		if (!dead) {
 			var len:Float = posOnBranch * parentBranch.maxLength;
 			if (parentBranch.length < len) {
 				len = parentBranch.length;
@@ -213,18 +210,16 @@ class Leaf {
 			return;
 		}
 
-		if (!dead) {
-			CalculateGrowth(dt);
-			ExchangeEnergyWithParent();
-			ConsumeEnergy();
-		}
-		
-//		if (dead) CalculateDeath();
+		CalculateGrowth(dt);
+		ExchangeEnergyWithParent();
+		ConsumeEnergy();
+
 		CalculateVertices();
+		
+		Ecosystem.sunlight.CheckCollisionWithLeaf(this);
 	}
 
 	public function Draw(framebuffer:Framebuffer):Void {
-
 		var a:Float = 1 - deathtime / LEAF_DEATH_TIME;
 		if (a < 0)
 			a = 0;
@@ -237,8 +232,10 @@ class Leaf {
 		if (c > 1)
 			c = 1;
 
-		if (totalDeath)  g2.color = kha.Color.fromFloats(0, 0, 1, 1);
-		else g2.color = kha.Color.fromFloats(0, c, 0, a);
+		if (totalDeath)
+			g2.color = kha.Color.fromFloats(0, 0, 1, 1);
+		else
+			g2.color = kha.Color.fromFloats(0, c, 0, a);
 		//	if (dead) g2.color = kha.Color.fromFloats(0.1, 0.1, 0, 1);
 
 		g2.fillTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);

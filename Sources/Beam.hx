@@ -35,17 +35,74 @@ class Beam {
 	public var pos2:Vec2;
 	public var intercections_with_leaf:Array<IntersectionWithLeaf>;
 	public var dist:Float;
+	var v1:Vec2;
+	var v2:Vec2;
+	var v3:Vec2;
 
 	public function new() {
 		Init();
-		intercections_with_leaf = new Array<IntersectionWithLeaf>();
+		//	intercections_with_leaf = new Array<IntersectionWithLeaf>();
 	}
 
 	public function Init() {
 		pos1 = new Vec2();
 		pos2 = new Vec2();
-		dist = 1000;
+		v1 = new Vec2();
+		v2 = new Vec2();
+		v3 = new Vec2();
+		dist = 100000;
 		intercections_with_leaf = [];
+	}
+
+	public function GetRayToLineSegmentIntersection(rayOrigin:Vec2, rayDirection:Vec2, point1:Vec2, point2:Vec2):Float {
+		v1.setFrom(rayOrigin.sub(point1));
+		v2.setFrom(point2.sub(point1));
+		v3.set(-rayDirection.y, rayDirection.x);
+
+		var dot:Float = v2.dot(v3);
+		if (Math.abs(dot) < 0.000001)
+			return 0;
+
+		var t1:Float = v2.crossProduct(v1) / dot;
+		var t2:Float = v1.dot(v3) / dot;
+
+		if (t1 >= 0.0 && (t2 >= 0.0 && t2 <= 1.0)) {
+			return t1;
+		}
+
+		return 0;
+	}
+
+
+	public function CheckCollisionWithLeaf(leaf:Leaf) {
+		var distance:Float = 0;
+		distance = GetRayToLineSegmentIntersection(pos1,Sunlight.dir, leaf.v2, leaf.v3);
+		if (distance == 0) {
+			distance = GetRayToLineSegmentIntersection(pos1, Sunlight.dir, leaf.v2, leaf.v4);
+		}
+
+		if (distance != 0) {
+			intercections_with_leaf.push(
+				new IntersectionWithLeaf(pos1.add(Sunlight.dir.mult(distance)), distance, leaf)
+				);
+		}
+	}
+
+	public function AddEnergyToHitedLeaves() {
+		if (intercections_with_leaf.length == 0) {
+			return;
+		}
+
+		intercections_with_leaf.sort(function(a, b) {
+			return Math.ceil(a.distance - b.distance);
+		});
+
+		var power:Float = 1;
+		for (i in intercections_with_leaf) {
+			i.leaf.AddEnergy(power * BEAM_ENERGY * FPS.dt);
+			power *= LOSS_OF_EVERGY_IN_LEAF;
+			i.power = power;
+		}
 	}
 
 	public function CheckCollision(dt:Float) {
@@ -65,8 +122,9 @@ class Beam {
 		intercections_with_leaf = [];
 
 		for (l in Ecosystem.leaves) {
-			if (l.dead)
+			if (l.dead) {
 				continue;
+			}
 
 			d1 = pos1.GetRayToLineSegmentIntersection(dir, l.v2, l.v3);
 			if (d1 == 0) {
@@ -92,11 +150,6 @@ class Beam {
 				i.power = power;
 			}
 		}
-
-		/*	if (collision)
-			{
-				collisionLeaf.AddEnergy(BEAM_ENERGY*FPS.dt);
-		}*/
 	}
 
 	public function Draw(framebuffer:Framebuffer):Void {
