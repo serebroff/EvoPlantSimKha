@@ -12,6 +12,8 @@ class Gene {
     var activationEnergyDensity: Float;
 
     public var exons: Array<Float>;
+    public var mins: Array<Float>;
+    public var max: Array<Float>;
 
     public function new(e: Array<Float>,  p: Float = 1, s: Bool = false, a:Float = 0)
     {
