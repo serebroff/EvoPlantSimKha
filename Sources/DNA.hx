@@ -235,17 +235,22 @@ class DNA {
         var newDNA : DNA;
         newDNA = new DNA();
         newDNA.genes = genes.copy();
-        for (g in newDNA.genes)
+        var genes: Array<Float> = newDNA.genes;
+        var i: Int =0;
+        while (i < genes.length)
         {
-            if (g==END_OF_SEQUENCE || g==END_OF_GENE) continue;
+            if (genes[i]==END_OF_SEQUENCE || genes[i]==END_OF_GENE) {
+                i++;
+                continue;
+            }
             var r: Float = Math.random();
             if (r < 0.33) {
-                g *= 0.8;    
+                genes[i] *= 0.8;    
             } else if (r < 0.66) {
-                g*=1.2;
+                genes[i] *=1.2;
             } 
-
-            //g *= 0.8 + 0.4 * Math.random();
+            
+            i++;
         }
         newDNA.SetIndices();
         return newDNA;

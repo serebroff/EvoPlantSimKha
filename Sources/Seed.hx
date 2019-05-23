@@ -120,7 +120,7 @@ class Seed extends Leaf {
 
 		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
 		if (createdNewPlant) {
-			g2.color = kha.Color.fromFloats(c, 1-c, 0, c);
+			g2.color = kha.Color.fromFloats(c, 1-c, 0, Math.sqrt(Math.sqrt(c)));
 		}
 
 		g2.fillTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);

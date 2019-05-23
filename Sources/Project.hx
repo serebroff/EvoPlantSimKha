@@ -106,10 +106,10 @@ class Project {
 	//	g2.fontSize = 24;
 
         
-		g2.drawString( "PLANTS " + Std.string(Ecosystem.numLivePlants) + " / " + Std.string(Ecosystem.plants.length), 20, 20);
-		g2.drawString( "BRANCHES " + Std.string(Ecosystem.numLiveBranches) + " / " + Std.string(Ecosystem.branches.length), 20, 40);
-		g2.drawString( "LEAVES " + Std.string(Ecosystem.numLiveLeaves) + " / " + Std.string(Ecosystem.leaves.length), 20, 60);
-		g2.drawString( "SEEDS " + Std.string(Ecosystem.numLiveSeeds) + " / " + Std.string(Ecosystem.seeds.length), 20, 80);
+		g2.drawString( "plants " + Std.string(Ecosystem.numLivePlants) + " / " + Std.string(Ecosystem.plants.length), 20, 20);
+		g2.drawString( "branches " + Std.string(Ecosystem.numLiveBranches) + " / " + Std.string(Ecosystem.branches.length), 20, 50);
+		g2.drawString( "leaves " + Std.string(Ecosystem.numLiveLeaves) + " / " + Std.string(Ecosystem.leaves.length), 20, 80);
+		g2.drawString( "seeds " + Std.string(Ecosystem.numLiveSeeds) + " / " + Std.string(Ecosystem.seeds.length), 20, 110);
 
 		g2.fontSize = 64;
 		var year: Int = Math.ceil(Ecosystem.ecosystem_time / Sunlight.SUN_FULL_TURN_IN_SEC); 
