@@ -69,7 +69,7 @@ class Ecosystem
     
     }
 
-    public static function AddNewPlant(parentSeed: Seed): Void {
+    public static function AddNewPlant(parentSeed: Seed): Plant {
         var newPlant: Plant = null;
         var replaceDead : Bool = false;
         
@@ -83,16 +83,15 @@ class Ecosystem
         
         if (!replaceDead) {
             newPlant = new Plant(parentSeed.startPos, parentSeed.newDNA, parentSeed.conservatedEnergy);
-            newPlant.firstBranch.parentSeed = parentSeed;
             plants.push(newPlant);
         }
         else {
             newPlant.firstBranch = newPlant.CreateNewBranch();
             newPlant.firstBranch.startPos.setFrom(parentSeed.startPos);
             newPlant.firstBranch.energy = parentSeed.conservatedEnergy;
-            newPlant.firstBranch.parentSeed = parentSeed;
             newPlant.dna = parentSeed.newDNA;
         }
+        return newPlant;
         
     }
 

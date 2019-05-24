@@ -16,7 +16,6 @@ class Branch extends Leaf {
 	public var LeavesIndices:Array<Leaf>;
 	public var SeedsIndices:Array<Seed>;
 
-	public var parentSeed : Seed; 
 
 	var readyToFall:Bool;
 	var length0:Float;
@@ -39,7 +38,6 @@ class Branch extends Leaf {
 		readyToFall = false;
 		length0 = 0;
 		hasProducedSeeds = false;
-		parentSeed = null;
 	}
 
 	public override function ConsumeEnergy() {
@@ -53,18 +51,6 @@ class Branch extends Leaf {
 	public override function ExchangeEnergyWithParent() {
 		var delta:Float = 0;
 
-		if (parentSeed!= null) {
-			delta = parentSeed.conservatedEnergy * FPS.dt ;
-			parentSeed.conservatedEnergy -= delta;
-			energy += delta;
-			if (parentSeed.conservatedEnergy < 0.1)
-			{
-				parentSeed.totalDeath = true;
-				parentSeed = null;
-			}
-			return;
-		}
-		
 		if (parentBranch == null) {
 			return;
 		}

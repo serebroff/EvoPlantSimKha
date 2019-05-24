@@ -10,8 +10,10 @@ using kha.graphics2.GraphicsExtension;
 class Seed extends Leaf {
 	public var newDNA:DNA;
 	public var conservatedEnergy:Float;
-	var seedEnergyDensity: Float;
-	var createdNewPlant: Bool;
+
+	var seedEnergyDensity:Float;
+	var createdNewPlant:Bool;
+	var childFirstBranch:Branch;
 
 	public function new() {
 		super();
@@ -22,6 +24,7 @@ class Seed extends Leaf {
 		conservatedEnergy = 0;
 		seedEnergyDensity = 0;
 		createdNewPlant = false;
+		childFirstBranch = null;
 		newDNA = null;
 	}
 
@@ -32,21 +35,18 @@ class Seed extends Leaf {
 			return;
 		}
 
-		if (parentBranch.energyDensity > energyDensity &&// && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
-		 ( seedEnergyDensity < DNA.MAX_CONSERVATED_ENERGY) )
-		{
+		if (parentBranch.energyDensity > energyDensity && // && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
+			(seedEnergyDensity < DNA.MAX_CONSERVATED_ENERGY)) {
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_SEED * parentBranch.energy;
 			energy += delta;
 			parentBranch.energy -= delta;
-		} 
+		}
 
 		UpdateDensity();
 	}
 
-
-	public  function ConservateEnergy() {
-
-		seedEnergyDensity = conservatedEnergy/square;
+	public function ConservateEnergy() {
+		seedEnergyDensity = conservatedEnergy / square;
 		if (seedEnergyDensity >= DNA.MAX_CONSERVATED_ENERGY) {
 			dead = true;
 			if (parentBranch != null) {
@@ -55,15 +55,12 @@ class Seed extends Leaf {
 			return;
 		}
 
-		var delta: Float = DNA.SEED_ENERGY_2_CONSERVATE * square * FPS.dt;
+		var delta:Float = DNA.SEED_ENERGY_2_CONSERVATE * square * FPS.dt;
 		energy -= delta;
 		conservatedEnergy += delta;
-
-		
 	}
 
 	public override function ConsumeEnergy() {
-		
 		ConservateEnergy();
 
 		energy -= DNA.SEED_ENERGY_CONSUME * square * FPS.dt;
@@ -77,18 +74,35 @@ class Seed extends Leaf {
 		}
 	}
 
+	public function ExchangeWithNewPlant():Void {
+		if (childFirstBranch.totalDeath) {
+			totalDeath = true;
+			return;
+		}
+		var delta: Float;
+
+		delta = conservatedEnergy * FPS.dt;
+		conservatedEnergy -= delta;
+		childFirstBranch.energy += delta;
+		if (conservatedEnergy < 0.1) {
+			totalDeath = true;
+		}
+		return;
+	}
+
 	public override function CalculateDeath():Void {
 		deathtime += FPS.dt;
 
 		startPos.y += deathtime * 5;
 
-		if (startPos.y + maxLength*0.5 > 0) {
-			startPos.y = maxLength*0.5;
-			
+		if (startPos.y + maxLength * 0.5 > 0) {
+			startPos.y = maxLength * 0.5;
+
 			if (!createdNewPlant) {
-				Ecosystem.AddNewPlant(this);
+				childFirstBranch = Ecosystem.AddNewPlant(this).firstBranch;
 				createdNewPlant = true;
-			}
+			} else
+				ExchangeWithNewPlant();
 		}
 		CalculateVertices();
 	}
@@ -101,16 +115,13 @@ class Seed extends Leaf {
 		CalculateGrowth(dt);
 		ExchangeEnergyWithParent();
 		ConsumeEnergy();
-		
+
 		CalculateVertices();
 	}
 
-	
 	public override function Draw(framebuffer:Framebuffer):Void {
-
-
 		var g2 = framebuffer.g2;
-		seedEnergyDensity = conservatedEnergy/square;
+		seedEnergyDensity = conservatedEnergy / square;
 		var c:Float = seedEnergyDensity / DNA.MAX_CONSERVATED_ENERGY;
 
 		if (c < 0)
@@ -120,7 +131,7 @@ class Seed extends Leaf {
 
 		g2.color = kha.Color.fromFloats(c, 0, 0, 1);
 		if (createdNewPlant) {
-			g2.color = kha.Color.fromFloats(c, 1-c, 0, Math.sqrt(Math.sqrt(c)));
+			g2.color = kha.Color.fromFloats(c, 1 - c, 0, Math.sqrt(Math.sqrt(c)));
 		}
 
 		g2.fillTriangle(v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
