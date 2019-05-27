@@ -6,6 +6,13 @@ import kha.Scheduler;
 import kha.System;
 import kha.Assets;
 
+#if kha_html5
+import kha.CompilerDefines;
+import js.html.CanvasElement;
+import js.Browser.document;
+import js.Browser.window;
+#end
+
 
 using kha.graphics2.GraphicsExtension;
 
@@ -110,6 +117,17 @@ class Project {
 		g2.drawString( "branches " + Std.string(Ecosystem.numLiveBranches) + " / " + Std.string(Ecosystem.branches.length), 20, 50);
 		g2.drawString( "leaves " + Std.string(Ecosystem.numLiveLeaves) + " / " + Std.string(Ecosystem.leaves.length), 20, 80);
 		g2.drawString( "seeds " + Std.string(Ecosystem.numLiveSeeds) + " / " + Std.string(Ecosystem.seeds.length), 20, 110);
+
+		g2.drawString(  Std.string(System.windowWidth()) + " : " +  Std.string(System.windowHeight()), System.windowWidth()-200, System.windowHeight() - 50); 
+		
+		#if kha_html5
+		g2.drawString(  "devicePixelRatio " + Std.string(window.devicePixelRatio)  , System.windowWidth()-400, System.windowHeight() - 100); 
+		g2.drawString(  "window.innerHeight " + Std.string(window.innerHeight)  , System.windowWidth()-400, System.windowHeight() - 150); 
+		g2.drawString(  "clientHeight " + Std.string(document.documentElement.clientHeight)  , System.windowWidth()-400, System.windowHeight() - 200); 
+		var canvas:CanvasElement = cast document.getElementById(CompilerDefines.canvas_id);
+		g2.drawString(  "canvas.height " + Std.string(canvas.height)  , System.windowWidth()-400, System.windowHeight() - 250); 
+		
+		#end
 
 		g2.fontSize = 64;
 		var year: Int = Math.ceil(Ecosystem.ecosystem_time / Sunlight.SUN_FULL_TURN_IN_SEC); 
