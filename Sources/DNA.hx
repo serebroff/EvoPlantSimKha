@@ -24,6 +24,41 @@ class Gene {
     }
 }
 
+
+//-------------------------------------------------------
+// Sets limits of gene values for DNA class
+//-------------------------------------------------------
+class ProtoDNA {
+    public var genelimits: Array<Float>;
+    function new()
+    {
+        genelimits =[
+
+            10, 100,     // [0] branch length
+            0.01, 0.1,    // [1] branch thickness  w / l
+            10, 100,     // [2] leaf lenght
+            0.01, 0.5,    // [3] leaf thickness
+            5, 40,        // [4] seed length
+            0.2, 0.7,        // [5] seed thickness
+            1,1,        // [6] branch start growth position [0,1] on branch
+            1, 20,       // [7] number of leaves
+            0, 10,         // [8] generation to blossom
+            //END_OF_SEQUENCE,
+            // leaves
+            Math.PI*0.1, Math.PI*0.5,  // [6] angle of new leaves 
+            //END_OF_SEQUENCE,
+            -Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability
+            Math.PI*0.2,      // [13]  angle of new branches  0..PI/2
+            0.5,     // [14]  probability   
+            0,  
+            1.0,
+//            END_OF_SEQUENCE
+         
+        ];
+    }
+}
+
 //-------------------------------------------------------
 // class of DNA
 //-------------------------------------------------------
