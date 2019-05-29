@@ -157,6 +157,13 @@ class DNA {
          
         ];
         
+         megagenes = [
+
+            new Gene([ new Exon(0,100,0.01,0)]),      // [0] branch length
+            new Gene([ new Exon(1,30,0.3,0.3)]),       // [2] leaf lenght
+            null
+        ];
+
         SetIndices();
 
     }
@@ -164,24 +171,7 @@ class DNA {
     public function SetIndices()
     {
 
- /*       megagenes = [
 
-            new Gene( [60]),      // [0] branch length
-            new Gene([0.01] ),    // [1] branch thickness  w / l
-            new Gene( [30 ]),      // [2] leaf lenght
-            new Gene( [0.3 ]),     // [3] leaf thickness
-            new Gene( [0.5 ]),        // [4] leaf start growth position [0,1] on branch
-            new Gene([0.5]),        // [5] branch start growth position [0,1] on branch
-            null,
-            // leaves
-            new Gene( [Math.PI*0.4, Math.PI * 0.7]),   // [6] angle of new branches and leaves 0..PI/2
-            null,
-            new Gene( [-Math.PI*0.3, Math.PI*0.3 ], 0.1),  // [9] angle of new branches 0..PI/2
-            new Gene( [0], 1 ),
-            
-            null
-         
-        ];*/
 
 
 
