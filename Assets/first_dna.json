@@ -1,0 +1,24 @@
+{
+	"branches": [
+		{
+			"condition": {
+				"probability": 1,
+				"energyDensity": 1.5,
+				"everyNgeneration": 1
+			},
+			"lenght": 100,
+			"thickness": 0.01,
+			"angle": [ 0.0 ]
+		},
+		{
+			"condition": {
+				"probability": 1,
+				"energyDensity": 1.5,
+				"everyNgeneration": 1
+			},
+			"lenght": 100,
+			"thickness": 0.01,
+			"angle": [ 0.0, 0.3, -0.4 ]
+		}
+	]
+}

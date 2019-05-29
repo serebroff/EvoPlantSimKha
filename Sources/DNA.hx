@@ -5,22 +5,33 @@ import haxe.io.Float32Array;
 // class of Gene 
 //-------------------------------------------------------
 
+class Exon {
+    public var id: Float;
+    public var length: Float;
+    public var thickness: Float;
+    public var angle: Float;
+    public function new(i: Float, l:Float, t: Float, a: Float) {
+        id = i;
+        length=l;
+        thickness = t;
+        angle = a;
+    }
+}
+
 class Gene {
    
     var probability: Float;
-    var symmetry: Bool;
+    var everyNgeneration: Float;
     var activationEnergyDensity: Float;
 
-    public var exons: Array<Float>;
-    public var mins: Array<Float>;
-    public var max: Array<Float>;
+    public var exons: Array<Exon>;
 
-    public function new(e: Array<Float>,  p: Float = 1, s: Bool = false, a:Float = 0)
+    public function new(e: Array<Exon>,  p: Float = 1, n: Float = 1, a:Float = 0)
     {
-        exons=e;
-        probability=p;
-        symmetry = s;
-        activationEnergyDensity=0;
+        exons= e;
+        probability= p;
+        everyNgeneration = n;
+        activationEnergyDensity= a;
     }
 }
 
