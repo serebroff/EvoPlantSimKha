@@ -20,6 +20,9 @@ class Branch extends Leaf {
 	var readyToFall:Bool;
 	var length0:Float;
 	var hasProducedSeeds:Bool;
+	public var leaves_number: Float;
+	public var branch_growth_pos: Float;
+	public var generation2blossom: Float;
 
 	public function new() {
 		ChildrenIndices = [];
@@ -38,6 +41,10 @@ class Branch extends Leaf {
 		readyToFall = false;
 		length0 = 0;
 		hasProducedSeeds = false;
+
+		branch_growth_pos = 1;
+	    leaves_number = 1;
+	    generation2blossom =2;
 	}
 
 	public override function ConsumeEnergy() {
@@ -172,7 +179,7 @@ class Branch extends Leaf {
 	}
 
 	public function AddNewLeaves():Void {
-		var numleaves:Int = Math.ceil(parentPlant.dna.leaves_number);
+		var numleaves:Int = Math.ceil(leaves_number);
 		var even:Bool = true;
 		if (Math.ceil(numleaves) % 2 == 1) {
 			even = false;
@@ -193,7 +200,7 @@ class Branch extends Leaf {
 		{
 			var angles:Array<Float>;
 			var k:Float = l1 * step / maxLength;
-			angles = parentPlant.dna.getLeaves();
+			angles = parentPlant.dna.getAngles(leaveID,this);
 			for (a in angles) {
 				if (even) {
 					parentPlant.CreateNewLeaf(this, a, k);
@@ -210,14 +217,14 @@ class Branch extends Leaf {
 	}
 
 	public function AddNewSeeds():Void {
-		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) &&
+		if ((length >= maxLength * branch_growth_pos) &&
 			(ChildrenIndices.length == 0) // )
 			&&
 			!hasProducedSeeds &&
 			energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH &&
-			(GenerationIndex >= parentPlant.dna.generation2blossom)) {
+			(GenerationIndex >= generation2blossom)) {
 			var angles:Array<Float>;
-			angles = parentPlant.dna.getBranches();
+			angles = parentPlant.dna.getAngles(seedID, this);
 
 			//for (a in angles) {
 				parentPlant.CreateNewSeed(this, angles[0]);
@@ -227,14 +234,14 @@ class Branch extends Leaf {
 	}
 
 	public function AddNewBranches():Void {
-		if ((length >= maxLength * parentPlant.dna.branch_growth_pos) &&
+		if ((length >= maxLength * branch_growth_pos) &&
 			(ChildrenIndices.length == 0) &&
 			(SeedsIndices.length == 0) &&
 			energyDensity > DNA.BRANCH_ENERGY_TO_PRODUCE_BRANCH &&
-			(hasProducedSeeds || GenerationIndex < parentPlant.dna.generation2blossom))  {
+			(hasProducedSeeds || GenerationIndex < generation2blossom))  {
 			 
 			var angles:Array<Float>;
-			angles = parentPlant.dna.getBranches();
+			angles = parentPlant.dna.getAngles(branchID, this);
 
 			for (a in angles) {
 				parentPlant.CreateNewBranch(this, a);

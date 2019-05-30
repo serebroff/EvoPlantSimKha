@@ -42,13 +42,6 @@ class Plant
             firstBranch.startPos.set(0, 0);
         }
 
-/*        firstBranch.endPos.set(0, -1);
-        firstBranch.maxLength = dna.branch_length;
-        firstBranch.thickness = dna.branch_thickness;
-        firstBranch.energy = energy;
-        firstBranch.parentPlant = this;
-
-        Ecosystem.branches.push(firstBranch);*/
     }
     
 
@@ -79,8 +72,12 @@ class Plant
             Ecosystem.branches.push(newBranch);
         }
 
-        newBranch.maxLength = dna.branch_length;
-        newBranch.thickness = dna.branch_thickness;
+        newBranch.maxLength = dna.getGeneValue(branchID, lengthID, branchParent); //branch_length;
+        newBranch.thickness = dna.getGeneValue(branchID, thicknessID, branchParent);  //branch_thickness;
+        newBranch.branch_growth_pos = dna.getGeneValue(branchID, start_growth_posID, branchParent);
+	    newBranch.leaves_number = dna.getGeneValue(branchID, leaves_numberID, branchParent);
+	    newBranch.generation2blossom = dna.getGeneValue(branchID, generation2blossomID, branchParent);
+
         newBranch.parentPlant = this;
 
         if (branchParent!=null) {
@@ -119,8 +116,8 @@ class Plant
 
         newSeed.parentPlant = this; 
         newSeed.newDNA = dna.duplicate();
-        newSeed.maxLength=dna.seed_length;
-        newSeed.thickness = dna.seed_thickness;
+        newSeed.maxLength=dna.getGeneValue(seedID, lengthID, parent);
+        newSeed.thickness = dna.getGeneValue(seedID, thicknessID, parent);
 
         parent.SeedsIndices.push(newSeed);
         newSeed.startPos.setFrom(parent.endPos);
@@ -156,8 +153,8 @@ class Plant
         }
 
         newLeaf.parentPlant = this;
-        newLeaf.maxLength=dna.leaf_length;
-        newLeaf.thickness = dna.leaf_thickness;
+        newLeaf.maxLength= dna.getGeneValue(leaveID, lengthID, parent);
+        newLeaf.thickness = dna.getGeneValue(leaveID, thicknessID, parent);
 
         parent.LeavesIndices.push(newLeaf);
         newLeaf.posOnBranch = posOnBranch;

@@ -14,7 +14,7 @@ using Project;
 class Main {
 	public static function main() {
 		setFullWindowCanvas();
-		System.start({title: "EvoPlantSim", width: 1920, height: 1080}, // window: { mode: Fullscreen}},
+		System.start({title: "EvoPlantSim", width: 1600, height: 900}, // window: { mode: Fullscreen}},
 		function(_) {
 			// Just loading everything is ok for small projects
 			Assets.loadEverything(function() {
@@ -38,8 +38,8 @@ class Main {
 		var canvas:CanvasElement = cast document.getElementById(CompilerDefines.canvas_id);
 		canvas.style.display = "block";
 	//document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale='+(1/window.devicePixelRatio)+', maximum-scale=1.0, user-scalable=0');
-		document.getElementById("viewport").setAttribute("content",
-                "width=device-width, initial-scale="+ 1/window.devicePixelRatio+", user-scalable=no");
+	//	document.getElementById("viewport").setAttribute("content",
+    //            "width=device-width, initial-scale="+ 1/window.devicePixelRatio+", user-scalable=no");
 
 		var resize = function() {
 			
