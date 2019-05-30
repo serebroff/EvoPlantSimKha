@@ -57,10 +57,10 @@ class Ecosystem
         var dna = new DNA();
         dna.Init();
         newSeed.newDNA = dna;
-        newSeed.maxLength=dna.seed_length;
+        newSeed.maxLength=dna.getGeneValue(seedID, lengthID);
         newSeed.length = newSeed.maxLength;
         newSeed.energy = 100;
-        newSeed.thickness = dna.seed_thickness;
+        newSeed.thickness = dna.getGeneValue( seedID, thicknessID);
         newSeed.dead = true;
         newSeed.startPos.set(0,-100);
         newSeed.dir.set(0,-1);
