@@ -8,6 +8,7 @@ abstract OrganID(Int) {
 	var leaveID = 0;
 	var branchID = 1;
 	var seedID = 2;
+    var numOrganIDs = 3;
 }
 
 @:enum
@@ -18,20 +19,19 @@ abstract OrganParameterID(Int) {
 	var leaves_numberID = 3;
 	var generation2blossomID = 4;
 	var start_growth_posID = 5;
+    var numOrganParameterIDs = 6;
 }
 
-class Exon {
-	public var id:OrganID;
-	public var length:Float;
-	public var thickness:Float;
-	public var angle:Float;
+class OrganParameterLimit {
+	public var min:Float;
+	public var max:Float;
+	public var step:Float;
 
-	public function new(i:OrganID, l:Float, t:Float, a:Float) {
-		id = i;
-		length = l;
-		thickness = t;
-		angle = a;
-	}
+	public function new(min: Float, max: Float, step: Float) {
+        this.min = min;
+        this.max = max;    
+        this.step = step;
+    }
 }
 
 class Gene {
@@ -40,6 +40,7 @@ class Gene {
 	public var probability:Float;
 	public var everyNgeneration:Float;
 	public var activationEnergyDensity:Float;
+
 	public var value:Float;
 
 	public function new(organ:OrganID, organParameter:OrganParameterID, value:Float, p:Float = 1, n:Float = 1, a:Float = 0) {
@@ -76,35 +77,40 @@ class DNA {
 	public static inline var SEED_ENERGY_2_CONSERVATE = 1;
 	public static inline var MAX_CONSERVATED_ENERGY = 10;
 	public static inline var MAX_ENERGY_DENSITY = 3;
-	// public static inline var MAX_ENERGY_DENSITY = 3;
 	public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
 	public static inline var MAX_GENERATIONS = 15;
 	public static inline var END_OF_GENE = -1000;
 	public static inline var END_OF_SEQUENCE = -10000;
 
+    static public var organParameterLimits: Array<OrganParameterLimit>;
 
 	public function Init() {
-
-
+        organParameterLimits = [
+            new OrganParameterLimit(5,200,5), // length
+            new OrganParameterLimit(0.01, 0.6, 0.01), // thickness
+        ];
+        
 		genes = [
 
-			new Gene(branchID, lengthID, 80),  //
-            new Gene(branchID, thicknessID, 0.03), //
-            new Gene(branchID, start_growth_posID, 1), //
+			new Gene(branchID, lengthID, 80), //
+			new Gene(branchID, thicknessID, 0.03), //
+			new Gene(branchID, start_growth_posID, 1), //
 			new Gene(branchID, leaves_numberID, 5), //
-            new Gene(branchID, generation2blossomID, 2), //
-            new Gene(branchID, angleID, 0), //
-			
-            new Gene(branchID, angleID, -Math.PI * 0.2, 0.5), new Gene(branchID, angleID, Math.PI * 0.2, 0.5), new Gene(leaveID, lengthID, 30),
+			new Gene(branchID, generation2blossomID, 2), //
+			new Gene(branchID, angleID, 0), //
+			new Gene(branchID, angleID, -Math.PI * 0.2, 0.5), //
+			new Gene(branchID, angleID, Math.PI * 0.2, 0.5), //
+	
+    		new Gene(leaveID, lengthID, 30), //
+			new Gene(leaveID, thicknessID, 0.2), //
+			new Gene(leaveID, angleID, Math.PI * 0.4), //
 
-			new Gene(leaveID, thicknessID, 0.2), new Gene(leaveID, angleID, Math.PI * 0.4), 
-            
-            new Gene(seedID, lengthID, 20), new Gene(seedID, thicknessID, 0.5), new Gene(seedID, angleID, 0),
+			new Gene(seedID, lengthID, 20), //
+			new Gene(seedID, thicknessID, 0.5), //
+			new Gene(seedID, angleID, 0),
 
 		];
-
 	}
-
 
 	public function new() {
 		genes = [];
@@ -131,31 +137,30 @@ class DNA {
 		return angles;
 	}
 
-
-
 	public function duplicate():DNA {
 		var newDNA:DNA;
 		newDNA = new DNA();
 		newDNA.genes = genes.copy();
-/*		var genes:Array<Float> = newDNA.genes;
-		var i:Int = 0;
-		while (i < genes.length) {
-			if (genes[i] == END_OF_SEQUENCE || genes[i] == END_OF_GENE) {
+		/*var genes:Array<Float> = newDNA.genes;
+			var i:Int = 0;
+			while (i < genes.length) {
+				if (genes[i] == END_OF_SEQUENCE || genes[i] == END_OF_GENE) {
+					i++;
+					continue;
+				}
+				var r:Float = Math.random();
+				if (r < 0.33) {
+					genes[i] *= 0.8;
+				} else if (r < 0.66) {
+					genes[i] *= 1.2;
+				}
+
 				i++;
-				continue;
 			}
-			var r:Float = Math.random();
-			if (r < 0.33) {
-				genes[i] *= 0.8;
-			} else if (r < 0.66) {
-				genes[i] *= 1.2;
-			}
+			newDNA.SetIndices();
 
-			i++;
-		}
-		newDNA.SetIndices();
+			newDNA.megagenes = megagenes.copy(); */
 
-        newDNA.megagenes = megagenes.copy();*/
 		return newDNA;
 	}
 }
