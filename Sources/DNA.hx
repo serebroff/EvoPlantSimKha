@@ -5,12 +5,26 @@ import haxe.io.Float32Array;
 // class of Gene 
 //-------------------------------------------------------
 
+@:enum
+abstract OrganID(Int) {
+  var leaveID = 0;
+  var branchID = 1;
+  var seedID = 2;
+}
+
+@:enum
+abstract OrganParameterID(Int) {
+  var lengthID = 0;
+  var thicknessID = 1;
+  var angleID = 2;
+}
+
 class Exon {
-    public var id: Float;
+    public var id: OrganID;
     public var length: Float;
     public var thickness: Float;
     public var angle: Float;
-    public function new(i: Float, l:Float, t: Float, a: Float) {
+    public function new(i: OrganID, l:Float, t: Float, a: Float) {
         id = i;
         length=l;
         thickness = t;
@@ -159,8 +173,8 @@ class DNA {
         
          megagenes = [
 
-            new Gene([ new Exon(0,100,0.01,0)]),      // [0] branch length
-            new Gene([ new Exon(1,30,0.3,0.3)]),       // [2] leaf lenght
+            new Gene([ new Exon(seedID,100,0.01,0)]),      // [0] branch length
+            new Gene([ new Exon(seedID,30,0.3,0.3)]),       // [2] leaf lenght
             null
         ];
 
