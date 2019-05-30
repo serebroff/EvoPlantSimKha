@@ -116,7 +116,7 @@ class Plant
 
         newSeed.parentPlant = this; 
         newSeed.newDNA = dna.duplicate();
-        newSeed.maxLength=dna.getGeneValue(seedID, lengthID, parent);
+        newSeed.maxLength= dna.getGeneValue(seedID, lengthID, parent);
         newSeed.thickness = dna.getGeneValue(seedID, thicknessID, parent);
 
         parent.SeedsIndices.push(newSeed);

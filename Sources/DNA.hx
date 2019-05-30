@@ -8,7 +8,7 @@ abstract OrganID(Int) {
 	var leaveID = 0;
 	var branchID = 1;
 	var seedID = 2;
-    var numOrganIDs = 3;
+	var numOrganIDs = 3;
 }
 
 @:enum
@@ -19,7 +19,7 @@ abstract OrganParameterID(Int) {
 	var leaves_numberID = 3;
 	var generation2blossomID = 4;
 	var start_growth_posID = 5;
-    var numOrganParameterIDs = 6;
+	var numOrganParameterIDs = 6;
 }
 
 class OrganParameterLimit {
@@ -27,11 +27,11 @@ class OrganParameterLimit {
 	public var max:Float;
 	public var step:Float;
 
-	public function new(min: Float, max: Float, step: Float) {
-        this.min = min;
-        this.max = max;    
-        this.step = step;
-    }
+	public function new(min:Float, max:Float, step:Float) {
+		this.min = min;
+		this.max = max;
+		this.step = step;
+	}
 }
 
 class Gene {
@@ -40,7 +40,6 @@ class Gene {
 	public var probability:Float;
 	public var everyNgeneration:Float;
 	public var activationEnergyDensity:Float;
-
 	public var value:Float;
 
 	public function new(organ:OrganID, organParameter:OrganParameterID, value:Float, p:Float = 1, n:Float = 1, a:Float = 0) {
@@ -81,15 +80,19 @@ class DNA {
 	public static inline var MAX_GENERATIONS = 15;
 	public static inline var END_OF_GENE = -1000;
 	public static inline var END_OF_SEQUENCE = -10000;
-
-    static public var organParameterLimits: Array<OrganParameterLimit>;
+	
+    static public var organParameterLimits:Array<OrganParameterLimit>;
 
 	public function Init() {
-        organParameterLimits = [
-            new OrganParameterLimit(5,200,5), // length
-            new OrganParameterLimit(0.01, 0.6, 0.01), // thickness
-        ];
-        
+		organParameterLimits = [
+			new OrganParameterLimit(5, 200, 5), // length
+			new OrganParameterLimit(0.01, 0.6, 0.01), // thickness
+			new OrganParameterLimit(-Math.PI * 0.8, Math.PI * 0.8, Math.PI * 0.1), // angle
+			new OrganParameterLimit(1, 15, 1), // leaves_numberID
+			new OrganParameterLimit(1, 10, 1), // generation2blossomID
+			new OrganParameterLimit(0.1, 1, 0.05), // start_growth_posID
+		];
+
 		genes = [
 
 			new Gene(branchID, lengthID, 80), //
@@ -100,8 +103,8 @@ class DNA {
 			new Gene(branchID, angleID, 0), //
 			new Gene(branchID, angleID, -Math.PI * 0.2, 0.5), //
 			new Gene(branchID, angleID, Math.PI * 0.2, 0.5), //
-	
-    		new Gene(leaveID, lengthID, 30), //
+
+			new Gene(leaveID, lengthID, 30), //
 			new Gene(leaveID, thicknessID, 0.2), //
 			new Gene(leaveID, angleID, Math.PI * 0.4), //
 
@@ -139,27 +142,29 @@ class DNA {
 
 	public function duplicate():DNA {
 		var newDNA:DNA;
+		// var newGene: Gene;
 		newDNA = new DNA();
-		newDNA.genes = genes.copy();
-		/*var genes:Array<Float> = newDNA.genes;
-			var i:Int = 0;
-			while (i < genes.length) {
-				if (genes[i] == END_OF_SEQUENCE || genes[i] == END_OF_GENE) {
-					i++;
-					continue;
-				}
-				var r:Float = Math.random();
-				if (r < 0.33) {
-					genes[i] *= 0.8;
-				} else if (r < 0.66) {
-					genes[i] *= 1.2;
-				}
+		//newDNA.genes = this.genes.copy();
+        var limit: OrganParameterLimit;
+        var value: Float;
 
-				i++;
+		for (g in genes) {
+			var r:Float = Math.random();
+            limit = organParameterLimits[cast (g.organParameter, Int)];
+            value = g.value;
+			if (r < 0.33) {
+				value += limit.step;
+				if (value > limit.max) {
+					value = limit.max;
+				}
+			} else if (r < 0.66) {
+				value -= limit.step;
+				if (value < limit.min) {
+					value = limit.min;
+				}
 			}
-			newDNA.SetIndices();
-
-			newDNA.megagenes = megagenes.copy(); */
+            newDNA.genes.push(new Gene(g.organ, g.organParameter, value, g.probability, g.everyNgeneration, g.activationEnergyDensity));
+		}
 
 		return newDNA;
 	}
