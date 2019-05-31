@@ -1,3 +1,4 @@
+import js.html.AbortController;
 import haxe.io.Float32Array;
 
 //-------------------------------------------------------
@@ -22,7 +23,14 @@ abstract OrganParameterID(Int) {
 	var numOrganParameterIDs = 6;
 }
 
-class OrganParameterLimit {
+@:enum
+abstract GeneConditionID(Int) {
+	var probabilityID = 0;
+	var everyNgenerationID = 1;
+	var activationEnergyDensityID = 2;
+}
+
+class GeneValueLimit {
 	public var min:Float;
 	public var max:Float;
 	public var step:Float;
@@ -34,21 +42,94 @@ class OrganParameterLimit {
 	}
 }
 
-class Gene {
-	public var organ:OrganID;
-	public var organParameter:OrganParameterID;
-	public var probability:Float;
-	public var everyNgeneration:Float;
-	public var activationEnergyDensity:Float;
+class GeneCondition {
+	public var conditionID:GeneConditionID;
 	public var value:Float;
 
-	public function new(organ:OrganID, organParameter:OrganParameterID, value:Float, p:Float = 1, n:Float = 1, a:Float = 0) {
+	public function new(conditionID:GeneConditionID, value:Float) {
+		this.conditionID = conditionID;
+		this.value = value;
+	}
+}
+
+class Gene {
+	static public var organParameterLimits:Array<GeneValueLimit>;
+	static public var geneConditionLimits:Array<GeneValueLimit>;
+
+	public var organ:OrganID;
+	public var organParameter:OrganParameterID;
+	public var conditions:Array<GeneCondition>;
+	public var value:Float;
+
+	public function new(organ:OrganID = leaveID, organParameter:OrganParameterID = lengthID, value:Float = 0, conditions:Array<GeneCondition> = null) {
 		this.organ = organ;
 		this.organParameter = organParameter;
+
 		this.value = value;
-		this.probability = p;
-		this.everyNgeneration = n;
-		this.activationEnergyDensity = a;
+		this.conditions = conditions;
+	}
+
+	public function getCondition(conditionID:GeneConditionID):Float {
+		if (conditions != null) {
+			for (c in conditions) {
+				if (conditionID == c.conditionID) {
+					return c.value;
+				}
+			}
+		};
+
+		switch conditionID {
+			case probabilityID:
+				return 1;
+			case everyNgenerationID:
+				return 1;
+			case activationEnergyDensityID:
+				return 0;
+		}
+		return 0;
+	}
+
+	public function clone():Gene {
+		var limit:GeneValueLimit;
+		var newGene:Gene = new Gene(organ, organParameter, value, null);
+		var r:Float = Math.random();
+
+		limit = organParameterLimits[cast(organParameter, Int)];
+
+		if (r < 0.33) {
+			newGene.value += limit.step;
+			if (newGene.value > limit.max) {
+				newGene.value = limit.max;
+			}
+		} else if (r < 0.66) {
+			newGene.value -= limit.step;
+			if (newGene.value < limit.min) {
+				newGene.value = limit.min;
+			}
+		}
+
+		if (conditions != null) {
+            newGene.conditions = [];
+			for (c in conditions) {
+				limit = geneConditionLimits[cast(c.conditionID, Int)];
+				r = Math.random();
+				var newCondidtion:GeneCondition = new GeneCondition(c.conditionID, c.value);
+				if (r < 0.33) {
+					newCondidtion.value += limit.step;
+					if (newCondidtion.value > limit.max) {
+						newCondidtion.value = limit.max;
+					}
+				} else if (r < 0.66) {
+					newCondidtion.value -= limit.step;
+					if (newCondidtion.value < limit.min) {
+						newCondidtion.value = limit.min;
+					}
+				}
+				newGene.conditions.push(newCondidtion);
+			}
+		}
+
+		return newGene;
 	}
 }
 
@@ -77,20 +158,22 @@ class DNA {
 	public static inline var MAX_CONSERVATED_ENERGY = 10;
 	public static inline var MAX_ENERGY_DENSITY = 3;
 	public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
-	public static inline var MAX_GENERATIONS = 15;
-	public static inline var END_OF_GENE = -1000;
-	public static inline var END_OF_SEQUENCE = -10000;
-	
-    static public var organParameterLimits:Array<OrganParameterLimit>;
 
+	// static public var organParameterLimits:Array<GeneValueLimit>;
 	public function Init() {
-		organParameterLimits = [
-			new OrganParameterLimit(5, 200, 5), // length
-			new OrganParameterLimit(0.01, 0.6, 0.01), // thickness
-			new OrganParameterLimit(-Math.PI * 0.8, Math.PI * 0.8, Math.PI * 0.1), // angle
-			new OrganParameterLimit(1, 15, 1), // leaves_numberID
-			new OrganParameterLimit(1, 10, 1), // generation2blossomID
-			new OrganParameterLimit(0.1, 1, 0.05), // start_growth_posID
+		Gene.organParameterLimits = [
+			new GeneValueLimit(5, 160, 5), // length
+			new GeneValueLimit(0.01, 0.6, 0.01), // thickness
+			new GeneValueLimit(-Math.PI * 0.8, Math.PI * 0.8, Math.PI * 0.05), // angle
+			new GeneValueLimit(1, 15, 1), // leaves_numberID
+			new GeneValueLimit(1, 10, 1), // generation2blossomID
+			new GeneValueLimit(0.1, 1, 0.05), // start_growth_posID
+		];
+
+		Gene.geneConditionLimits = [
+			new GeneValueLimit(0, 1, 0.05), // probabilityID
+			new GeneValueLimit(1, 10, 0.25), // everyNgenerationID
+			new GeneValueLimit(0, 1, 0.05) // activationEnergyDensityID
 		];
 
 		genes = [
@@ -101,8 +184,8 @@ class DNA {
 			new Gene(branchID, leaves_numberID, 5), //
 			new Gene(branchID, generation2blossomID, 2), //
 			new Gene(branchID, angleID, 0), //
-			new Gene(branchID, angleID, -Math.PI * 0.2, 0.5), //
-			new Gene(branchID, angleID, Math.PI * 0.2, 0.5), //
+			new Gene(branchID, angleID, -Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
+			new Gene(branchID, angleID, Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
 
 			new Gene(leaveID, lengthID, 30), //
 			new Gene(leaveID, thicknessID, 0.2), //
@@ -120,20 +203,43 @@ class DNA {
 	}
 
 	public function getGeneValue(organ:OrganID, param:OrganParameterID, branch:Branch = null):Float {
+		var generation:Int = 0;
+		var energyDensity:Float = 1;
+		if (branch != null) {
+			generation = branch.GenerationIndex;
+			energyDensity = branch.energyDensity / MAX_ENERGY_DENSITY;
+		}
+
 		for (g in genes) {
 			if (g.organ == organ && g.organParameter == param) {
-				return g.value;
+				if (generation % g.getCondition(everyNgenerationID) == 0) {
+					if (energyDensity >= g.getCondition(activationEnergyDensityID)) {
+						return g.value;
+					}
+				}
 			}
 		}
 		return -1;
 	}
 
-	public function getAngles(organ:OrganID, branch:Branch):Array<Float> {
+	public function getAngles(organ:OrganID, branch:Branch = null):Array<Float> {
 		var angles:Array<Float> = new Array<Float>();
+
+		var generation:Int = 0;
+		var energyDensity:Float = 1;
+		if (branch != null) {
+			generation = branch.GenerationIndex;
+			energyDensity = branch.energyDensity / MAX_ENERGY_DENSITY;
+		}
+
 		for (g in genes) {
 			if (g.organ == organ && g.organParameter == angleID) {
-				if (Math.random() < g.probability) {
-					angles.push(g.value + (2 * Math.random() - 1) * BRANCH_ANGLE_DEVIATION);
+				if (generation % g.getCondition(everyNgenerationID) == 0) {
+					if (energyDensity >= g.getCondition(activationEnergyDensityID)) {
+						if (Math.random() < g.getCondition(probabilityID)) {
+							angles.push(g.value + (2 * Math.random() - 1) * BRANCH_ANGLE_DEVIATION);
+						}
+					}
 				}
 			}
 		}
@@ -144,26 +250,26 @@ class DNA {
 		var newDNA:DNA;
 		// var newGene: Gene;
 		newDNA = new DNA();
-		//newDNA.genes = this.genes.copy();
-        var limit: OrganParameterLimit;
-        var value: Float;
+		// newDNA.genes = this.genes.copy();
+		var limit:GeneValueLimit;
+		var value:Float;
 
 		for (g in genes) {
-			var r:Float = Math.random();
-            limit = organParameterLimits[cast (g.organParameter, Int)];
-            value = g.value;
-			if (r < 0.33) {
-				value += limit.step;
-				if (value > limit.max) {
-					value = limit.max;
-				}
-			} else if (r < 0.66) {
-				value -= limit.step;
-				if (value < limit.min) {
-					value = limit.min;
-				}
-			}
-            newDNA.genes.push(new Gene(g.organ, g.organParameter, value, g.probability, g.everyNgeneration, g.activationEnergyDensity));
+			/*var r:Float = Math.random();
+				limit = Gene.organParameterLimits[cast(g.organParameter, Int)];
+				value = g.value;
+				if (r < 0.33) {
+					value += limit.step;
+					if (value > limit.max) {
+						value = limit.max;
+					}
+				} else if (r < 0.66) {
+					value -= limit.step;
+					if (value < limit.min) {
+						value = limit.min;
+					}
+			}*/
+			newDNA.genes.push(g.clone()); // new Gene(g.organ, g.organParameter, value, g.probability, g.everyNgeneration, g.activationEnergyDensity));
 		}
 
 		return newDNA;
