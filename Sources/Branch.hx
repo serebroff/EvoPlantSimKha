@@ -244,7 +244,7 @@ class Branch extends Leaf {
 			angles = parentPlant.dna.getAngles(branchID, this);
 
 			for (a in angles) {
-				parentPlant.CreateNewBranch(this, a);
+				parentPlant.CreateNewBranch(this, GenerationIndex%2 == 0? a: -a);
 			}
 		}
 	}
