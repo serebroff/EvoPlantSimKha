@@ -89,6 +89,18 @@ class Gene {
 		return 0;
 	}
 
+    public function addConditions(): Gene {
+ 		if (conditions != null) {
+             return this;
+        }
+        conditions = [
+            new GeneCondition(probabilityID,0.5),
+            new GeneCondition(everyNgenerationID,2),
+            new GeneCondition(activationEnergyDensityID,0.5)
+        ];
+        return this;
+    }
+
 	public function clone():Gene {
 		var limit:GeneValueLimit;
 		var newGene:Gene = new Gene(organ, organParameter, value, null);
@@ -176,6 +188,7 @@ class DNA {
 			new GeneValueLimit(0, 1, 0.05) // activationEnergyDensityID
 		];
 
+        //var firstGenes: Array<Gene>;
 		genes = [
 
 			new Gene(branchID, lengthID, 80), //
@@ -196,15 +209,40 @@ class DNA {
 			new Gene(seedID, angleID, 0),
 
 		];
+
+        /*
+        genes = [];
+        for (g in firstGenes)
+        {
+            
+            genes.push(g);
+            genes.push(g.clone().addConditions());
+        } */
 	}
 
 	public function new() {
 		genes = [];
 	}
 
-	public function getGeneValue(organ:OrganID, param:OrganParameterID, branch:Branch = null):Float {
+    public function getGeneValue(organ:OrganID, param:OrganParameterID, branch:Branch = null):Float {
+    
+        var values: Array<Float> ;
+        
+        values = getGeneValues(organ,param,branch);
+        if (values.length >0)
+        {
+            return values[Math.floor(Math.random() * values.length)];
+        }
+
+		return -1;
+    }
+
+	public function getGeneValues(organ:OrganID, param:OrganParameterID, branch:Branch = null): Array<Float> {
 		var generation:Int = 0;
 		var energyDensity:Float = 1;
+
+        var values: Array<Float> = [];
+
 		if (branch != null) {
 			generation = branch.GenerationIndex;
 			energyDensity = branch.energyDensity / MAX_ENERGY_DENSITY;
@@ -214,17 +252,28 @@ class DNA {
 			if (g.organ == organ && g.organParameter == param) {
 				if (generation % g.getCondition(everyNgenerationID) == 0) {
 					if (energyDensity >= g.getCondition(activationEnergyDensityID)) {
-						return g.value;
+                       if (Math.random() <= g.getCondition(probabilityID)) {
+                            values.push(g.value);
+                       }
 					}
 				}
 			}
 		}
-		return -1;
+
+		return values;
 	}
 
 	public function getAngles(organ:OrganID, branch:Branch = null):Array<Float> {
-		var angles:Array<Float> = new Array<Float>();
-
+		var angles:Array<Float>; 
+        angles = getGeneValues(organ, angleID, branch);
+        var i:Int =0;
+        while (i < angles.length)
+        {
+            angles[i] += (2 * Math.random() - 1) * BRANCH_ANGLE_DEVIATION;
+            i++;
+        }
+        return angles;
+/*
 		var generation:Int = 0;
 		var energyDensity:Float = 1;
 		if (branch != null) {
@@ -236,14 +285,14 @@ class DNA {
 			if (g.organ == organ && g.organParameter == angleID) {
 				if (generation % g.getCondition(everyNgenerationID) == 0) {
 					if (energyDensity >= g.getCondition(activationEnergyDensityID)) {
-						if (Math.random() < g.getCondition(probabilityID)) {
+						if (Math.random() <= g.getCondition(probabilityID)) {
 							angles.push(g.value + (2 * Math.random() - 1) * BRANCH_ANGLE_DEVIATION);
 						}
 					}
 				}
 			}
 		}
-		return angles;
+		return angles;  */
 	}
 
 	public function duplicate():DNA {
@@ -270,7 +319,7 @@ class DNA {
 					}
 			}*/
 			newDNA.genes.push(g.clone()); // new Gene(g.organ, g.organParameter, value, g.probability, g.everyNgeneration, g.activationEnergyDensity));
-		}
+ 		}
 
 		return newDNA;
 	}
