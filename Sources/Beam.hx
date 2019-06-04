@@ -14,12 +14,14 @@ class IntersectionWithLeaf {
 	public var distance:Float;
 	public var leaf:Leaf;
 	public var power:Float;
+	public var enegryToAdd:Float;
 
-	public function new(p:Vec2, d:Float, l:Leaf) {
+	public function new(p:Vec2, d:Float, l:Leaf, e: Float) {
 		pos = p;
 		distance = d;
 		leaf = l;
 		power = 1;
+		enegryToAdd = e;
 	}
 }
 
@@ -28,8 +30,9 @@ class IntersectionWithLeaf {
 //-------------------------------------------------------
 class Beam {
 	// constants
-	public static inline var BEAM_ENERGY = 100;
+	public static inline var BEAM_ENERGY = 700;
 	public static inline var LOSS_OF_EVERGY_IN_LEAF = 0.8;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 20;
 
 	public var pos1:Vec2;
 	public var pos2:Vec2;
@@ -76,14 +79,26 @@ class Beam {
 
 	public function CheckCollisionWithLeaf(leaf:Leaf) {
 		var distance:Float = 0;
+		var distance2:Float = 0;
+		var delta: Float = 0;
+
 		distance = GetRayToLineSegmentIntersection(pos1,Sunlight.dir, leaf.v2, leaf.v3);
 		if (distance == 0) {
 			distance = GetRayToLineSegmentIntersection(pos1, Sunlight.dir, leaf.v2, leaf.v4);
+			if (distance!=0 ) {
+				distance2 = GetRayToLineSegmentIntersection(pos1, Sunlight.dir, leaf.v3, leaf.v4);
+			}
+		} else {
+			distance2 = GetRayToLineSegmentIntersection(pos1, Sunlight.dir, leaf.v2, leaf.v4);
+			if (distance2==0) {
+				distance2 = GetRayToLineSegmentIntersection(pos1, Sunlight.dir, leaf.v3, leaf.v4);
+			}
 		}
+
 
 		if (distance != 0) {
 			intercections_with_leaf.push(
-				new IntersectionWithLeaf(pos1.add(Sunlight.dir.mult(distance)), distance, leaf)
+				new IntersectionWithLeaf(pos1.add(Sunlight.dir.mult(distance)), distance, leaf, Math.abs(distance -distance2))
 				);
 		}
 	}
@@ -98,10 +113,19 @@ class Beam {
 		});
 
 		var power:Float = 1;
+		var k: Float =1;
 		for (i in intercections_with_leaf) {
-			i.leaf.AddEnergy(power * BEAM_ENERGY * FPS.dt);
-			power *= LOSS_OF_EVERGY_IN_LEAF;
+			//i.leaf.AddEnergy(power * BEAM_ENERGY * FPS.dt);
+
+			k = power* i.enegryToAdd / LOSS_OF_EVERGY_IN_LEAF_WIDTH;
+			i.leaf.AddEnergy( k * BEAM_ENERGY * FPS.dt);
+			power -= k; 
+			if (power<0) power=0;
 			i.power = power;
+
+
+			//power *= LOSS_OF_EVERGY_IN_LEAF;
+			//i.power = power;
 		}
 	}
 

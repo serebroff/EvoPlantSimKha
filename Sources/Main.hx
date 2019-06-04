@@ -33,13 +33,10 @@ class Main {
 		document.documentElement.style.margin = "0";
 		document.body.style.padding = "0";
 		document.body.style.margin = "0";
-		//document.body.style.width = "50%";
-		//document.body.style.height = "50%";
 		var canvas:CanvasElement = cast document.getElementById(CompilerDefines.canvas_id);
 		canvas.style.display = "block";
-	//document.querySelector("meta[name=viewport]").setAttribute('content', 'width=device-width, initial-scale='+(1/window.devicePixelRatio)+', maximum-scale=1.0, user-scalable=0');
-		document.getElementById("viewport").setAttribute("content",
-                "width=device-width, initial-scale="+ 1/window.devicePixelRatio+", user-scalable=no");
+//		document.getElementById("viewport").setAttribute("content",
+  //              "width=device-width, initial-scale="+ 1/window.devicePixelRatio+", user-scalable=no");
 
 		var resize = function() {
 			
