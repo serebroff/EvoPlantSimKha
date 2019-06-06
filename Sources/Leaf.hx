@@ -24,6 +24,7 @@ class Leaf {
 	public var energy:Float;
 	public var energyDensity:Float;
 	public var dir:Vec2;
+	public var dirLeaned:Vec2;
 	public var length:Float;
 	public var widthStart:Float;
 	public var widthEnd:Float;
@@ -31,6 +32,7 @@ class Leaf {
 	public var startPos:Vec2;
 	public var endPos:Vec2;
 	public var posOnBranch:Float;
+	public var leanByWind:Float;
 	public var dead:Bool;
 	public var deathtime:Float;
 	public var deathDeltaY:Float;
@@ -45,6 +47,7 @@ class Leaf {
 
 	public function new() {
 		dir = new Vec2(0, -1);
+		dirLeaned = new Vec2(0, -1);
 		startPos = new Vec2(0, 0);
 		endPos = new Vec2(0, -1);
 
@@ -68,6 +71,7 @@ class Leaf {
 		length = 1;
 		widthStart = 1;
 		widthEnd = 1;
+		leanByWind = 0;
 		posOnBranch = 1;
 		dead = false;
 		deathtime = 0;
@@ -76,6 +80,7 @@ class Leaf {
 		totalDeath = false;
 
 		dir.set(0, -1);
+		dirLeaned.set(0, -1);
 		startPos.set(0, 0);
 		endPos.set(0, -1);
 	}

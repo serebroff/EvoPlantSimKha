@@ -144,7 +144,18 @@ class Branch extends Leaf {
 			startPos.setFrom(parentBranch.endPos);
 		}
 
-		endPos.setFrom(startPos.add(dir.mult(length)));
+/*		//if (ChildrenIndices.length==0) {
+			leanByWind += Ecosystem.wind.windpower_x * square /300;
+		//}
+		if (parentBranch!=null)
+		{
+			leanByWind +=parentBranch.leanByWind;
+		} */
+		dirLeaned.setFrom(dir);
+	//	dirLeaned.x +=leanByWind;
+	//	dirLeaned.normalize();
+
+		endPos.setFrom(startPos.add(dirLeaned.mult(length)));
 
 		if (length < maxLength && ChildrenIndices.length == 0) {
 			widthStart = length * thickness;
@@ -160,9 +171,9 @@ class Branch extends Leaf {
 		// start points
 		if (parentBranch != null) // && !dead)
 		{
-			sideVec.setFrom(parentBranch.dir.skew().mult(widthStart));
+			sideVec.setFrom(parentBranch.dirLeaned.skew().mult(widthStart));
 		} else
-			sideVec.setFrom( dir.skew().mult(widthStart));
+			sideVec.setFrom( dirLeaned.skew().mult(widthStart));
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
@@ -265,6 +276,8 @@ class Branch extends Leaf {
 		}
 
 		UpdateDensity();
+
+		leanByWind = 0;
 
 		for (l in LeavesIndices) {
 			if (!l.dead) {
