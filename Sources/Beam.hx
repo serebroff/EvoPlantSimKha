@@ -33,7 +33,7 @@ class Beam {
 	public static inline var BEAM_ENERGY = 700;
 	public static inline var LOSS_OF_EVERGY_IN_LEAF = 0.8;
 	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 20;
- 
+
 	public var pos1:Vec2;
 	public var pos2:Vec2;
 	public var intercections_with_leaf:Array<IntersectionWithLeaf>;
