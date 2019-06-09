@@ -29,6 +29,7 @@ class Ecosystem
     static public var numLivePlants: Int;
 
     static public var sunlight : Sunlight;
+    static public var wind : Wind;
 
     static public var plants(default, null): Array<Plant>;
 
@@ -44,6 +45,7 @@ class Ecosystem
         numLivePlants = 0;
         
         sunlight = new Sunlight();
+        wind = new Wind();
 
         branches = [];
         leaves = [];
@@ -98,6 +100,7 @@ class Ecosystem
     public function Calculate(dt: Float): Void {
         
         sunlight.Calculate(dt);
+        wind.Calculate();
         
         numLivePlants =0;
         for (p in plants) {
