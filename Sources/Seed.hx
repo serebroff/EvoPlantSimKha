@@ -84,8 +84,8 @@ class Seed extends Leaf {
 		var delta: Float;
 
 		delta = conservatedEnergy * FPS.dt;
-		delta = childFirstBranch.AddEnergy(delta);
-		//childFirstBranch.energy += delta;
+		//delta = childFirstBranch.AddEnergy(delta);
+		childFirstBranch.energy += delta;
 		conservatedEnergy -= delta;
 		if (conservatedEnergy < 0.1) {
 			totalDeath = true;

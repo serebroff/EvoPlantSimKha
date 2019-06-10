@@ -161,15 +161,15 @@ class Leaf {
 			if (parentBranch.energyDensity > energyDensity) // && parentBranch.energyDensity>BRANCH_ENERGY_TO_SHARE)
 			{
 				delta = FPS.dt * DNA.BRANCH_ENERGY_2_LEAF * parentBranch.energy;
-				delta = AddEnergy(delta);
-				// energy += delta;
+				//delta = AddEnergy(delta);
+				energy += delta;
 				parentBranch.energy -= delta;
 			}
 		} else {
 			if (energyDensity > DNA.LEAF_ENERGY_TO_SHARE) {
 				delta = FPS.dt * DNA.LEAF_ENERGY_2_BRANCH * energy;
-				delta = parentBranch.AddEnergy(delta);
-				// parentBranch.energy += delta;
+				//delta = parentBranch.AddEnergy(delta);
+				parentBranch.energy += delta;
 				energy -= delta;
 			}
 		}

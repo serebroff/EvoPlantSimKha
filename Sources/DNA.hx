@@ -164,15 +164,15 @@ class DNA {
 	public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
 	
 	public static inline var LEAF_ENERGY_CONSUME = 0.3;
-	public static inline var BRANCH_ENERGY_CONSUME = 0.5;
+	public static inline var BRANCH_ENERGY_CONSUME = 0.3;
 	public static inline var SEED_ENERGY_CONSUME = 0.3;
 
 	public static inline var SEED_ENERGY_2_CONSERVATE = 1;
 	public static inline var MAX_CONSERVATED_ENERGY = 5;
 	
-	public static inline var MAX_LEAF_ENERGY_DENSITY = 1;
-	public static inline var MAX_BRANCH_ENERGY_DENSITY = 2;
-	public static inline var MAX_SEED_ENERGY_DENSITY = 1;
+	public static inline var MAX_LEAF_ENERGY_DENSITY = 3;
+	public static inline var MAX_BRANCH_ENERGY_DENSITY = 3;
+	public static inline var MAX_SEED_ENERGY_DENSITY = 3;
 
 
 
@@ -182,7 +182,7 @@ class DNA {
 	public function Init() {
 		Gene.organParameterLimits = [
 			new GeneValueLimit(5, 160, 5), // length
-			new GeneValueLimit(0.01, 0.6, 0.01), // thickness
+			new GeneValueLimit(0.03, 0.6, 0.01), // thickness
 			new GeneValueLimit(-Math.PI * 0.8, Math.PI * 0.8, Math.PI * 0.05), // angle
 			new GeneValueLimit(1, 15, 1), // leaves_numberID
 			new GeneValueLimit(1, 10, 1), // generation2blossomID

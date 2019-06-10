@@ -30,8 +30,8 @@ class IntersectionWithLeaf {
 //-------------------------------------------------------
 class Beam {
 	// constants
-	public static inline var BEAM_ENERGY = 400;
-	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 10;
+	public static inline var BEAM_ENERGY = 300;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 20;
 
 	public var pos1:Vec2;
 	public var pos2:Vec2;

@@ -74,15 +74,15 @@ class Branch extends Leaf {
 				//	&& !readyToFall
 			&& (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_CHILD)) {
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
-			delta = AddEnergy(delta);
-			//energy += delta;
+			//delta = AddEnergy(delta);
+			energy += delta;
 			parentBranch.energy -= delta;
 		} else if (energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_PARENT)
 			// if (parentBranch.energyDensity < energyDensity)
 		{
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * energy;
-//			parentBranch.energy += delta;
-			delta = parentBranch.AddEnergy(delta);
+			parentBranch.energy += delta;
+//			delta = parentBranch.AddEnergy(delta);
 			energy -= delta;
 			
 
