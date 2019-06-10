@@ -1,4 +1,5 @@
-import js.html.AbortController;
+
+//import js.html.AbortController;
 import haxe.io.Float32Array;
 
 //-------------------------------------------------------
@@ -9,7 +10,6 @@ abstract OrganID(Int) {
 	var leaveID = 0;
 	var branchID = 1;
 	var seedID = 2;
-	var numOrganIDs = 3;
 }
 
 @:enum
@@ -163,19 +163,27 @@ class DNA {
 	public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
 	public static inline var BRANCH_ENERGY_TO_SHARE_WITH_CHILD = 1.0;
 	public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
-	public static inline var LEAF_ENERGY_CONSUME = 0.2;
-	public static inline var BRANCH_ENERGY_CONSUME = 0.2;
-	public static inline var SEED_ENERGY_CONSUME = 0.2;
+	
+	public static inline var LEAF_ENERGY_CONSUME = 0.3;
+	public static inline var BRANCH_ENERGY_CONSUME = 0.3;
+	public static inline var SEED_ENERGY_CONSUME = 0.3;
+
 	public static inline var SEED_ENERGY_2_CONSERVATE = 1;
-	public static inline var MAX_CONSERVATED_ENERGY = 10;
-	public static inline var MAX_ENERGY_DENSITY = 3;
+	public static inline var MAX_CONSERVATED_ENERGY = 5;
+	
+	public static inline var MAX_LEAF_ENERGY_DENSITY = 3;
+	public static inline var MAX_BRANCH_ENERGY_DENSITY = 3;
+	public static inline var MAX_SEED_ENERGY_DENSITY = 3;
+
+
+
 	public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
 
 	// static public var organParameterLimits:Array<GeneValueLimit>;
 	public function Init() {
 		Gene.organParameterLimits = [
 			new GeneValueLimit(5, 160, 5), // length
-			new GeneValueLimit(0.01, 0.6, 0.01), // thickness
+			new GeneValueLimit(0.03, 0.6, 0.01), // thickness
 			new GeneValueLimit(-Math.PI * 0.8, Math.PI * 0.8, Math.PI * 0.05), // angle
 			new GeneValueLimit(1, 15, 1), // leaves_numberID
 			new GeneValueLimit(1, 10, 1), // generation2blossomID
@@ -194,13 +202,13 @@ class DNA {
 			new Gene(branchID, lengthID, 80), //
 			new Gene(branchID, thicknessID, 0.03), //
 			new Gene(branchID, start_growth_posID, 1), //
-			new Gene(branchID, leaves_numberID, 5), //
+			new Gene(branchID, leaves_numberID, 3), //
 			new Gene(branchID, generation2blossomID, 2), //
 			new Gene(branchID, angleID, 0), //
 			new Gene(branchID, angleID, -Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
 			new Gene(branchID, angleID, Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
 
-			new Gene(leaveID, lengthID, 30), //
+			new Gene(leaveID, lengthID, 60), //
 			new Gene(leaveID, thicknessID, 0.2), //
 			new Gene(leaveID, angleID, Math.PI * 0.4), //
 
@@ -245,7 +253,7 @@ class DNA {
 
 		if (branch != null) {
 			generation = branch.GenerationIndex;
-			energyDensity = branch.energyDensity / MAX_ENERGY_DENSITY;
+			energyDensity = branch.energyDensity / branch.MAX_ENERGY_DENSITY;
 		}
 
 		for (g in genes) {

@@ -21,6 +21,8 @@ class Seed extends Leaf {
 
 	public override function Init() {
 		super.Init();
+
+		organID = seedID;
 		conservatedEnergy = 0;
 		seedEnergyDensity = 0;
 		createdNewPlant = false;
@@ -82,8 +84,9 @@ class Seed extends Leaf {
 		var delta: Float;
 
 		delta = conservatedEnergy * FPS.dt;
-		conservatedEnergy -= delta;
+		//delta = childFirstBranch.AddEnergy(delta);
 		childFirstBranch.energy += delta;
+		conservatedEnergy -= delta;
 		if (conservatedEnergy < 0.1) {
 			totalDeath = true;
 		}
