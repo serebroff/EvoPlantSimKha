@@ -9,7 +9,6 @@ abstract OrganID(Int) {
 	var leaveID = 0;
 	var branchID = 1;
 	var seedID = 2;
-	var numOrganIDs = 3;
 }
 
 @:enum
@@ -163,12 +162,20 @@ class DNA {
 	public static inline var LEAF_ENERGY_TO_SHARE = 0.0;
 	public static inline var BRANCH_ENERGY_TO_SHARE_WITH_CHILD = 1.0;
 	public static inline var BRANCH_ENERGY_TO_SHARE_WITH_PARENT = 0.0;
-	public static inline var LEAF_ENERGY_CONSUME = 0.2;
-	public static inline var BRANCH_ENERGY_CONSUME = 0.2;
-	public static inline var SEED_ENERGY_CONSUME = 0.2;
+	
+	public static inline var LEAF_ENERGY_CONSUME = 0.3;
+	public static inline var BRANCH_ENERGY_CONSUME = 0.5;
+	public static inline var SEED_ENERGY_CONSUME = 0.3;
+
 	public static inline var SEED_ENERGY_2_CONSERVATE = 1;
-	public static inline var MAX_CONSERVATED_ENERGY = 10;
-	public static inline var MAX_ENERGY_DENSITY = 3;
+	public static inline var MAX_CONSERVATED_ENERGY = 5;
+	
+	public static inline var MAX_LEAF_ENERGY_DENSITY = 1;
+	public static inline var MAX_BRANCH_ENERGY_DENSITY = 2;
+	public static inline var MAX_SEED_ENERGY_DENSITY = 1;
+
+
+
 	public static inline var BRANCH_ANGLE_DEVIATION = 0.1;
 
 	// static public var organParameterLimits:Array<GeneValueLimit>;
@@ -245,7 +252,7 @@ class DNA {
 
 		if (branch != null) {
 			generation = branch.GenerationIndex;
-			energyDensity = branch.energyDensity / MAX_ENERGY_DENSITY;
+			energyDensity = branch.energyDensity / branch.MAX_ENERGY_DENSITY;
 		}
 
 		for (g in genes) {

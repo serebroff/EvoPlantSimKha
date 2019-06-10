@@ -34,6 +34,8 @@ class Branch extends Leaf {
 	public override function Init() {
 		super.Init();
 
+		organID = branchID;
+
 		ChildrenIndices.splice(0, ChildrenIndices.length);
 		SeedsIndices.splice(0, SeedsIndices.length);
 		LeavesIndices.splice(0, LeavesIndices.length);
@@ -72,14 +74,18 @@ class Branch extends Leaf {
 				//	&& !readyToFall
 			&& (parentBranch.energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_CHILD)) {
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * parentBranch.energy;
-			energy += delta;
+			delta = AddEnergy(delta);
+			//energy += delta;
 			parentBranch.energy -= delta;
 		} else if (energyDensity > DNA.BRANCH_ENERGY_TO_SHARE_WITH_PARENT)
 			// if (parentBranch.energyDensity < energyDensity)
 		{
 			delta = FPS.dt * DNA.BRANCH_ENERGY_2_BRANCH * energy;
+//			parentBranch.energy += delta;
+			delta = parentBranch.AddEnergy(delta);
 			energy -= delta;
-			parentBranch.energy += delta;
+			
+
 		}
 
 		UpdateDensity();
@@ -129,6 +135,9 @@ class Branch extends Leaf {
 
 			if (disapperTime > Leaf.BRANCH_DEATH_TIME) {
 				totalDeath = true;
+				if (parentBranch != null) {
+					parentBranch.ChildrenIndices.remove(this);
+				}
 			}
 
 			if (startPos.y > 0) {
@@ -310,7 +319,7 @@ class Branch extends Leaf {
 		}
 
 		var g2 = framebuffer.g2;
-		var c:Float = energyDensity / DNA.MAX_ENERGY_DENSITY;
+		var c:Float = energyDensity / MAX_ENERGY_DENSITY;
 
 		if (c < 0) {
 			c = 0;

@@ -30,9 +30,8 @@ class IntersectionWithLeaf {
 //-------------------------------------------------------
 class Beam {
 	// constants
-	public static inline var BEAM_ENERGY = 700;
-	public static inline var LOSS_OF_EVERGY_IN_LEAF = 0.8;
-	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 20;
+	public static inline var BEAM_ENERGY = 400;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 10;
 
 	public var pos1:Vec2;
 	public var pos2:Vec2;
@@ -115,17 +114,18 @@ class Beam {
 		var power:Float = 1;
 		var k: Float =1;
 		for (i in intercections_with_leaf) {
-			//i.leaf.AddEnergy(power * BEAM_ENERGY * FPS.dt);
 
 			k = power* i.enegryToAdd / LOSS_OF_EVERGY_IN_LEAF_WIDTH;
+			if ( k > 1 ) {
+				k = 1;
+			}
 			i.leaf.AddEnergy( k * BEAM_ENERGY * FPS.dt);
 			power -= k; 
 			if (power<0) power=0;
 			i.power = power;
 
 
-			//power *= LOSS_OF_EVERGY_IN_LEAF;
-			//i.power = power;
+
 		}
 	}
 
