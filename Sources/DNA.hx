@@ -201,13 +201,13 @@ class DNA {
 			new Gene(branchID, lengthID, 80), //
 			new Gene(branchID, thicknessID, 0.03), //
 			new Gene(branchID, start_growth_posID, 1), //
-			new Gene(branchID, leaves_numberID, 5), //
+			new Gene(branchID, leaves_numberID, 3), //
 			new Gene(branchID, generation2blossomID, 2), //
 			new Gene(branchID, angleID, 0), //
 			new Gene(branchID, angleID, -Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
 			new Gene(branchID, angleID, Math.PI * 0.2, [new GeneCondition(probabilityID, 0.5)]), //
 
-			new Gene(leaveID, lengthID, 30), //
+			new Gene(leaveID, lengthID, 60), //
 			new Gene(leaveID, thicknessID, 0.2), //
 			new Gene(leaveID, angleID, Math.PI * 0.4), //
 

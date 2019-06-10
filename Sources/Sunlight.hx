@@ -14,15 +14,18 @@ using Beam;
 // Sunlight class
 //-------------------------------------------------------
 class Sunlight {
-	public static inline var RADIUS = 1700;
+	// constants
+	public static inline var BEAM_ENERGY = 300;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 15;
 	public static inline var NUM_BEAMS = 140;
-	public static inline var SUN_FULL_TURN_IN_SEC = 20;
 	public static var BEAM_DISTANCE = 15;
+	public static inline var RADIUS = 1700;
+	public static inline var SUN_FULL_TURN_IN_SEC = 20;
 	public static var BEAM_LENGTH = 2700;
 	public static var dir:Vec2;
 
 	public var pos:Vec2;
-	public var perpendicular: Vec2;
+	public var perpendicular:Vec2;
 	public var ar_beams:Array<Beam>;
 	//    public var ar_beams: Vector<Beam>;
 	public var center:Vec2;
@@ -64,62 +67,51 @@ class Sunlight {
 		angle = -Math.PI * 0.5 - Math.PI * 0.2 * sun_angle;
 		dir.set(-Math.cos(angle), -Math.sin(angle));
 
-		pos.setFrom( center.add(dir.mult(-radius)) );
-		
+		pos.setFrom(center.add(dir.mult(-radius)));
+
 		perpendicular.set(dir.y, -dir.x);
-		var v:Vec2 ;
+		var v:Vec2;
 		var i:Int = 0;
 
 		while (i < NUM_BEAMS) {
+			ar_beams[i].Init();
+
 			v = ar_beams[i].pos1;
-			v.setFrom(
-				pos.add(
-					perpendicular.mult(beam_delta + BEAM_DISTANCE * (i - Math.floor(NUM_BEAMS / 2)))
-					)
-				);
+			v.setFrom(pos.add(perpendicular.mult(beam_delta + BEAM_DISTANCE * (i - Math.floor(NUM_BEAMS / 2)))));
 			ar_beams[i].pos2.setFrom(v.add(dir.mult(BEAM_LENGTH)));
 			ar_beams[i].dist = BEAM_LENGTH;
-			ar_beams[i].intercections_with_leaf = [];
+
+//			ar_beams[i].numintersections = 0;
+//			ar_beams[i].intercections_with_leaf = [];
 
 			i++;
 		}
 	}
 
-
-
-
-	public function CheckCollisionWithLeaf(leaf: Leaf) {
-		var vecToLeaf: Vec2 = new Vec2();
-		var dist: Float = 0;
-		var distMin: Float = Math.POSITIVE_INFINITY;
-		var closestBeam: Beam = null;
-		var beamIndex: Int = 0;
-		for (b in ar_beams) {
-			vecToLeaf.setFrom(b.pos1.sub(leaf.startPos));
-			dist = vecToLeaf.lengthSquared();
-			if (dist < distMin) {
-				distMin = dist;
-			} else {
-				closestBeam = b;
-				break;
-			}
-			beamIndex++;
+	public function CheckCollisionWithLeaf(leaf:Leaf) {
+		var index0:Int = Math.ceil(perpendicular.dot(leaf.startPos) / BEAM_DISTANCE) + Math.floor(NUM_BEAMS / 2);
+		var index1:Int = Math.ceil(perpendicular.dot(leaf.endPos) / BEAM_DISTANCE) + Math.floor(NUM_BEAMS / 2);
+		var i:Int;
+		if (index0 > index1) {
+			i = index0;
+			index0 = index1;
+			index1 = i;
 		}
-		if (closestBeam!=null) {
-			var index_delta: Int = Math.ceil(leaf.length / BEAM_DISTANCE);
-			var index0: Int = beamIndex - index_delta;
-			var index1: Int = beamIndex + index_delta;
-			if (index0 <0) {
-				index0=0;
-			}
-			if (index1> NUM_BEAMS) {
-				index1=NUM_BEAMS;
-			}
-			var i: Int = index0;
-			while (i < index1) {
-				ar_beams[i].CheckCollisionWithLeaf(leaf);	
-				i++;
-			}
+		var index_delta:Int = Math.ceil(leaf.widthEnd / BEAM_DISTANCE);
+		index0 -= index_delta;
+		index1 += index_delta;
+
+		if (index0 < 0) {
+			index0 = 0;
+		}
+		if (index1 >= NUM_BEAMS) {
+			index1 = NUM_BEAMS-1;
+		}
+
+		i = index0;
+		while (i <= index1) {
+			ar_beams[i].CheckCollisionWithLeaf(leaf);
+			i++;
 		}
 	}
 
