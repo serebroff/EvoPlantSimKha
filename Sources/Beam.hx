@@ -56,16 +56,13 @@ class Beam {
 		dist = 100000;
 		numintersections = 0;
 		intercections_with_leaf = [];
-
 	}
 
 	public function Init() {
 		numintersections = 0;
-		for (i in intercections_with_leaf)
-		{
+		for (i in intercections_with_leaf) {
 			i.distance = Math.POSITIVE_INFINITY;
 		}
-
 	}
 
 	public function GetRayToLineSegmentIntersection(rayOrigin:Vec2, rayDirection:Vec2, point1:Vec2, point2:Vec2):Float {
@@ -119,7 +116,7 @@ class Beam {
 	}
 
 	public function AddEnergyToHitedLeaves() {
-		if (numintersections == 0 ) {
+		if (numintersections == 0) {
 			return;
 		}
 
@@ -127,12 +124,29 @@ class Beam {
 			return Math.ceil(a.distance - b.distance);
 		});
 
+		var i:IntersectionWithLeaf;
+		var n:Int = 1;
+		var m:Int = 0;
+
+/*		while (n < numintersections) {
+			m = n -1;
+			while (m >= 0) {
+				if (intercections_with_leaf[m+1].distance < intercections_with_leaf[m].distance) {
+					i = intercections_with_leaf[m+1];
+					intercections_with_leaf[m+1] = intercections_with_leaf[m];
+					intercections_with_leaf[m] = i;
+				}
+				m--;
+			}
+			n++;
+		}*/
+
 		var power:Float = 1;
 		var k:Float = 1;
-		var i: IntersectionWithLeaf;
-		var n: Int =0;
+		
+		n=0;
 
-		while (n< numintersections) {
+		while (n < numintersections) {
 			i = intercections_with_leaf[n++];
 
 			k = power * i.enegryToAdd / Sunlight.LOSS_OF_EVERGY_IN_LEAF_WIDTH;

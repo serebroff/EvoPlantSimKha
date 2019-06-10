@@ -16,7 +16,7 @@ using Beam;
 class Sunlight {
 	// constants
 	public static inline var BEAM_ENERGY = 300;
-	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 15;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 30;
 	public static inline var NUM_BEAMS = 140;
 	public static var BEAM_DISTANCE = 15;
 	public static inline var RADIUS = 1700;
