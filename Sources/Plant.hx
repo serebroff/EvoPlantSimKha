@@ -77,6 +77,7 @@ class Plant
         newBranch.branch_growth_pos = dna.getGeneValue(branchID, start_growth_posID, branchParent);
 	    newBranch.leaves_number = dna.getGeneValue(branchID, leaves_numberID, branchParent);
 	    newBranch.generation2blossom = dna.getGeneValue(branchID, generation2blossomID, branchParent);
+        newBranch.angle = angle;
 
         newBranch.parentPlant = this;
 
@@ -118,6 +119,7 @@ class Plant
         newSeed.newDNA = dna.duplicate();
         newSeed.maxLength= dna.getGeneValue(seedID, lengthID, parent);
         newSeed.thickness = dna.getGeneValue(seedID, thicknessID, parent);
+        newSeed.angle = angle;
 
         parent.SeedsIndices.push(newSeed);
         newSeed.startPos.setFrom(parent.endPos);
@@ -155,6 +157,8 @@ class Plant
         newLeaf.parentPlant = this;
         newLeaf.maxLength= dna.getGeneValue(leaveID, lengthID, parent);
         newLeaf.thickness = dna.getGeneValue(leaveID, thicknessID, parent);
+
+        newLeaf.angle = angle;
 
         parent.LeavesIndices.push(newLeaf);
         newLeaf.posOnBranch = posOnBranch;

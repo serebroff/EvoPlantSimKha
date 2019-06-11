@@ -151,6 +151,7 @@ class Branch extends Leaf {
 	public override function CalculateVertices():Void {
 		if (!dead && parentBranch != null) {
 			startPos.setFrom(parentBranch.endPos);
+			//dir.setFrom(parentBranch.dir.rotate(angle));
 		}
 
 /*		//if (ChildrenIndices.length==0) {

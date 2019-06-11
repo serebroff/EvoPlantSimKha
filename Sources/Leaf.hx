@@ -29,6 +29,8 @@ class Leaf {
 	public var energyDensity:Float;
 	public var dir:Vec2;
 	public var dirLeaned:Vec2;
+	public var force:Vec2;
+	public var angle:Float;
 	public var length:Float;
 	public var widthStart:Float;
 	public var widthEnd:Float;
@@ -54,6 +56,7 @@ class Leaf {
 	public function new() {
 		dir = new Vec2(0, -1);
 		dirLeaned = new Vec2(0, -1);
+		force = new Vec2(0, 0);
 		startPos = new Vec2(0, 0);
 		endPos = new Vec2(0, -1);
 
@@ -76,6 +79,7 @@ class Leaf {
 		maxLength = 20;
 		thickness = 1;
 		length = 1;
+		angle = 0;
 		widthStart = 1;
 		widthEnd = 1;
 		leanByWind = 0;
@@ -88,6 +92,7 @@ class Leaf {
 
 		dir.set(0, -1);
 		dirLeaned.set(0, -1);
+		force.set(0,0);
 		startPos.set(0, 0);
 		endPos.set(0, -1);
 	}
@@ -200,11 +205,21 @@ class Leaf {
 		}
 
 		startPos.y += deathtime * 5;
+		startPos.x += force.x *2;
 
 		if (startPos.y > 0) {
 			startPos.y = 0;
 		}
 		CalculateVertices();
+	}
+
+	public function CalculateForce():Void {
+		force.x = Ecosystem.wind.windpower_x * 2;
+		dirLeaned.setFrom(dir.add(force));
+		//var a:Float = dirLeaned.angle(dir);
+		//leanByWind += a/ s;
+		dirLeaned.normalize();
+
 	}
 
 	public function CalculateVertices():Void {
@@ -215,19 +230,21 @@ class Leaf {
 			}
 			startPos.setFrom(parentBranch.startPos.add(parentBranch.dir.mult(len)));
 		}
+		
+		CalculateForce();
 
-		endPos.setFrom(dir);
+		endPos.setFrom(dirLeaned);
 		endPos = startPos.add(endPos.mult(length));
 
 		widthStart = 0;
 		widthEnd = length * thickness * 0.5;
 
-		sideVec.setFrom(dir.skew().mult(widthStart));
+		sideVec.setFrom(dirLeaned.skew().mult(widthStart));
 
 		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
 		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
 
-		sideVec.setFrom(dir.skew().mult(widthEnd));
+		sideVec.setFrom(dirLeaned.skew().mult(widthEnd));
 		v2.set(endPos.x - sideVec.x, endPos.y - sideVec.y);
 		v3.set(endPos.x + sideVec.x, endPos.y + sideVec.y);
 
