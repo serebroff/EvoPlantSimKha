@@ -1,6 +1,6 @@
 
 //import js.html.AbortController;
-import haxe.io.Float32Array;
+//import haxe.io.Float32Array;
 
 //-------------------------------------------------------
 // class of Gene
