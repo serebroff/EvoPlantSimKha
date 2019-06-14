@@ -1,4 +1,5 @@
 typedef Vec2 = kha.math.Vector2;
+typedef Matrix3 = kha.math.FastMatrix3;
 
 class Utils {
 	public static function set(vec2:kha.math.Vector2, x, y) {
