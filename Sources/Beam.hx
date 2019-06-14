@@ -60,9 +60,6 @@ class Beam {
 
 	public function Init() {
 		numintersections = 0;
-		for (i in intercections_with_leaf) {
-			i.distance = Math.POSITIVE_INFINITY;
-		}
 	}
 
 	public function GetRayToLineSegmentIntersection(rayOrigin:Vec2, rayDirection:Vec2, point1:Vec2, point2:Vec2):Float {
@@ -120,31 +117,30 @@ class Beam {
 			return;
 		}
 
-		intercections_with_leaf.sort(function(a, b) {
+		/*		intercections_with_leaf.sort(function(a, b) {
 			return Math.ceil(a.distance - b.distance);
-		});
+		});*/
 
 		var i:IntersectionWithLeaf;
 		var n:Int = 1;
 		var m:Int = 0;
 
-/*		while (n < numintersections) {
-			m = n -1;
-			while (m >= 0) {
-				if (intercections_with_leaf[m+1].distance < intercections_with_leaf[m].distance) {
-					i = intercections_with_leaf[m+1];
-					intercections_with_leaf[m+1] = intercections_with_leaf[m];
-					intercections_with_leaf[m] = i;
-				}
+		// sort intersections by distance
+		while (n < numintersections) {
+			m = n - 1;
+			while (m >= 0 && (intercections_with_leaf[m + 1].distance < intercections_with_leaf[m].distance)) {
+				i = intercections_with_leaf[m + 1];
+				intercections_with_leaf[m + 1] = intercections_with_leaf[m];
+				intercections_with_leaf[m] = i;
 				m--;
 			}
 			n++;
-		}*/
+		}
 
 		var power:Float = 1;
 		var k:Float = 1;
-		
-		n=0;
+
+		n = 0;
 
 		while (n < numintersections) {
 			i = intercections_with_leaf[n++];
@@ -155,8 +151,9 @@ class Beam {
 			}
 			i.leaf.AddEnergy(k * Sunlight.BEAM_ENERGY * FPS.dt);
 			power -= k;
-			if (power < 0)
+			if (power < 0) {
 				power = 0;
+			}
 			i.power = power;
 		}
 	}

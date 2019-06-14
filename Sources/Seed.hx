@@ -106,6 +106,8 @@ class Seed extends Leaf {
 				createdNewPlant = true;
 			} else
 				ExchangeWithNewPlant();
+		} else {
+			startPos.x += force.x *2;
 		}
 		CalculateVertices();
 	}

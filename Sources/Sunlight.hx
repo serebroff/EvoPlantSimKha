@@ -16,7 +16,7 @@ using Beam;
 class Sunlight {
 	// constants
 	public static inline var BEAM_ENERGY = 300;
-	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 30;
+	public static inline var LOSS_OF_EVERGY_IN_LEAF_WIDTH = 20;
 	public static inline var NUM_BEAMS = 140;
 	public static var BEAM_DISTANCE = 15;
 	public static inline var RADIUS = 1700;
@@ -51,11 +51,6 @@ class Sunlight {
 		sun_angle = 0;
 
 		ar_beams = [for (i in 0...NUM_BEAMS) new Beam()];
-		//      ar_beams = new Vector<Beam>(NUM_BEAMS);
-		/*for (b in ar_beams)
-			{
-				b.Init();
-		}*/
 
 		center = new Vec2(0, 0);
 	}
@@ -80,9 +75,6 @@ class Sunlight {
 			v.setFrom(pos.add(perpendicular.mult(beam_delta + BEAM_DISTANCE * (i - Math.floor(NUM_BEAMS / 2)))));
 			ar_beams[i].pos2.setFrom(v.add(dir.mult(BEAM_LENGTH)));
 			ar_beams[i].dist = BEAM_LENGTH;
-
-//			ar_beams[i].numintersections = 0;
-//			ar_beams[i].intercections_with_leaf = [];
 
 			i++;
 		}
