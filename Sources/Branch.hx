@@ -177,16 +177,29 @@ class Branch extends Leaf {
 		if (parentBranch != null && parentBranch.widthEnd < widthStart) {
 			parentBranch.widthEnd = widthStart;
 		}
-
+		
 		// start points
 		if (parentBranch != null) // && !dead)
 		{
-			sideVec.setFrom(parentBranch.dirLeaned.skew().mult(widthStart));
-		} else
+			if (angle>0) {
+				sideVec.setFrom(parentBranch.dirLeaned.skew().mult(widthStart));
+				v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
+				sideVec.setFrom( dirLeaned.skew().mult(2* widthStart));
+				v4.set(v1.x + sideVec.x, v1.y + sideVec.y);			
+			} else {
+				sideVec.setFrom(parentBranch.dirLeaned.skew().mult(widthStart));
+				v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+				sideVec.setFrom( dirLeaned.skew().mult(2* widthStart));
+				v1.set(v4.x - sideVec.x, v4.y - sideVec.y);		
+			}
+		} else {
 			sideVec.setFrom( dirLeaned.skew().mult(widthStart));
+			v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
+			v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+		}
 
-		v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
-		v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
+		//v1.set(startPos.x - sideVec.x, startPos.y - sideVec.y);
+		//v4.set(startPos.x + sideVec.x, startPos.y + sideVec.y);
 
 		// end points
 		sideVec.setFrom(dir.skew().mult(widthEnd));

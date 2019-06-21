@@ -165,6 +165,7 @@ class Ecosystem
         {
             if (b.totalDeath) continue;
             b.Draw(framebuffer);
+         //   b.DrawSkeleton(framebuffer);
         }
         
         for( l in leaves)
